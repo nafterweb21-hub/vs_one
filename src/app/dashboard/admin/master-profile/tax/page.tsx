@@ -41,7 +41,7 @@ export default function TaxProfilePage() {
     setErrorMsg(null);
     const result = await getTaxProfiles();
     if (result.success && result.data) {
-      const casted = result.data.map((p: any) => ({
+      const casted = result.data.map((p: Omit<TaxProfile, "createdAt" | "updatedAt"> & { createdAt: string | Date; updatedAt: string | Date }) => ({
         ...p,
         createdAt: new Date(p.createdAt),
         updatedAt: new Date(p.updatedAt),
@@ -55,7 +55,9 @@ export default function TaxProfilePage() {
 
   // Load tax profiles on mount
   useEffect(() => {
-    loadData();
+    Promise.resolve().then(() => {
+      loadData();
+    });
   }, []);
 
   const handleOpenAddModal = () => {

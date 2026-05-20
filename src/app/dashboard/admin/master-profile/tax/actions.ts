@@ -57,7 +57,7 @@ export async function createTaxProfile(data: TaxProfileInput) {
     return { success: true, data: newProfile };
   } catch (error) {
     console.error("Failed to create tax profile:", error);
-    return { success: false, error: (error as any).message || "Failed to create tax profile." };
+    return { success: false, error: (error as Error).message || "Failed to create tax profile." };
   }
 }
 
@@ -88,7 +88,7 @@ export async function updateTaxProfileRate(id: string, taxRate: number) {
     return { success: true, data: updatedProfile };
   } catch (error) {
     console.error("Failed to update tax rate:", error);
-    return { success: false, error: (error as any).message || "Failed to update tax rate." };
+    return { success: false, error: (error as Error).message || "Failed to update tax rate." };
   }
 }
 
@@ -115,7 +115,7 @@ export async function toggleTaxProfileStatus(id: string) {
     return { success: true, data: updatedProfile };
   } catch (error) {
     console.error("Failed to toggle status:", error);
-    return { success: false, error: (error as any).message || "Failed to toggle status." };
+    return { success: false, error: (error as Error).message || "Failed to toggle status." };
   }
 }
 
@@ -137,7 +137,7 @@ export async function deleteTaxProfile(id: string) {
     return { success: true };
   } catch (error) {
     console.error("Failed to delete tax profile:", error);
-    return { success: false, error: (error as any).message || "Failed to delete tax profile." };
+    return { success: false, error: (error as Error).message || "Failed to delete tax profile." };
   }
 }
 
