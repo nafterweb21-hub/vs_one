@@ -46,7 +46,7 @@ export async function getCustomerProfiles() {
       },
     });
     return { success: true, data: customers };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to fetch customer profiles:", error);
     return { success: false, error: "Failed to fetch customer profiles." };
   }
@@ -75,7 +75,7 @@ export async function getCustomerDetail(id: string) {
       return { success: false, error: "Customer not found." };
     }
     return { success: true, data: customer };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to fetch customer details:", error);
     return { success: false, error: "Failed to fetch customer details." };
   }
@@ -121,9 +121,9 @@ export async function createCustomerProfile(data: CustomerProfileInput) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: newCustomer };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to create customer profile:", error);
-    return { success: false, error: error.message || "Failed to create customer profile." };
+    return { success: false, error: (error as Error).message || "Failed to create customer profile." };
   }
 }
 
@@ -145,9 +145,9 @@ export async function updateCustomerRemarks(id: string, remarks: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: updated };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to update customer remarks:", error);
-    return { success: false, error: error.message || "Failed to update customer remarks." };
+    return { success: false, error: (error as Error).message || "Failed to update customer remarks." };
   }
 }
 
@@ -170,9 +170,9 @@ export async function toggleCustomerStatus(id: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: updated };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to toggle customer status:", error);
-    return { success: false, error: error.message || "Failed to toggle customer status." };
+    return { success: false, error: (error as Error).message || "Failed to toggle customer status." };
   }
 }
 
@@ -192,9 +192,9 @@ export async function deleteCustomerProfile(id: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to delete customer profile:", error);
-    return { success: false, error: error.message || "Failed to delete customer profile." };
+    return { success: false, error: (error as Error).message || "Failed to delete customer profile." };
   }
 }
 
@@ -241,9 +241,9 @@ export async function addContactPerson(customerId: string, data: ContactPersonIn
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: newContact };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to add contact person:", error);
-    return { success: false, error: error.message || "Failed to add contact person." };
+    return { success: false, error: (error as Error).message || "Failed to add contact person." };
   }
 }
 
@@ -275,9 +275,9 @@ export async function updateContactPerson(id: string, data: ContactPersonInput) 
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: updated };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to update contact person:", error);
-    return { success: false, error: error.message || "Failed to update contact person." };
+    return { success: false, error: (error as Error).message || "Failed to update contact person." };
   }
 }
 
@@ -298,9 +298,9 @@ export async function toggleContactPersonStatus(id: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: updated };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to toggle contact person status:", error);
-    return { success: false, error: error.message || "Failed to toggle contact person status." };
+    return { success: false, error: (error as Error).message || "Failed to toggle contact person status." };
   }
 }
 
@@ -320,9 +320,9 @@ export async function setContactPersonDefault(id: string, customerId: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: updated };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to set default contact person:", error);
-    return { success: false, error: error.message || "Failed to set default contact person." };
+    return { success: false, error: (error as Error).message || "Failed to set default contact person." };
   }
 }
 
@@ -355,9 +355,9 @@ export async function deleteContactPerson(id: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to delete contact person:", error);
-    return { success: false, error: error.message || "Failed to delete contact person." };
+    return { success: false, error: (error as Error).message || "Failed to delete contact person." };
   }
 }
 
@@ -406,9 +406,9 @@ export async function addAddress(customerId: string, data: AddressInput) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: newAddress };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to add address:", error);
-    return { success: false, error: error.message || "Failed to add address." };
+    return { success: false, error: (error as Error).message || "Failed to add address." };
   }
 }
 
@@ -447,9 +447,9 @@ export async function updateAddress(id: string, addressText: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: updated };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to update address:", error);
-    return { success: false, error: error.message || "Failed to update address." };
+    return { success: false, error: (error as Error).message || "Failed to update address." };
   }
 }
 
@@ -470,9 +470,9 @@ export async function toggleAddressStatus(id: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: updated };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to toggle address status:", error);
-    return { success: false, error: error.message || "Failed to toggle address status." };
+    return { success: false, error: (error as Error).message || "Failed to toggle address status." };
   }
 }
 
@@ -490,9 +490,9 @@ export async function setAddressDefault(id: string, customerId: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true, data: updated };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to set default address:", error);
-    return { success: false, error: error.message || "Failed to set default address." };
+    return { success: false, error: (error as Error).message || "Failed to set default address." };
   }
 }
 
@@ -524,8 +524,8 @@ export async function deleteAddress(id: string) {
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to delete address:", error);
-    return { success: false, error: error.message || "Failed to delete address." };
+    return { success: false, error: (error as Error).message || "Failed to delete address." };
   }
 }

@@ -18,9 +18,6 @@ import {
   toggleAddressStatus,
   setAddressDefault,
   deleteAddress,
-  CustomerProfileInput,
-  ContactPersonInput,
-  AddressInput,
 } from "./actions";
 
 interface CustomerSummary {
@@ -112,10 +109,6 @@ export default function CustomerProfilePage() {
 
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    loadCustomers();
-  }, []);
-
   const loadCustomers = async () => {
     setIsLoading(true);
     setErrorMsg(null);
@@ -127,6 +120,10 @@ export default function CustomerProfilePage() {
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    loadCustomers();
+  }, []);
 
   const loadCustomerDetailData = async (id: string) => {
     const res = await getCustomerDetail(id);
