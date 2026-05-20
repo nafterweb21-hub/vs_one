@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 model User {
@@ -26,12 +26,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -56,6 +56,20 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// ==========================================
+// Currency Profile
+// ==========================================
+model Currency {
+  id           String   @id @default(cuid())
+  code         String   @unique // Immutable
+  name         String   @unique // Immutable
+  exchangeRate Decimal
+  isDefault    Boolean  @default(false)
+  status       String   @default("Active")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 model Employee {
   id             String   @id @default(cuid())
   code           String   @unique
@@ -70,6 +84,8 @@ model Employee {
   status         String   @default("ACTIVE") // ACTIVE / INACTIVE
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
 model TaxProfile {
   id        String   @id @default(cuid())
   taxType   String   @unique
@@ -83,7 +99,7 @@ model CustomerProfile {
   id             String                  @id @default(cuid())
   customerCode   String                  @unique
   customerName   String                  @unique
-  remarks        String?                 @db.Text
+  remarks        String?
   status         String                  @default("Active") // "Active" or "Inactive"
   contactPersons CustomerContactPerson[]
   addresses      CustomerAddress[]
@@ -111,10 +127,9 @@ model CustomerAddress {
   id         String          @id @default(cuid())
   customerId String
   customer   CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  address    String          @db.Text
+  address    String
   status     String          @default("Active") // "Active" or "Inactive"
   isDefault  Boolean         @default(false)
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
 }
-
