@@ -1,40 +1,44 @@
+"use client";
+
+import React from "react";
+
 export default function Dashboard() {
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 dark:bg-zinc-950">
-      <header className="border-b border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold text-zinc-900 dark:text-white">
-            Dashboard
-          </h1>
-          <nav className="flex gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-            <a href="/" className="hover:text-zinc-900 dark:hover:text-white">
-              Home
-            </a>
-          </nav>
-        </div>
-      </header>
-      <main className="flex-1 p-6">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { label: "Total Users", value: "—" },
-            { label: "Active Orders", value: "—" },
-            { label: "Revenue", value: "—" },
-            { label: "Inventory Items", value: "—" },
-          ].map((card) => (
-            <div
-              key={card.label}
-              className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
-            >
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
+    <div className="space-y-6 bg-white text-black">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-black">
+          Dashboard
+        </h1>
+        <p className="text-sm text-zinc-600">
+          Overview of operations, key metrics, and quick action links.
+        </p>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { label: "Total Users", value: "—", change: "0% from last month" },
+          { label: "Active Orders", value: "—", change: "0 pending" },
+          { label: "Revenue", value: "—", change: "SGD 0.00 this month" },
+          { label: "Inventory Items", value: "—", change: "0 items in stock" },
+        ].map((card) => (
+          <div
+            key={card.label}
+            className="rounded-xl glossy-bg p-6 relative group overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-bold text-zinc-700">
                 {card.label}
               </p>
-              <p className="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">
-                {card.value}
-              </p>
             </div>
-          ))}
-        </div>
-      </main>
+            <p className="mt-2.5 text-3xl font-extrabold tracking-tight text-black">
+              {card.value}
+            </p>
+            <p className="mt-1.5 text-xs text-blue-600 font-bold">
+              {card.change}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
