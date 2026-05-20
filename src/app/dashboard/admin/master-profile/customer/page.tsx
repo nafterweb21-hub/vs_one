@@ -114,7 +114,7 @@ export default function CustomerProfilePage() {
     setErrorMsg(null);
     const result = await getCustomerProfiles();
     if (result.success && result.data) {
-      setCustomers(result.data as any[]);
+      setCustomers(result.data as CustomerSummary[]);
     } else {
       setErrorMsg(result.error || "Failed to load customer profiles.");
     }
@@ -122,7 +122,9 @@ export default function CustomerProfilePage() {
   };
 
   useEffect(() => {
-    loadCustomers();
+    Promise.resolve().then(() => {
+      loadCustomers();
+    });
   }, []);
 
   const loadCustomerDetailData = async (id: string) => {
@@ -733,7 +735,7 @@ export default function CustomerProfilePage() {
                 <button
                   key={t.id}
                   onClick={() => {
-                    setDetailTab(t.id as any);
+                    setDetailTab(t.id as "general" | "contacts" | "addresses");
                     setIsContactFormOpen(false);
                     setIsAddressFormOpen(false);
                   }}
@@ -935,7 +937,7 @@ export default function CustomerProfilePage() {
                       {/* Contact Persons Table */}
                       {customerDetail.contactPersons.length === 0 ? (
                         <div className="text-center py-6 text-xs text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
-                          No contact persons added yet. Click "Add Contact Person" above.
+                          No contact persons added yet. Click &quot;Add Contact Person&quot; above.
                         </div>
                       ) : (
                         <div className="overflow-x-auto border border-zinc-200 rounded-lg">
@@ -1100,7 +1102,7 @@ export default function CustomerProfilePage() {
                       {/* Addresses Table */}
                       {customerDetail.addresses.length === 0 ? (
                         <div className="text-center py-6 text-xs text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
-                          No addresses added yet. Click "Add Address" above.
+                          No addresses added yet. Click &quot;Add Address&quot; above.
                         </div>
                       ) : (
                         <div className="overflow-x-auto border border-zinc-200 rounded-lg">
