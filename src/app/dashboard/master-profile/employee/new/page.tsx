@@ -23,50 +23,11 @@ export default function NewEmployeePage() {
 
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const [isSaving, setIsSaving] = useState(false);
-  const [isGeneratingCode, setIsGeneratingCode] = useState(true);
   const [notification, setNotification] = useState<{
     type: "success" | "error";
     message: string;
   } | null>(null);
 
-  useEffect(() => {
-    let active = true;
-    const fetchNextCode = async () => {
-      try {
-        const res = await fetch("/api/employees");
-        if (res.ok && active) {
-          const list = await res.json();
-          // Calculate next sequential code
-          let maxNum = 0;
-          list.forEach((emp: { code: string }) => {
-            const match = emp.code.match(/^EMP(\d+)$/i);
-            if (match) {
-              const num = parseInt(match[1], 10);
-              if (num > maxNum) {
-                maxNum = num;
-              }
-            }
-          });
-          const nextCode = `EMP${String(maxNum + 1).padStart(3, "0")}`;
-          Promise.resolve().then(() => {
-            setFormData((prev) => ({ ...prev, code: nextCode }));
-          });
-        }
-      } catch (err) {
-        console.error("Error generating code:", err);
-      } finally {
-        if (active) {
-          Promise.resolve().then(() => {
-            setIsGeneratingCode(false);
-          });
-        }
-      }
-    };
-    fetchNextCode();
-    return () => {
-      active = false;
-    };
-  }, []);
 
   const showToast = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
@@ -189,17 +150,18 @@ export default function NewEmployeePage() {
                 <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
                   Employee Code <span className="text-rose-500">*</span>
                 </label>
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                  <span className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
-                  Auto-generated
-                </span>
               </div>
               <input
                 type="text"
-                readOnly
-                value={isGeneratingCode ? "Generating..." : formData.code}
-                placeholder="EMP000"
-                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm bg-zinc-100/65 dark:bg-zinc-800/65 text-zinc-500 dark:text-zinc-400 cursor-not-allowed select-none font-mono font-bold"
+                value={formData.code}
+                onChange={(e) =>
+                  setFormData({ ...formData, code: e.target.value })
+                }
+                placeholder="e.g. EMP001"
+                className={`mt-1.5 w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950 font-mono font-bold ${formErrors.code
+                    ? "border-rose-400 dark:border-rose-800"
+                    : "border-zinc-200 dark:border-zinc-800"
+                  }`}
               />
               {formErrors.code && (
                 <p className="text-xs text-rose-500 mt-1 font-semibold">
