@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
+  engineType = "library"
 }
 
 datasource db {
@@ -67,4 +68,68 @@ model Currency {
   status       String   @default("Active")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Employee {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  name           String
+  nricFin        String   @unique
+  designation    String?
+  email          String
+  mobileNo       String?
+  gender         String?  // Male / Female
+  contactNo      String?
+  employmentType String?  // Citizen / PR / Employment Pass / S Pass / Work Permit
+  status         String   @default("ACTIVE") // ACTIVE / INACTIVE
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model TaxProfile {
+  id        String   @id @default(cuid())
+  taxType   String   @unique
+  taxRate   Float
+  status    String   @default("Active") // "Active" or "Inactive"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CustomerProfile {
+  id             String                  @id @default(cuid())
+  customerCode   String                  @unique
+  customerName   String                  @unique
+  remarks        String?
+  status         String                  @default("Active") // "Active" or "Inactive"
+  contactPersons CustomerContactPerson[]
+  addresses      CustomerAddress[]
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+}
+
+model CustomerContactPerson {
+  id                String          @id @default(cuid())
+  customerId        String
+  customer          CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  contactPersonName String
+  telNo             String?
+  mobileNo          String?
+  faxNo             String?
+  email             String?
+  designation       String?
+  status            String          @default("Active") // "Active" or "Inactive"
+  isDefault         Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model CustomerAddress {
+  id         String          @id @default(cuid())
+  customerId String
+  customer   CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  address    String
+  status     String          @default("Active") // "Active" or "Inactive"
+  isDefault  Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 }

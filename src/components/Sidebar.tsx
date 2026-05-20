@@ -8,6 +8,9 @@ import {
   LayoutDashboard,
   Menu,
   X,
+  Users,
+  Percent,
+  UserCircle,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -15,7 +18,8 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const linkClass = (path: string) => {
-    const active = pathname === path;
+    // Exact match for dashboard or check if it starts with the path for nested routes
+    const active = path === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(path);
     return `flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
       active
         ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 translate-x-1"
@@ -75,7 +79,7 @@ export default function Sidebar() {
 
           <div className="pt-4">
             <p className="px-3 py-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
-              Settings / Master
+              General Master
             </p>
             <Link
               href="/dashboard/profiles/currency"
@@ -84,6 +88,36 @@ export default function Sidebar() {
             >
               <Coins size={16} />
               <span>Currency Master</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/employee"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/employee")}
+            >
+              <Users size={16} />
+              <span>Employee Profile</span>
+            </Link>
+          </div>
+
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              Admin Master
+            </p>
+            <Link
+              href="/dashboard/admin/master-profile/tax"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/admin/master-profile/tax")}
+            >
+              <Percent size={16} />
+              <span>Tax Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/admin/master-profile/customer"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/admin/master-profile/customer")}
+            >
+              <UserCircle size={16} />
+              <span>Customer Profile</span>
             </Link>
           </div>
         </div>
