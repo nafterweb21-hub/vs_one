@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Dashboard() {
   return (
     <div className="flex flex-1 flex-col bg-zinc-50 dark:bg-zinc-950">
@@ -7,9 +9,9 @@ export default function Dashboard() {
             Dashboard
           </h1>
           <nav className="flex gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-            <a href="/" className="hover:text-zinc-900 dark:hover:text-white">
+            <Link href="/" className="hover:text-zinc-900 dark:hover:text-white">
               Home
-            </a>
+            </Link>
           </nav>
         </div>
       </header>
