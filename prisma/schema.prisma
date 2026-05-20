@@ -56,6 +56,20 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model Employee {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  name           String
+  nricFin        String   @unique
+  designation    String?
+  email          String
+  mobileNo       String?
+  gender         String?  // Male / Female
+  contactNo      String?
+  employmentType String?  // Citizen / PR / Employment Pass / S Pass / Work Permit
+  status         String   @default("ACTIVE") // ACTIVE / INACTIVE
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 model TaxProfile {
   id        String   @id @default(cuid())
   taxType   String   @unique
