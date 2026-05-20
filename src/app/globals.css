@@ -2,25 +2,82 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Force light background and black text regardless of prefers-color-scheme */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff !important;
+  color: #000000 !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  min-height: 100vh;
+}
+
+/* Solid Crisp White Panels with Blue Borders */
+.glossy-bg {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+}
+
+.glossy-sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid #cbd5e1 !important;
+  box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.02) !important;
+}
+
+.glossy-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+.glossy-button-blue {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border: 1px solid #1d4ed8 !important;
+  box-shadow: 0 1px 2px 0 rgba(37, 99, 235, 0.15) !important;
+  font-weight: 600 !important;
+  transition: all 0.15s ease-in-out;
+}
+
+.glossy-button-blue:hover {
+  background: #1d4ed8 !important;
+  box-shadow: 0 2px 4px 0 rgba(37, 99, 235, 0.25) !important;
+}
+
+.glossy-button-white {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  font-weight: 600 !important;
+  transition: all 0.15s ease-in-out;
+}
+
+.glossy-button-white:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+.glossy-input {
+  background: #ffffff !important;
+  border: 1px solid #94a3b8 !important;
+  color: #000000 !important;
+  box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.15s ease-in-out;
+}
+
+.glossy-input::placeholder {
+  color: #64748b !important;
+}
+
+.glossy-input:focus {
+  background: #ffffff !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
 }
