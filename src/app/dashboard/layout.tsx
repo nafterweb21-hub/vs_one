@@ -20,6 +20,7 @@ import {
 import { masterProfiles } from "@/lib/profiles";
 
 
+
 export default function DashboardLayout({
   children,
 }: {
@@ -187,10 +188,7 @@ export default function DashboardLayout({
                   )}
                 </div>
 
-              </div>
-            )}
-          </div>
-        </nav>
+
 
         {/* Sidebar Footer Area */}
         <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-zinc-900/10">
@@ -211,10 +209,13 @@ export default function DashboardLayout({
 
           {children}
         </main>
+
+
       </div>
     </div>
   );
 }
+
 
 
 // Submenu Item Component with Active Highlighting & Roadmap styling
@@ -258,4 +259,5 @@ function SubNavItem({
     </Link>
   );
 }
+
 

@@ -1,4 +1,5 @@
 
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient } from "@/generated/prisma/client";
 
@@ -10,6 +11,7 @@ const globalForPrisma = globalThis as unknown as {
   mockDb: any;
   useMock: boolean;
 };
+
 
 // Initialize global mock database if it doesn't exist
 if (!globalForPrisma.mockDb) {
@@ -358,5 +360,6 @@ export const prisma = new Proxy({} as any, {
     });
   }
 });
+
 
 

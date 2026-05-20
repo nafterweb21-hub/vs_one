@@ -73,6 +73,7 @@ export default function Dashboard() {
           </p>
         </div>
       </main>
+
     </div>
   );
 }

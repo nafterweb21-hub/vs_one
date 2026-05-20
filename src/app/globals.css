@@ -5,9 +5,11 @@
 
 :root {
   --background: #ffffff;
+
   /* Clean premium white background */
   --foreground: #0f172a;
   /* Slate-900 */
+
 }
 
 @theme inline {
@@ -15,11 +17,14 @@
   --color-foreground: var(--foreground);
 }
 
+/* Force light background and black text regardless of prefers-color-scheme */
 body {
+
   background: var(--background);
   color: var(--foreground);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+
 }
 
 /* Corporate White and Blue Gradient */
