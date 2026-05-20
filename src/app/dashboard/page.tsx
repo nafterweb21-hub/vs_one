@@ -14,6 +14,7 @@ export default function Dashboard() {
       {/* Premium Header */}
       <header className="border-b border-slate-200 bg-white px-6 py-5 dark:border-slate-800 dark:bg-slate-900 rounded-xl shadow-sm mb-6">
         <div className="flex items-center justify-between">
+
           <div>
             <h1 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -73,6 +74,7 @@ export default function Dashboard() {
           </p>
         </div>
       </main>
+
 
     </div>
   );

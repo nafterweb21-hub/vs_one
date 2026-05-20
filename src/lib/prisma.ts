@@ -1,5 +1,3 @@
-
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient } from "@/generated/prisma/client";
 
@@ -275,6 +273,7 @@ function runMockQuery(model: string, operation: string, args: any) {
       return updatedItem;
     }
 
+
     case "delete": {
       const where = args?.where || {};
       const index = store.findIndex((item: any) => {
@@ -360,6 +359,7 @@ export const prisma = new Proxy({} as any, {
     });
   }
 });
+
 
 
 

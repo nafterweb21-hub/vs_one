@@ -112,6 +112,7 @@ export default function DashboardLayout({
         {/* Sidebar Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           
+
           {/* Main Administration Navigation Link with Submenu Toggle */}
           <div>
             <button
@@ -212,6 +213,7 @@ export default function DashboardLayout({
 
           {children}
         </main>
+
 
 
       </div>

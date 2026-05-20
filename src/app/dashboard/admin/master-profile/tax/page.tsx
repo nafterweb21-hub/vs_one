@@ -7,7 +7,6 @@ import {
   updateTaxProfileRate,
   toggleTaxProfileStatus,
   deleteTaxProfile,
-  TaxProfileInput,
 } from "./actions";
 
 interface TaxProfile {
@@ -37,11 +36,6 @@ export default function TaxProfilePage() {
 
   const [isPending, startTransition] = useTransition();
 
-  // Load tax profiles on mount
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     setIsLoading(true);
     setErrorMsg(null);
@@ -58,6 +52,11 @@ export default function TaxProfilePage() {
     }
     setIsLoading(false);
   };
+
+  // Load tax profiles on mount
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const handleOpenAddModal = () => {
     setModalMode("add");
