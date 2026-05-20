@@ -165,8 +165,20 @@ export default function DashboardLayout({
                         <span className="h-1.5 w-1.5 rounded-full bg-current" />
                         Tax Profile
                       </Link>
+                      <Link
+                        href="/dashboard/admin/master-profile/customer"
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-all ${
+                          isActive("/dashboard/admin/master-profile/customer")
+                            ? "bg-blue-50 text-blue-700 border-l-2 border-blue-600 shadow-xs"
+                            : "text-zinc-700 hover:bg-blue-50 hover:text-blue-600"
+                        }`}
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                        Customer Profile
+                      </Link>
                     </div>
                   )}
+
                 </div>
               </div>
             )}
