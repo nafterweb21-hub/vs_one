@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { ArrowLeft, KeyRound, Sparkles } from "lucide-react";
 
 export default function SignIn() {
@@ -56,6 +57,9 @@ export default function SignIn() {
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to home</span>
+
+
+
           </Link>
         </div>
       </div>

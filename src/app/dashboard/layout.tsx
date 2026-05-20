@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
@@ -18,12 +19,14 @@ import {
 } from "lucide-react";
 import { masterProfiles } from "@/lib/profiles";
 
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+
   const router = useRouter();
 
   // State to manage whether the Administration submenu is expanded
@@ -204,12 +207,15 @@ export default function DashboardLayout({
       {/* Main Content Workspace Viewport */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-auto p-6 bg-slate-50/30 dark:bg-slate-950/30">
+
+
           {children}
         </main>
       </div>
     </div>
   );
 }
+
 
 // Submenu Item Component with Active Highlighting & Roadmap styling
 function SubNavItem({ 
@@ -252,3 +258,4 @@ function SubNavItem({
     </Link>
   );
 }
+

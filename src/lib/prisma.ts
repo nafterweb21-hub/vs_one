@@ -1,8 +1,11 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient } from "@/generated/prisma/client";
 
+
 // Global store to persist mock data across fast refreshes
 const globalForPrisma = globalThis as unknown as {
+
   prisma: any;
   mockDb: any;
   useMock: boolean;
@@ -355,4 +358,5 @@ export const prisma = new Proxy({} as any, {
     });
   }
 });
+
 
