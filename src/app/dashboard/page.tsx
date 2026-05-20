@@ -30,13 +30,16 @@ export default function Dashboard() {
               <p className="text-sm text-zinc-500 dark:text-zinc-400">
                 {card.label}
               </p>
-              <p className="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">
-                {card.value}
-              </p>
             </div>
-          ))}
-        </div>
-      </main>
+            <p className="mt-2.5 text-3xl font-extrabold tracking-tight text-black">
+              {card.value}
+            </p>
+            <p className="mt-1.5 text-xs text-blue-600 font-bold">
+              {card.change}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
