@@ -56,31 +56,21 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model ApprovalLevelProfile {
-  id           String           @id @default(cuid())
-  module       String           // e.g., "Purchase Order - Material", "Purchase Order - Subcon"
-  actionButton String?          // e.g., "First Level", "Second Level"
-  minRange     Decimal?
-  maxRange     Decimal?
-  status       String           @default("Active") // "Active" or "Inactive"
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  approvers    ApprovalPerson[]
-}
+
 
 model Company {
   id                    String   @id @default(cuid())
   name                  String   @unique
-  address               String   @db.Text
+  address               String   
   phoneNo               String
   faxNo                 String
   email                 String?
   website               String?
   rocNo                 String?
   gstRegistrationNo     String
-  uploadUrl             String   @db.Text
-  logoUrl               String?  @db.Text
-  footerUrl             String?  @db.Text
+  uploadUrl             String   
+  logoUrl               String?  
+  footerUrl             String?  
   logoName              String
   footerName            String
   allowCreatePoForWo    Boolean  @default(false)
@@ -94,7 +84,7 @@ model PaymentTerm {
   id        String   @id @default(cuid())
   term      String   @unique
   day       Int
-  remark    String?  @db.Text
+  remark    String?  
   status    String   @default("Active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -128,7 +118,7 @@ model TaxProfile {
 model Joint {
   id        String   @id @default(cuid())
   joint     String   @unique
-  remark    String?  @db.Text
+  remark    String?  
   status    String   @default("Active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -137,7 +127,7 @@ model Joint {
 model FailureMode {
   id          String   @id @default(cuid())
   failureMode String   @unique
-  remark      String?  @db.Text
+  remark      String?  
   status      String   @default("Active")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -172,7 +162,7 @@ model CustomerProfile {
   id             String                  @id @default(cuid())
   customerCode   String                  @unique
   customerName   String                  @unique
-  remarks        String?                 @db.Text
+  remarks        String?                 
   status         String                  @default("Active") // "Active" or "Inactive"
   contactPersons CustomerContactPerson[]
   addresses      CustomerAddress[]
@@ -202,7 +192,7 @@ model CustomerAddress {
   id         String          @id @default(cuid())
   customerId String
   customer   CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  address    String          @db.Text
+  address    String          
   status     String          @default("Active") // "Active" or "Inactive"
   isDefault  Boolean         @default(false)
   createdAt  DateTime        @default(now())
@@ -238,7 +228,7 @@ model MaterialProfile {
 model WeldingTypeProfile {
   id        String   @id @default(cuid())
   type      String   @unique
-  remark    String?  @db.Text
+  remark    String?  
   status    String   @default("Active") // "Active" or "Inactive"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -288,7 +278,7 @@ model SupplierProfile {
   id             String                  @id @default(cuid())
   supplierCode   String                  @unique
   supplierName   String                  @unique
-  remarks        String?                 @db.Text
+  remarks        String?                 
   status         String                  @default("Active") // "Active" or "Inactive"
   contactPersons SupplierContactPerson[]
   addresses      SupplierAddress[]
@@ -316,7 +306,7 @@ model SupplierAddress {
   id         String          @id @default(cuid())
   supplierId String
   supplier   SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  address    String          @db.Text
+  address    String          
   status     String          @default("Active") // "Active" or "Inactive"
   isDefault  Boolean         @default(false)
   createdAt  DateTime        @default(now())
@@ -326,28 +316,15 @@ model SupplierAddress {
 model FinishedGoodProfile {
   id          String   @id @default(cuid())
   partNo      String?  @unique
-  description String   @unique @db.Text
-  remark      String?  @db.Text
+  description String   @unique 
+  remark      String?  
   status      String   @default("Active") // "Active" or "Inactive"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   salesOrderItems SalesOrderItem[]
 }
 
-// ==========================================
-// Currency Profile
-// ==========================================
-model Currency {
-  id           String   @id @default(cuid())
-  code         String   @unique // Immutable
-  name         String   @unique // Immutable
-  exchangeRate Decimal
-  isDefault    Boolean  @default(false)
-  status       String   @default("Active")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  salesOrders  SalesOrder[]
-}
+
 
 // ==========================================
 // Elcometer Profile
