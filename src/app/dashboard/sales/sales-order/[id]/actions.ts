@@ -26,7 +26,7 @@ export async function getFormData() {
       employees,
       customers,
       paymentTerms,
-      currencies: currencies.map(c => ({ ...c, exchangeRate: Number(c.exchangeRate) })),
+      currencies: currencies.map((c: any) => ({ ...c, exchangeRate: Number(c.exchangeRate) })),
       taxes,
       finishedGoods,
       uoms,

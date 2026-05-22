@@ -5,7 +5,7 @@ import MaterialTypeForm from "../../components/MaterialTypeForm";
 
 interface MaterialType {
   id: string;
-  category: string;
+  type: string;
   remark: string | null;
   status: string;
 }

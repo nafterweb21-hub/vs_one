@@ -5,7 +5,7 @@ import MainProcessForm from "../../components/MainProcessForm";
 
 interface MainProcess {
   id: string;
-  category: string;
+  process: string;
   remark: string | null;
   status: string;
 }

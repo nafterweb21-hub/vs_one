@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { PROFILE_REGISTRY } from "@/lib/profiles";
+import { PROFILE_REGISTRY } from "@/lib/profiles-schema";
 
 export const dynamic = "force-dynamic";
 

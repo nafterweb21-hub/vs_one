@@ -1,48 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { existsSync } from "fs";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const formData = await request.formData();
+    const formData = await req.formData();
     const file = formData.get("file") as File | null;
 
     if (!file) {
-      return NextResponse.json({ error: "No file uploaded." }, { status: 400 });
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Validate type (PDF/Image)
-    const allowedTypes = ["application/pdf", "image/png", "image/jpeg", "image/jpg", "image/gif"];
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Invalid file type. Only PDF and Image files are allowed." },
-        { status: 400 }
-      );
+    const buffer = Buffer.from(await file.arrayBuffer());
+    
+    // Ensure the uploads directory exists
+    const uploadDir = path.join(process.cwd(), "public/uploads");
+    if (!existsSync(uploadDir)) {
+      await mkdir(uploadDir, { recursive: true });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // Generate a unique filename using timestamp
+    const ext = path.extname(file.name);
+    const basename = path.basename(file.name, ext);
+    const uniqueFilename = `${basename}-${Date.now()}${ext}`;
+    const filePath = path.join(uploadDir, uniqueFilename);
 
-    // Create unique filename
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    // Sanitize filename but preserve dots
-    const originalName = file.name.replace(/[^a-zA-Z0-9.]/g, "_");
-    const filename = `${uniqueSuffix}-${originalName}`;
-
-    // Target directory
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-
-    const filePath = path.join(uploadDir, filename);
     await writeFile(filePath, buffer);
 
-    const fileUrl = `/uploads/${filename}`;
-    return NextResponse.json({ url: fileUrl });
-  } catch (error: unknown) {
-    console.error("File upload error:", error);
-    const message = error instanceof Error ? error.message : "Failed to upload file.";
+    const publicUrl = `/uploads/${uniqueFilename}`;
+
+    return NextResponse.json({
+      success: true,
+      url: publicUrl,
+      originalName: file.name,
+    });
+  } catch (error) {
+    console.error("Error uploading file:", error);
     return NextResponse.json(
-      { error: message },
+      { error: "Failed to upload file" },
       { status: 500 }
     );
   }
