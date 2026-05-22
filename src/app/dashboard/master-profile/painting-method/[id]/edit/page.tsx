@@ -1,0 +1,170 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
+import { getPaintingMethodProfiles, updatePaintingMethodProfile } from "../../actions";
+
+interface PaintingMethodProfile {
+  id: string;
+  method: string;
+  remark: string | null;
+  status: string;
+}
+
+export default function EditPaintingMethodPage() {
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+
+  const [item, setItem] = useState<PaintingMethodProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      const res = await getPaintingMethodProfiles();
+      if (res.success && res.data) {
+        const found = (res.data as PaintingMethodProfile[]).find((i) => i.id === id);
+        if (found) {
+          setItem(found);
+        } else {
+          setErrorMsg("Painting method not found.");
+        }
+      } else {
+        setErrorMsg(res.error || "Failed to load painting method data.");
+      }
+      setIsLoading(false);
+    };
+
+    if (id) loadData();
+  }, [id]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMsg(null);
+
+    const formData = new FormData(e.currentTarget);
+    const res = await updatePaintingMethodProfile(id, formData);
+
+    if (res.success) {
+      router.push("/dashboard/master-profile/painting-method");
+    } else {
+      setErrorMsg(res.error || "An error occurred");
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center p-6 bg-zinc-50 dark:bg-zinc-950">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-cyan-600" />
+      </div>
+    );
+  }
+
+  if (errorMsg && !item) {
+    return (
+      <div className="flex-1 p-6 bg-zinc-50 dark:bg-zinc-950">
+        <div className="max-w-2xl mx-auto rounded-xl border border-rose-200 bg-rose-50 p-6 text-center dark:border-rose-900/50 dark:bg-rose-950/20">
+          <p className="font-semibold text-rose-800 dark:text-rose-200">{errorMsg}</p>
+          <Link href="/dashboard/master-profile/painting-method" className="mt-4 inline-block text-sm font-semibold text-cyan-600 hover:text-cyan-500">
+            Back to List
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 p-6 max-w-7xl mx-auto w-full bg-zinc-50 dark:bg-zinc-950">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            Edit Painting Method
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+            Update the remarks for this painting method.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/master-profile/painting-method"
+          className="text-sm font-semibold text-cyan-600 hover:text-cyan-500 transition-colors"
+        >
+          Cancel
+        </Link>
+      </div>
+
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden">
+        {errorMsg && item && (
+          <div className="bg-rose-50 dark:bg-rose-950/30 border-b border-rose-200 dark:border-rose-900 p-4">
+            <div className="flex items-start gap-3">
+              <svg className="h-5 w-5 text-rose-500 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div>
+                <h3 className="text-sm font-bold text-rose-800 dark:text-rose-200">Error</h3>
+                <p className="text-sm text-rose-600 dark:text-rose-300 mt-1">{errorMsg}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="method" className="block text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-1.5">
+                Painting Method
+              </label>
+              <input
+                id="method"
+                name="method"
+                type="text"
+                defaultValue={item?.method}
+                disabled
+                className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800/50 px-4 py-2 text-sm text-zinc-500 dark:text-zinc-500 outline-none cursor-not-allowed"
+              />
+              <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1.5">
+                The method field cannot be changed after creation.
+              </p>
+            </div>
+
+            <div>
+              <label htmlFor="remark" className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                Remark
+              </label>
+              <textarea
+                id="remark"
+                name="remark"
+                rows={4}
+                defaultValue={item?.remark || ""}
+                placeholder="Optional remarks..."
+                className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-cyan-500 resize-y"
+              />
+            </div>
+          </div>
+
+          <div className="pt-4 flex items-center justify-end border-t border-zinc-100 dark:border-zinc-800">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex items-center gap-2 rounded-lg bg-cyan-600 px-6 py-2.5 text-sm font-bold text-white shadow-md hover:bg-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

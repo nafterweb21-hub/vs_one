@@ -1,0 +1,116 @@
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { createPaintingMethodProfile } from "../actions";
+
+export default function NewPaintingMethodPage() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMsg(null);
+
+    const formData = new FormData(e.currentTarget);
+    const res = await createPaintingMethodProfile(formData);
+
+    if (res.success) {
+      router.push("/dashboard/master-profile/painting-method");
+    } else {
+      setErrorMsg(res.error || "An error occurred");
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="flex-1 p-6 max-w-7xl mx-auto w-full bg-zinc-50 dark:bg-zinc-950">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            Add Painting Method
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+            Create a new painting method. The method name must be unique.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/master-profile/painting-method"
+          className="text-sm font-semibold text-cyan-600 hover:text-cyan-500 transition-colors"
+        >
+          Cancel
+        </Link>
+      </div>
+
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden">
+        {errorMsg && (
+          <div className="bg-rose-50 dark:bg-rose-950/30 border-b border-rose-200 dark:border-rose-900 p-4">
+            <div className="flex items-start gap-3">
+              <svg className="h-5 w-5 text-rose-500 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div>
+                <h3 className="text-sm font-bold text-rose-800 dark:text-rose-200">Error</h3>
+                <p className="text-sm text-rose-600 dark:text-rose-300 mt-1">{errorMsg}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="method" className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                Painting Method <span className="text-rose-500">*</span>
+              </label>
+              <input
+                id="method"
+                name="method"
+                type="text"
+                required
+                placeholder="e.g. Gunkote"
+                className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-cyan-500"
+              />
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1.5">
+                Once saved, this field cannot be changed.
+              </p>
+            </div>
+
+            <div>
+              <label htmlFor="remark" className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                Remark
+              </label>
+              <textarea
+                id="remark"
+                name="remark"
+                rows={4}
+                placeholder="Optional remarks..."
+                className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-cyan-500 resize-y"
+              />
+            </div>
+          </div>
+
+          <div className="pt-4 flex items-center justify-end border-t border-zinc-100 dark:border-zinc-800">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex items-center gap-2 rounded-lg bg-cyan-600 px-6 py-2.5 text-sm font-bold text-white shadow-md hover:bg-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                  Saving...
+                </>
+              ) : (
+                "Save Painting Method"
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
