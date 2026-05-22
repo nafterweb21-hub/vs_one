@@ -296,7 +296,7 @@ export default function TaxProfilePage() {
 
           <div className="relative w-full max-w-lg transform overflow-hidden rounded-xl bg-white p-6 shadow-xl border border-zinc-200 transition-all">
             <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
-              <h2 className="text-lg font-bold text-black">
+              <h2 className="text-xl font-bold text-black">
                 {modalMode === "add" ? "Create Tax Profile" : "Edit Tax Profile Rate"}
               </h2>
               <button
@@ -333,7 +333,7 @@ export default function TaxProfilePage() {
                   value={taxType}
                   onChange={(e) => setTaxType(e.target.value)}
                   disabled={modalMode === "edit"}
-                  className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden disabled:bg-zinc-100 disabled:text-zinc-500"
+                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden disabled:bg-zinc-100 disabled:text-zinc-500"
                 />
                 <p className="text-xs text-zinc-500">
                   {modalMode === "edit"
@@ -354,7 +354,7 @@ export default function TaxProfilePage() {
                   placeholder="e.g. 7.000"
                   value={taxRate}
                   onChange={(e) => setTaxRate(e.target.value)}
-                  className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden"
+                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden"
                 />
                 <p className="text-xs text-zinc-500">
                   Enter the numeric tax rate. Supports up to 3 decimal points.
@@ -366,14 +366,14 @@ export default function TaxProfilePage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-lg glossy-button-white px-4.5 py-2 text-sm font-bold text-zinc-800 cursor-pointer"
+                  className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-zinc-800 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="inline-flex items-center justify-center rounded-lg glossy-button-blue px-4.5 py-2 text-sm font-bold text-white shadow-md disabled:opacity-70 cursor-pointer"
+                  className="inline-flex items-center justify-center rounded-lg glossy-button-blue px-5 py-2.5 text-base font-bold text-white shadow-md disabled:opacity-70 cursor-pointer"
                 >
                   {isPending ? (
                     <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />

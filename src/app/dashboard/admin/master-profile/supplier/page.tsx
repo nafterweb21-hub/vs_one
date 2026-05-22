@@ -484,7 +484,7 @@ export default function SupplierProfilePage() {
           <div className="relative w-full max-w-5xl transform rounded-xl bg-white shadow-xl border border-zinc-200 flex flex-col h-[88vh]">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 flex-shrink-0">
-              <h2 className="text-lg font-bold text-black">Create Supplier Profile</h2>
+              <h2 className="text-xl font-bold text-black">Create Supplier Profile</h2>
               <button onClick={() => setIsCreateModalOpen(false)} className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 cursor-pointer">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -503,25 +503,25 @@ export default function SupplierProfilePage() {
                 {/* LEFT PANEL — Supplier Profile */}
                 <div className="flex flex-col gap-3 border-r border-zinc-100 px-6 py-5 w-[42%] flex-shrink-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">1</span>
-                    <h3 className="text-sm font-bold text-black">Supplier Profile</h3>
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">1</span>
+                    <h3 className="text-base font-bold text-black">Supplier Profile</h3>
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs font-bold text-zinc-700">Supplier Code <span className="text-red-500">*</span></label>
-                    <input type="text" required placeholder="e.g. SUP001" value={newCode} onChange={(e) => setNewCode(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden w-full" />
-                    <p className="text-[10px] text-zinc-400">Once saved, cannot be changed. Must be unique.</p>
+                    <label className="text-sm font-bold text-zinc-700">Supplier Code <span className="text-red-500">*</span></label>
+                    <input type="text" required placeholder="e.g. SUP001" value={newCode} onChange={(e) => setNewCode(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden w-full" />
+                    <p className="text-xs text-zinc-500">Once saved, cannot be changed. Must be unique.</p>
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs font-bold text-zinc-700">Supplier Name <span className="text-red-500">*</span></label>
-                    <input type="text" required placeholder="e.g. ABC Supplies Pte Ltd" value={newName} onChange={(e) => setNewName(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden w-full" />
-                    <p className="text-[10px] text-zinc-400">Once saved, cannot be changed. Must be unique.</p>
+                    <label className="text-sm font-bold text-zinc-700">Supplier Name <span className="text-red-500">*</span></label>
+                    <input type="text" required placeholder="e.g. ABC Supplies Pte Ltd" value={newName} onChange={(e) => setNewName(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden w-full" />
+                    <p className="text-xs text-zinc-500">Once saved, cannot be changed. Must be unique.</p>
                   </div>
 
                   <div className="flex flex-col gap-1 flex-1">
-                    <label className="text-xs font-bold text-zinc-700">Remarks</label>
-                    <textarea placeholder="Enter remarks..." value={newRemarks} onChange={(e) => setNewRemarks(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden resize-none w-full flex-1" style={{minHeight: "80px"}} />
+                    <label className="text-sm font-bold text-zinc-700">Remarks</label>
+                    <textarea placeholder="Enter remarks..." value={newRemarks} onChange={(e) => setNewRemarks(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden resize-none w-full flex-1" style={{minHeight: "80px"}} />
                   </div>
                 </div>
 
@@ -531,34 +531,34 @@ export default function SupplierProfilePage() {
                   {/* Contact Person */}
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">2</span>
-                      <h3 className="text-sm font-bold text-black">Contact Person</h3>
-                      <span className="text-[10px] text-zinc-400">(optional)</span>
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">2</span>
+                      <h3 className="text-base font-bold text-black">Contact Person</h3>
+                      <span className="text-xs text-zinc-500">(optional)</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="flex flex-col gap-0.5">
-                        <label className="text-[10px] font-bold text-zinc-600">Contact Person</label>
-                        <input type="text" placeholder="Full name" value={createContactName} onChange={(e) => setCreateContactName(e.target.value)} className="rounded-md glossy-input px-2 py-1.5 text-xs w-full" />
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-zinc-700">Contact Person</label>
+                        <input type="text" placeholder="Full name" value={createContactName} onChange={(e) => setCreateContactName(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm w-full" />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <label className="text-[10px] font-bold text-zinc-600">Tel No</label>
-                        <input type="text" placeholder="Telephone" value={createContactTel} onChange={(e) => setCreateContactTel(e.target.value)} className="rounded-md glossy-input px-2 py-1.5 text-xs w-full" />
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-zinc-700">Tel No</label>
+                        <input type="text" placeholder="Telephone" value={createContactTel} onChange={(e) => setCreateContactTel(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm w-full" />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <label className="text-[10px] font-bold text-zinc-600">Mobile No</label>
-                        <input type="text" placeholder="Mobile" value={createContactMobile} onChange={(e) => setCreateContactMobile(e.target.value)} className="rounded-md glossy-input px-2 py-1.5 text-xs w-full" />
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-zinc-700">Mobile No</label>
+                        <input type="text" placeholder="Mobile" value={createContactMobile} onChange={(e) => setCreateContactMobile(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm w-full" />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <label className="text-[10px] font-bold text-zinc-600">Fax No</label>
-                        <input type="text" placeholder="Fax" value={createContactFax} onChange={(e) => setCreateContactFax(e.target.value)} className="rounded-md glossy-input px-2 py-1.5 text-xs w-full" />
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-zinc-700">Fax No</label>
+                        <input type="text" placeholder="Fax" value={createContactFax} onChange={(e) => setCreateContactFax(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm w-full" />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <label className="text-[10px] font-bold text-zinc-600">Email</label>
-                        <input type="email" placeholder="Email" value={createContactEmail} onChange={(e) => setCreateContactEmail(e.target.value)} className="rounded-md glossy-input px-2 py-1.5 text-xs w-full" />
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-zinc-700">Email</label>
+                        <input type="email" placeholder="Email" value={createContactEmail} onChange={(e) => setCreateContactEmail(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm w-full" />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <label className="text-[10px] font-bold text-zinc-600">Designation</label>
-                        <input type="text" placeholder="Job title" value={createContactDesignation} onChange={(e) => setCreateContactDesignation(e.target.value)} className="rounded-md glossy-input px-2 py-1.5 text-xs w-full" />
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-zinc-700">Designation</label>
+                        <input type="text" placeholder="Job title" value={createContactDesignation} onChange={(e) => setCreateContactDesignation(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm w-full" />
                       </div>
                     </div>
                   </div>
@@ -568,13 +568,13 @@ export default function SupplierProfilePage() {
                   {/* Address */}
                   <div className="flex flex-col gap-2 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">3</span>
-                      <h3 className="text-sm font-bold text-black">Address</h3>
-                      <span className="text-[10px] text-zinc-400">(optional)</span>
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">3</span>
+                      <h3 className="text-base font-bold text-black">Address</h3>
+                      <span className="text-xs text-zinc-500">(optional)</span>
                     </div>
-                    <div className="flex flex-col gap-0.5 flex-1">
-                      <label className="text-[10px] font-bold text-zinc-600">Address</label>
-                      <textarea placeholder="Enter full address..." value={createAddress} onChange={(e) => setCreateAddress(e.target.value)} className="rounded-md glossy-input px-2 py-1.5 text-xs resize-none w-full flex-1" style={{minHeight: "72px"}} />
+                    <div className="flex flex-col gap-1 flex-1">
+                      <label className="text-xs font-bold text-zinc-700">Address</label>
+                      <textarea placeholder="Enter full address..." value={createAddress} onChange={(e) => setCreateAddress(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm resize-none w-full flex-1" style={{minHeight: "72px"}} />
                     </div>
                   </div>
 
@@ -583,8 +583,8 @@ export default function SupplierProfilePage() {
 
               {/* Footer */}
               <div className="flex items-center justify-end gap-3 border-t border-zinc-200 px-6 py-3 flex-shrink-0">
-                <button type="button" onClick={() => setIsCreateModalOpen(false)} className="rounded-lg glossy-button-white px-4 py-2 text-sm font-bold text-zinc-800 cursor-pointer">Cancel</button>
-                <button type="submit" disabled={isPending} className="inline-flex items-center justify-center rounded-lg glossy-button-blue px-4 py-2 text-sm font-bold text-white shadow-md disabled:opacity-70 cursor-pointer">
+                <button type="button" onClick={() => setIsCreateModalOpen(false)} className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-zinc-800 cursor-pointer">Cancel</button>
+                <button type="submit" disabled={isPending} className="inline-flex items-center justify-center rounded-lg glossy-button-blue px-5 py-2.5 text-base font-bold text-white shadow-md disabled:opacity-70 cursor-pointer">
                   {isPending ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : "Create"}
                 </button>
               </div>
@@ -602,15 +602,15 @@ export default function SupplierProfilePage() {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
               <div>
-                <h2 className="text-lg font-bold text-black flex items-center gap-2">
+                <h2 className="text-xl font-bold text-black flex items-center gap-2">
                   <span>Manage Supplier Profile</span>
                   {supplierDetail && (
-                    <span className="text-xs bg-zinc-100 px-2 py-0.5 rounded-md border border-zinc-200 text-zinc-600">
+                    <span className="text-sm bg-zinc-100 px-2.5 py-1 rounded-md border border-zinc-200 text-zinc-600 font-semibold">
                       {supplierDetail.supplierCode}
                     </span>
                   )}
                 </h2>
-                <p className="text-xs text-zinc-500 mt-0.5">{supplierDetail?.supplierName}</p>
+                <p className="text-sm text-zinc-500 mt-0.5">{supplierDetail?.supplierName}</p>
               </div>
               <button onClick={() => setIsManageModalOpen(false)} className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 cursor-pointer">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -651,20 +651,20 @@ export default function SupplierProfilePage() {
                     <div className="space-y-4 max-w-xl">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1">
-                          <span className="text-xs font-bold text-zinc-500 uppercase">Supplier Code</span>
-                          <span className="text-sm font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">{supplierDetail.supplierCode}</span>
+                          <span className="text-sm font-bold text-zinc-550 uppercase">Supplier Code</span>
+                          <span className="text-base font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">{supplierDetail.supplierCode}</span>
                         </div>
                         <div className="flex flex-col gap-1">
-                          <span className="text-xs font-bold text-zinc-500 uppercase">Supplier Name</span>
-                          <span className="text-sm font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">{supplierDetail.supplierName}</span>
+                          <span className="text-sm font-bold text-zinc-550 uppercase">Supplier Name</span>
+                          <span className="text-base font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">{supplierDetail.supplierName}</span>
                         </div>
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-sm font-bold text-zinc-800">Remarks</label>
-                        <textarea rows={4} placeholder="Enter remarks..." value={remarksEdit} onChange={(e) => setRemarksEdit(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden resize-none" />
+                        <label className="text-base font-bold text-zinc-800">Remarks</label>
+                        <textarea rows={4} placeholder="Enter remarks..." value={remarksEdit} onChange={(e) => setRemarksEdit(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden resize-none" />
                       </div>
                       <div className="flex items-center gap-4">
-                        <button type="button" onClick={handleSaveRemarks} disabled={isPending} className="rounded-lg glossy-button-blue px-4 py-2 text-sm font-bold text-white shadow-md cursor-pointer">
+                        <button type="button" onClick={handleSaveRemarks} disabled={isPending} className="rounded-lg glossy-button-blue px-5 py-2.5 text-base font-bold text-white shadow-md cursor-pointer">
                           Save Remarks
                         </button>
                         {remarksSuccess && <span className="text-sm text-green-600 font-semibold">✓ Saved successfully</span>}
@@ -676,9 +676,9 @@ export default function SupplierProfilePage() {
                   {detailTab === "contacts" && (
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <h3 className="text-sm font-bold text-black">Contact Persons list</h3>
+                        <h3 className="text-base font-bold text-black">Contact Persons list</h3>
                         {!isContactFormOpen && (
-                          <button onClick={handleOpenAddContact} className="rounded-lg glossy-button-blue px-3 py-1.5 text-xs font-bold text-white shadow-sm cursor-pointer">
+                          <button onClick={handleOpenAddContact} className="rounded-lg glossy-button-blue px-4 py-2 text-sm font-bold text-white shadow-sm cursor-pointer">
                             Add Contact Person
                           </button>
                         )}
@@ -686,57 +686,57 @@ export default function SupplierProfilePage() {
 
                       {isContactFormOpen && (
                         <form onSubmit={handleContactSubmit} className="border border-blue-200 bg-blue-50/20 p-4 rounded-xl space-y-4">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700">
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-blue-700">
                             {contactEditId ? "Edit Contact Details" : "Add New Contact"}
                           </h4>
                           {contactFormError && (
-                            <div className="rounded-md bg-red-50 border border-red-200 p-2.5 text-xs text-red-800">{contactFormError}</div>
+                            <div className="rounded-md bg-red-50 border border-red-200 p-2.5 text-sm text-red-800">{contactFormError}</div>
                           )}
                           {/* Row 1: Contact Person, Tel No, Mobile No */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div className="flex flex-col gap-1">
                               <label className="text-xs font-bold text-zinc-700">Contact Person <span className="text-red-500">*</span></label>
-                              <input type="text" required value={contactName} onChange={(e) => setContactName(e.target.value)} className="rounded-lg glossy-input px-2.5 py-1.5 text-xs" />
+                              <input type="text" required value={contactName} onChange={(e) => setContactName(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm" />
                             </div>
                             <div className="flex flex-col gap-1">
                               <label className="text-xs font-bold text-zinc-700">Tel No</label>
-                              <input type="text" value={contactTel} onChange={(e) => setContactTel(e.target.value)} className="rounded-lg glossy-input px-2.5 py-1.5 text-xs" />
+                              <input type="text" value={contactTel} onChange={(e) => setContactTel(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm" />
                             </div>
                             <div className="flex flex-col gap-1">
                               <label className="text-xs font-bold text-zinc-700">Mobile No</label>
-                              <input type="text" value={contactMobile} onChange={(e) => setContactMobile(e.target.value)} className="rounded-lg glossy-input px-2.5 py-1.5 text-xs" />
+                              <input type="text" value={contactMobile} onChange={(e) => setContactMobile(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm" />
                             </div>
                           </div>
                           {/* Row 2: Fax No, Email, Designation */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div className="flex flex-col gap-1">
                               <label className="text-xs font-bold text-zinc-700">Fax No</label>
-                              <input type="text" value={contactFax} onChange={(e) => setContactFax(e.target.value)} className="rounded-lg glossy-input px-2.5 py-1.5 text-xs" />
+                              <input type="text" value={contactFax} onChange={(e) => setContactFax(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm" />
                             </div>
                             <div className="flex flex-col gap-1">
                               <label className="text-xs font-bold text-zinc-700">Email</label>
-                              <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} className="rounded-lg glossy-input px-2.5 py-1.5 text-xs" />
+                              <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm" />
                             </div>
                             <div className="flex flex-col gap-1">
                               <label className="text-xs font-bold text-zinc-700">Designation</label>
-                              <input type="text" value={contactDesignation} onChange={(e) => setContactDesignation(e.target.value)} className="rounded-lg glossy-input px-2.5 py-1.5 text-xs" />
+                              <input type="text" value={contactDesignation} onChange={(e) => setContactDesignation(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm" />
                             </div>
                           </div>
                           {!contactEditId && (
                             <div className="flex items-center gap-2">
-                              <input type="checkbox" id="supplierContactDefault" checked={contactIsDefault} onChange={(e) => setContactIsDefault(e.target.checked)} className="h-4 w-4 rounded border-zinc-300 text-blue-600" />
-                              <label htmlFor="supplierContactDefault" className="text-xs font-bold text-zinc-800">Set as Default Contact Person</label>
+                              <input type="checkbox" id="supplierContactDefault" checked={contactIsDefault} onChange={(e) => setContactIsDefault(e.target.checked)} className="h-4.5 w-4.5 rounded border-zinc-300 text-blue-600" />
+                              <label htmlFor="supplierContactDefault" className="text-sm font-semibold text-zinc-800">Set as Default Contact Person</label>
                             </div>
                           )}
                           <div className="flex items-center gap-2 justify-end">
-                            <button type="button" onClick={() => setIsContactFormOpen(false)} className="rounded-lg glossy-button-white px-3 py-1.5 text-xs cursor-pointer">Cancel</button>
-                            <button type="submit" disabled={isPending} className="rounded-lg glossy-button-blue px-3 py-1.5 text-xs text-white cursor-pointer">Save Contact</button>
+                            <button type="button" onClick={() => setIsContactFormOpen(false)} className="rounded-lg glossy-button-white px-4 py-2 text-sm cursor-pointer">Cancel</button>
+                            <button type="submit" disabled={isPending} className="rounded-lg glossy-button-blue px-4 py-2 text-sm text-white cursor-pointer">Save Contact</button>
                           </div>
                         </form>
                       )}
 
                       {supplierDetail.contactPersons.length === 0 ? (
-                        <div className="text-center py-6 text-xs text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
+                        <div className="text-center py-6 text-sm text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
                           No contact persons added yet. Click "Add Contact Person" above.
                         </div>
                       ) : (
@@ -798,39 +798,39 @@ export default function SupplierProfilePage() {
                   {detailTab === "addresses" && (
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <h3 className="text-sm font-bold text-black">Addresses list</h3>
+                        <h3 className="text-base font-bold text-black">Addresses list</h3>
                         {!isAddressFormOpen && (
-                          <button onClick={handleOpenAddAddress} className="rounded-lg glossy-button-blue px-3 py-1.5 text-xs font-bold text-white shadow-sm cursor-pointer">Add Address</button>
+                          <button onClick={handleOpenAddAddress} className="rounded-lg glossy-button-blue px-4 py-2 text-sm font-bold text-white shadow-sm cursor-pointer">Add Address</button>
                         )}
                       </div>
 
                       {isAddressFormOpen && (
                         <form onSubmit={handleAddressSubmit} className="border border-blue-200 bg-blue-50/20 p-4 rounded-xl space-y-4">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700">
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-blue-700">
                             {addressEditId ? "Edit Address" : "Add New Address"}
                           </h4>
                           {addressFormError && (
-                            <div className="rounded-md bg-red-50 border border-red-200 p-2.5 text-xs text-red-800">{addressFormError}</div>
+                            <div className="rounded-md bg-red-50 border border-red-200 p-2.5 text-sm text-red-800">{addressFormError}</div>
                           )}
                           <div className="flex flex-col gap-1">
                             <label className="text-xs font-bold text-zinc-700">Address <span className="text-red-500">*</span></label>
-                            <textarea required rows={3} value={addressText} onChange={(e) => setAddressText(e.target.value)} className="rounded-lg glossy-input px-2.5 py-1.5 text-xs resize-none" placeholder="Enter full address..." />
+                            <textarea required rows={3} value={addressText} onChange={(e) => setAddressText(e.target.value)} className="rounded-lg glossy-input px-3 py-2 text-sm resize-none" placeholder="Enter full address..." />
                           </div>
                           {!addressEditId && (
                             <div className="flex items-center gap-2">
-                              <input type="checkbox" id="supplierAddressDefault" checked={addressIsDefault} onChange={(e) => setAddressIsDefault(e.target.checked)} className="h-4 w-4 rounded border-zinc-300 text-blue-600" />
-                              <label htmlFor="supplierAddressDefault" className="text-xs font-bold text-zinc-800">Set as Default Address</label>
+                              <input type="checkbox" id="supplierAddressDefault" checked={addressIsDefault} onChange={(e) => setAddressIsDefault(e.target.checked)} className="h-4.5 w-4.5 rounded border-zinc-300 text-blue-600" />
+                              <label htmlFor="supplierAddressDefault" className="text-sm font-semibold text-zinc-800">Set as Default Address</label>
                             </div>
                           )}
                           <div className="flex items-center gap-2 justify-end">
-                            <button type="button" onClick={() => setIsAddressFormOpen(false)} className="rounded-lg glossy-button-white px-3 py-1.5 text-xs cursor-pointer">Cancel</button>
-                            <button type="submit" disabled={isPending} className="rounded-lg glossy-button-blue px-3 py-1.5 text-xs text-white cursor-pointer">Save Address</button>
+                            <button type="button" onClick={() => setIsAddressFormOpen(false)} className="rounded-lg glossy-button-white px-4 py-2 text-sm cursor-pointer">Cancel</button>
+                            <button type="submit" disabled={isPending} className="rounded-lg glossy-button-blue px-4 py-2 text-sm text-white cursor-pointer">Save Address</button>
                           </div>
                         </form>
                       )}
 
                       {supplierDetail.addresses.length === 0 ? (
-                        <div className="text-center py-6 text-xs text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
+                        <div className="text-center py-6 text-sm text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
                           No addresses added yet. Click "Add Address" above.
                         </div>
                       ) : (

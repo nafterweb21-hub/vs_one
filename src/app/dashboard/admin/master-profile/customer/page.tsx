@@ -594,7 +594,7 @@ export default function CustomerProfilePage() {
 
           <div className="relative w-full max-w-lg transform overflow-hidden rounded-xl bg-white p-6 shadow-xl border border-zinc-200 transition-all">
             <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
-              <h2 className="text-lg font-bold text-black">
+              <h2 className="text-xl font-bold text-black">
                 Create Customer Profile
               </h2>
               <button
@@ -630,7 +630,7 @@ export default function CustomerProfilePage() {
                   placeholder="e.g. CUST001"
                   value={newCode}
                   onChange={(e) => setNewCode(e.target.value)}
-                  className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden"
+                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden"
                 />
                 <p className="text-xs text-zinc-500">
                   Once saved, Customer Code cannot be changed. Must be unique.
@@ -648,7 +648,7 @@ export default function CustomerProfilePage() {
                   placeholder="e.g. Acme Corporation"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden"
+                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden"
                 />
                 <p className="text-xs text-zinc-500">
                   Once saved, Customer Name cannot be changed. Must be unique.
@@ -665,7 +665,7 @@ export default function CustomerProfilePage() {
                   rows={3}
                   value={newRemarks}
                   onChange={(e) => setNewRemarks(e.target.value)}
-                  className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden resize-none"
+                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden resize-none"
                 />
               </div>
 
@@ -674,14 +674,14 @@ export default function CustomerProfilePage() {
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="rounded-lg glossy-button-white px-4.5 py-2 text-sm font-bold text-zinc-800 cursor-pointer"
+                  className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-zinc-800 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="inline-flex items-center justify-center rounded-lg glossy-button-blue px-4.5 py-2 text-sm font-bold text-white shadow-md disabled:opacity-70 cursor-pointer"
+                  className="inline-flex items-center justify-center rounded-lg glossy-button-blue px-5 py-2.5 text-base font-bold text-white shadow-md disabled:opacity-70 cursor-pointer"
                 >
                   {isPending ? (
                     <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -704,15 +704,15 @@ export default function CustomerProfilePage() {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
               <div>
-                <h2 className="text-lg font-bold text-black flex items-center gap-2">
+                <h2 className="text-xl font-bold text-black flex items-center gap-2">
                   <span>Manage Customer Profile</span>
                   {customerDetail && (
-                    <span className="text-xs bg-zinc-150 px-2 py-0.5 rounded-md border border-zinc-200 text-zinc-650">
+                    <span className="text-sm bg-zinc-150 px-2.5 py-1 rounded-md border border-zinc-200 text-zinc-650 font-semibold">
                       {customerDetail.customerCode}
                     </span>
                   )}
                 </h2>
-                <p className="text-xs text-zinc-500 mt-0.5">
+                <p className="text-sm text-zinc-500 mt-0.5">
                   {customerDetail?.customerName}
                 </p>
               </div>
@@ -764,21 +764,21 @@ export default function CustomerProfilePage() {
                     <div className="space-y-4 max-w-xl">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1">
-                          <span className="text-xs font-bold text-zinc-500 uppercase">Customer Code</span>
-                          <span className="text-sm font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">
+                          <span className="text-sm font-bold text-zinc-500 uppercase">Customer Code</span>
+                          <span className="text-base font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">
                             {customerDetail.customerCode}
                           </span>
                         </div>
                         <div className="flex flex-col gap-1">
-                          <span className="text-xs font-bold text-zinc-500 uppercase">Customer Name</span>
-                          <span className="text-sm font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">
+                          <span className="text-sm font-bold text-zinc-500 uppercase">Customer Name</span>
+                          <span className="text-base font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">
                             {customerDetail.customerName}
                           </span>
                         </div>
                       </div>
 
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-sm font-bold text-zinc-800">
+                        <label className="text-base font-bold text-zinc-800">
                           Remarks
                         </label>
                         <textarea
@@ -786,7 +786,7 @@ export default function CustomerProfilePage() {
                           placeholder="Enter remarks..."
                           value={remarksEdit}
                           onChange={(e) => setRemarksEdit(e.target.value)}
-                          className="rounded-lg glossy-input px-3 py-2 text-sm outline-hidden resize-none"
+                          className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden resize-none"
                         />
                       </div>
 
@@ -795,7 +795,7 @@ export default function CustomerProfilePage() {
                           type="button"
                           onClick={handleSaveRemarks}
                           disabled={isPending}
-                          className="rounded-lg glossy-button-blue px-4 py-2 text-sm font-bold text-white shadow-md cursor-pointer"
+                          className="rounded-lg glossy-button-blue px-5 py-2.5 text-base font-bold text-white shadow-md cursor-pointer"
                         >
                           Save Remarks
                         </button>
@@ -814,11 +814,11 @@ export default function CustomerProfilePage() {
                     <div className="space-y-4">
                       {/* Sub Form Header */}
                       <div className="flex justify-between items-center">
-                        <h3 className="text-sm font-bold text-black">Contact Persons list</h3>
+                        <h3 className="text-base font-bold text-black">Contact Persons list</h3>
                         {!isContactFormOpen && (
                           <button
                             onClick={handleOpenAddContact}
-                            className="rounded-lg glossy-button-blue px-3 py-1.5 text-xs font-bold text-white shadow-sm cursor-pointer"
+                            className="rounded-lg glossy-button-blue px-4 py-2 text-sm font-bold text-white shadow-sm cursor-pointer"
                           >
                             Add Contact Person
                           </button>
@@ -828,12 +828,12 @@ export default function CustomerProfilePage() {
                       {/* Contact Form Section */}
                       {isContactFormOpen && (
                         <form onSubmit={handleContactSubmit} className="border border-blue-200 bg-blue-50/20 p-4 rounded-xl space-y-4 animate-fadeIn">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700">
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-blue-700">
                             {contactEditId ? "Edit Contact Details" : "Add New Contact"}
                           </h4>
 
                           {contactFormError && (
-                            <div className="rounded-md bg-red-50 border border-red-200 p-2.5 text-xs text-red-800">
+                            <div className="rounded-md bg-red-50 border border-red-200 p-2.5 text-sm text-red-800">
                               {contactFormError}
                             </div>
                           )}
@@ -847,7 +847,7 @@ export default function CustomerProfilePage() {
                                 required
                                 value={contactName}
                                 onChange={(e) => setContactName(e.target.value)}
-                                className="rounded-lg glossy-input px-2.5 py-1.5 text-xs"
+                                className="rounded-lg glossy-input px-3 py-2 text-sm"
                               />
                             </div>
                             <div className="flex flex-col gap-1">
@@ -856,7 +856,7 @@ export default function CustomerProfilePage() {
                                 type="text"
                                 value={contactTel}
                                 onChange={(e) => setContactTel(e.target.value)}
-                                className="rounded-lg glossy-input px-2.5 py-1.5 text-xs"
+                                className="rounded-lg glossy-input px-3 py-2 text-sm"
                               />
                             </div>
                             <div className="flex flex-col gap-1">
@@ -865,7 +865,7 @@ export default function CustomerProfilePage() {
                                 type="text"
                                 value={contactMobile}
                                 onChange={(e) => setContactMobile(e.target.value)}
-                                className="rounded-lg glossy-input px-2.5 py-1.5 text-xs"
+                                className="rounded-lg glossy-input px-3 py-2 text-sm"
                               />
                             </div>
                           </div>
@@ -878,7 +878,7 @@ export default function CustomerProfilePage() {
                                 type="text"
                                 value={contactFax}
                                 onChange={(e) => setContactFax(e.target.value)}
-                                className="rounded-lg glossy-input px-2.5 py-1.5 text-xs"
+                                className="rounded-lg glossy-input px-3 py-2 text-sm"
                               />
                             </div>
                             <div className="flex flex-col gap-1">
@@ -887,7 +887,7 @@ export default function CustomerProfilePage() {
                                 type="email"
                                 value={contactEmail}
                                 onChange={(e) => setContactEmail(e.target.value)}
-                                className="rounded-lg glossy-input px-2.5 py-1.5 text-xs"
+                                className="rounded-lg glossy-input px-3 py-2 text-sm"
                               />
                             </div>
                             <div className="flex flex-col gap-1">
@@ -896,7 +896,7 @@ export default function CustomerProfilePage() {
                                 type="text"
                                 value={contactDesignation}
                                 onChange={(e) => setContactDesignation(e.target.value)}
-                                className="rounded-lg glossy-input px-2.5 py-1.5 text-xs"
+                                className="rounded-lg glossy-input px-3 py-2 text-sm"
                               />
                             </div>
                           </div>
@@ -910,7 +910,7 @@ export default function CustomerProfilePage() {
                                 onChange={(e) => setContactIsDefault(e.target.checked)}
                                 className="h-4.5 w-4.5 rounded-sm border-zinc-300 text-blue-600 focus:ring-blue-500"
                               />
-                              <label htmlFor="contactDefault" className="text-xs font-bold text-zinc-800">
+                              <label htmlFor="contactDefault" className="text-sm font-semibold text-zinc-800">
                                 Set as Default Contact Person
                               </label>
                             </div>
@@ -920,14 +920,14 @@ export default function CustomerProfilePage() {
                             <button
                               type="button"
                               onClick={() => setIsContactFormOpen(false)}
-                              className="rounded-lg glossy-button-white px-3 py-1.5 text-xs"
+                              className="rounded-lg glossy-button-white px-4 py-2 text-sm"
                             >
                               Cancel
                             </button>
                             <button
                               type="submit"
                               disabled={isPending}
-                              className="rounded-lg glossy-button-blue px-3 py-1.5 text-xs text-white"
+                              className="rounded-lg glossy-button-blue px-4 py-2 text-sm text-white"
                             >
                               Save Contact
                             </button>
@@ -1030,11 +1030,11 @@ export default function CustomerProfilePage() {
                     <div className="space-y-4">
                       {/* Sub Form Header */}
                       <div className="flex justify-between items-center">
-                        <h3 className="text-sm font-bold text-black">Addresses list</h3>
+                        <h3 className="text-base font-bold text-black">Addresses list</h3>
                         {!isAddressFormOpen && (
                           <button
                             onClick={handleOpenAddAddress}
-                            className="rounded-lg glossy-button-blue px-3 py-1.5 text-xs font-bold text-white shadow-sm cursor-pointer"
+                            className="rounded-lg glossy-button-blue px-4 py-2 text-sm font-bold text-white shadow-sm cursor-pointer"
                           >
                             Add Address
                           </button>
@@ -1044,25 +1044,25 @@ export default function CustomerProfilePage() {
                       {/* Address Form Section */}
                       {isAddressFormOpen && (
                         <form onSubmit={handleAddressSubmit} className="border border-blue-200 bg-blue-50/20 p-4 rounded-xl space-y-4 animate-fadeIn">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700">
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-blue-700">
                             {addressEditId ? "Edit Address Details" : "Add New Address"}
                           </h4>
 
                           {addressFormError && (
-                            <div className="rounded-md bg-red-50 border border-red-200 p-2.5 text-xs text-red-800">
+                            <div className="rounded-md bg-red-50 border border-red-200 p-2.5 text-sm text-red-800">
                               {addressFormError}
                             </div>
                           )}
 
                           <div className="flex flex-col gap-1">
-                            <label className="text-xs font-bold text-zinc-700">Street Address *</label>
+                            <label className="text-xs font-bold text-zinc-700">Street Address <span className="text-red-500">*</span></label>
                             <textarea
                               required
-                              rows={2.5}
+                              rows={3}
                               value={addressText}
                               onChange={(e) => setAddressText(e.target.value)}
                               placeholder="e.g. 10 Anson Road, #25-01 International Plaza, Singapore 079903"
-                              className="rounded-lg glossy-input px-2.5 py-1.5 text-xs resize-none"
+                              className="rounded-lg glossy-input px-3 py-2 text-sm resize-none"
                             />
                           </div>
 
@@ -1075,7 +1075,7 @@ export default function CustomerProfilePage() {
                                 onChange={(e) => setAddressIsDefault(e.target.checked)}
                                 className="h-4.5 w-4.5 rounded-sm border-zinc-300 text-blue-600 focus:ring-blue-500"
                               />
-                              <label htmlFor="addressDefault" className="text-xs font-bold text-zinc-800">
+                              <label htmlFor="addressDefault" className="text-sm font-semibold text-zinc-800">
                                 Set as Default Address
                               </label>
                             </div>
@@ -1085,14 +1085,14 @@ export default function CustomerProfilePage() {
                             <button
                               type="button"
                               onClick={() => setIsAddressFormOpen(false)}
-                              className="rounded-lg glossy-button-white px-3 py-1.5 text-xs"
+                              className="rounded-lg glossy-button-white px-4 py-2 text-sm cursor-pointer"
                             >
                               Cancel
                             </button>
                             <button
                               type="submit"
                               disabled={isPending}
-                              className="rounded-lg glossy-button-blue px-3 py-1.5 text-xs text-white"
+                              className="rounded-lg glossy-button-blue px-4 py-2 text-sm text-white cursor-pointer"
                             >
                               Save Address
                             </button>
@@ -1102,7 +1102,7 @@ export default function CustomerProfilePage() {
 
                       {/* Addresses Table */}
                       {customerDetail.addresses.length === 0 ? (
-                        <div className="text-center py-6 text-xs text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
+                        <div className="text-center py-6 text-sm text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
                           No addresses added yet. Click "Add Address" above.
                         </div>
                       ) : (
