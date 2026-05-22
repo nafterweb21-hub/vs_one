@@ -12,6 +12,7 @@ import {
   Percent,
   UserCircle,
   Ruler,
+  Gauge,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -97,6 +98,14 @@ export default function Sidebar() {
             >
               <Ruler size={16} />
               <span>UOM Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/profiles/elcometer"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/elcometer")}
+            >
+              <Gauge size={16} />
+              <span>Elcometer Profile</span>
             </Link>
             <Link
               href="/dashboard/master-profile/employee"
