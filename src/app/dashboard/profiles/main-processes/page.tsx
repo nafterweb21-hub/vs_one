@@ -10,7 +10,7 @@ interface MainProcess {
   status: string;
 }
 
-export default function mainProcessesPage() {
+function MainProcessesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -67,7 +67,7 @@ export default function mainProcessesPage() {
 
   // Navigate to Edit page
   const handleEditOpen = (process: MainProcess) => {
-    router.push(`/dashboard/profiles/main-processes/edit/${type.id}`);
+    router.push(`/dashboard/profiles/main-processes/edit/${process.id}`);
   };
 
   // Toggle status between Active and Inactive
@@ -298,5 +298,13 @@ export default function mainProcessesPage() {
       )}
 
     </div>
+  );
+}
+
+export default function MainProcessesPageWrapper({ params }: any) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <MainProcessesPage  />
+    </React.Suspense>
   );
 }

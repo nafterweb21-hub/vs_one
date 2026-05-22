@@ -18,7 +18,7 @@ interface ProcessProfile {
   status: string;
 }
 
-export default function EditProcessProfilePage() {
+function EditProcessProfilePage() {
   const router = useRouter();
   const params = useParams(); // { id }
   const { id } = params as { id: string };
@@ -170,5 +170,13 @@ export default function EditProcessProfilePage() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function EditProcessProfilePageWrapper({ params }: any) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <EditProcessProfilePage  />
+    </React.Suspense>
   );
 }

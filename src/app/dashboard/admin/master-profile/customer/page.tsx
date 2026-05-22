@@ -1101,7 +1101,7 @@ export default function CustomerProfilePage() {
 
                       {/* Addresses Table */}
                       {customerDetail.addresses.length === 0 ? (
-                        <div className="text-center py-6 text-xs text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
+                        <div className="text-center py-6 text-sm text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
                           No addresses added yet. Click &quot;Add Address&quot; above.
                         </div>
                       ) : (

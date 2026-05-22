@@ -16,7 +16,7 @@ interface ProcessProfile {
   status: string;
 }
 
-export default function ProcessProfilesPage() {
+function ProcessProfilesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -321,5 +321,13 @@ export default function ProcessProfilesPage() {
       )}
 
     </div>
+  );
+}
+
+export default function ProcessProfilesPageWrapper({ params }: any) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <ProcessProfilesPage  />
+    </React.Suspense>
   );
 }

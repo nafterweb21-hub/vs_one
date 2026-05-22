@@ -1,6 +1,6 @@
 generator client {
-  provider   = "prisma-client-js"
-  output     = "../src/generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
   engineType = "library"
 }
 
@@ -9,16 +9,15 @@ datasource db {
 }
 
 model User {
-  id            String           @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String           @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  approvals     ApprovalPerson[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Account {
@@ -57,50 +56,65 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model ApprovalLevelProfile {
-  id           String           @id @default(cuid())
-  module       String           // e.g., "Purchase Order - Material", "Purchase Order - Subcon"
-  actionButton String?          // e.g., "First Level", "Second Level"
-  minRange     Decimal?         @db.Decimal(12, 2)
-  maxRange     Decimal?         @db.Decimal(12, 2)
-  status       String           @default("Active") // "Active" or "Inactive"
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  approvers    ApprovalPerson[]
+
+model Company {
+  id                    String   @id @default(cuid())
+  name                  String   @unique
+  address               String   @db.Text
+  phoneNo               String
+  faxNo                 String
+  email                 String?
+  website               String?
+  rocNo                 String?
+  gstRegistrationNo     String
+  uploadUrl             String   @db.Text
+  logoUrl               String?  @db.Text
+  footerUrl             String?  @db.Text
+  logoName              String
+  footerName            String
+  allowCreatePoForWo    Boolean  @default(false)
+  as9100RequirementNote Boolean  @default(false)
+  status                String   @default("Active")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
-model ApprovalPerson {
-  id                     String               @id @default(cuid())
-  approvalLevelProfileId String
-  userId                 String
-  status                 String               @default("Active") // "Active" or "Inactive"
-  createdAt              DateTime             @default(now())
-  updatedAt              DateTime             @updatedAt
-
-  approvalLevelProfile   ApprovalLevelProfile @relation(fields: [approvalLevelProfileId], references: [id], onDelete: Cascade)
-  user                   User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([approvalLevelProfileId, userId])
-}
-
-model MaterialType {
+model PaymentTerm {
   id        String   @id @default(cuid())
-  type      String   @unique
-  remark    String?
-  status    String   @default("Active") // "Active", "Inactive", or "Void"
-// ==========================================
-// Currency Profile
-// ==========================================
-model Currency {
-  id           String   @id @default(cuid())
-  code         String   @unique // Immutable
-  name         String   @unique // Immutable
-  exchangeRate Decimal
-  isDefault    Boolean  @default(false)
-  status       String   @default("Active")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  salesOrders  SalesOrder[]
+  term      String   @unique
+  day       Int
+  remark    String?  @db.Text
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TaxProfile {
+  id        String   @id @default(cuid())
+  taxType   String   @unique
+  taxRate   Float
+  status    String   @default("Active") // "Active" or "Inactive"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  salesOrders SalesOrder[]
+}
+
+model Joint {
+  id        String   @id @default(cuid())
+  joint     String   @unique
+  remark    String?  @db.Text
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FailureMode {
+  id          String   @id @default(cuid())
+  failureMode String   @unique
+  remark      String?  @db.Text
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Employee {
@@ -120,21 +134,11 @@ model Employee {
   salesOrders    SalesOrder[]
 }
 
-model TaxProfile {
-  id        String   @id @default(cuid())
-  taxType   String   @unique
-  taxRate   Float
-  status    String   @default("Active") // "Active" or "Inactive"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  salesOrders SalesOrder[]
-}
-
 model CustomerProfile {
   id             String                  @id @default(cuid())
   customerCode   String                  @unique
   customerName   String                  @unique
-  remarks        String?
+  remarks        String?                 @db.Text
   status         String                  @default("Active") // "Active" or "Inactive"
   contactPersons CustomerContactPerson[]
   addresses      CustomerAddress[]
@@ -164,7 +168,7 @@ model CustomerAddress {
   id         String          @id @default(cuid())
   customerId String
   customer   CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  address    String
+  address    String          @db.Text
   status     String          @default("Active") // "Active" or "Inactive"
   isDefault  Boolean         @default(false)
   createdAt  DateTime        @default(now())
@@ -200,51 +204,30 @@ model MaterialProfile {
 model WeldingTypeProfile {
   id        String   @id @default(cuid())
   type      String   @unique
-  remark             String?
+  remark    String?  @db.Text
   status    String   @default("Active") // "Active" or "Inactive"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model PaintingMethodProfile {
+// ==========================================
+// UOM Profile
+// ==========================================
+model UomProfile {
   id        String   @id @default(cuid())
-  method    String   @unique
-  remark    String?
+  uomName   String   @unique // Immutable after save
+  remarks   String?
   status    String   @default("Active") // "Active" or "Inactive"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model MainProcess {
-  id              String           @id @default(cuid())
-  process         String           @unique
-  remark          String?
-  status          String           @default("Active") // "Active", "Inactive", or "Void"
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  processProfiles ProcessProfile[]
-}
-
-model ProcessProfile {
-  id              String      @id @default(cuid())
-  mainProcessId   String
-  mainProcess     MainProcess @relation(fields: [mainProcessId], references: [id])
-  routingProcess  String      @unique
-  welding         Boolean     @default(false)
-  sprayPainting   Boolean     @default(false)
-  machining       Boolean     @default(false)
-  costPerMinute   Decimal     @db.Decimal(12, 2)
-  remark          String?
-  status          String      @default("Active") // "Active", "Inactive", or "Void"
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  salesOrderItems SalesOrderItem[]
 }
 
 model SupplierProfile {
   id             String                  @id @default(cuid())
   supplierCode   String                  @unique
   supplierName   String                  @unique
-  remarks        String?
+  remarks        String?                 @db.Text
   status         String                  @default("Active") // "Active" or "Inactive"
   contactPersons SupplierContactPerson[]
   addresses      SupplierAddress[]
@@ -272,7 +255,7 @@ model SupplierAddress {
   id         String          @id @default(cuid())
   supplierId String
   supplier   SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  address    String
+  address    String          @db.Text
   status     String          @default("Active") // "Active" or "Inactive"
   isDefault  Boolean         @default(false)
   createdAt  DateTime        @default(now())
@@ -282,8 +265,8 @@ model SupplierAddress {
 model FinishedGoodProfile {
   id          String   @id @default(cuid())
   partNo      String?  @unique
-  description String   @unique
-  remark      String?
+  description String   @unique @db.Text
+  remark      String?  @db.Text
   status      String   @default("Active") // "Active" or "Inactive"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -291,16 +274,18 @@ model FinishedGoodProfile {
 }
 
 // ==========================================
-// UOM Profile
+// Currency Profile
 // ==========================================
-model UomProfile {
-  id        String   @id @default(cuid())
-  uomName   String   @unique // Immutable after save
-  remarks   String?
-  status    String   @default("Active") // "Active" or "Inactive"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  salesOrderItems SalesOrderItem[]
+model Currency {
+  id           String   @id @default(cuid())
+  code         String   @unique // Immutable
+  name         String   @unique // Immutable
+  exchangeRate Decimal
+  isDefault    Boolean  @default(false)
+  status       String   @default("Active")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  salesOrders  SalesOrder[]
 }
 
 // ==========================================
