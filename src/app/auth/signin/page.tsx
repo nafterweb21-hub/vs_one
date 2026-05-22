@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function SignIn() {
   return (
     <div className="flex flex-1 items-center justify-center bg-zinc-50 dark:bg-zinc-950">
@@ -14,12 +16,12 @@ export default function SignIn() {
         </p>
         {/* Auth provider buttons will go here once configured */}
         <div className="text-center">
-          <a
+          <Link
             href="/"
             className="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
           >
             &larr; Back to home
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -17,7 +17,7 @@ export async function getTaxProfiles() {
     });
     // Serialize Decimals if any, though here they are stored as Floats (Numbers)
     return { success: true, data: profiles };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to fetch tax profiles:", error);
     return { success: false, error: "Failed to fetch tax profiles." };
   }
@@ -55,9 +55,9 @@ export async function createTaxProfile(data: TaxProfileInput) {
 
     revalidatePath("/dashboard/admin/master-profile/tax");
     return { success: true, data: newProfile };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to create tax profile:", error);
-    return { success: false, error: error.message || "Failed to create tax profile." };
+    return { success: false, error: (error as Error).message || "Failed to create tax profile." };
   }
 }
 
@@ -86,9 +86,9 @@ export async function updateTaxProfileRate(id: string, taxRate: number) {
 
     revalidatePath("/dashboard/admin/master-profile/tax");
     return { success: true, data: updatedProfile };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to update tax rate:", error);
-    return { success: false, error: error.message || "Failed to update tax rate." };
+    return { success: false, error: (error as Error).message || "Failed to update tax rate." };
   }
 }
 
@@ -113,9 +113,9 @@ export async function toggleTaxProfileStatus(id: string) {
 
     revalidatePath("/dashboard/admin/master-profile/tax");
     return { success: true, data: updatedProfile };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to toggle status:", error);
-    return { success: false, error: error.message || "Failed to toggle status." };
+    return { success: false, error: (error as Error).message || "Failed to toggle status." };
   }
 }
 
@@ -135,9 +135,9 @@ export async function deleteTaxProfile(id: string) {
 
     revalidatePath("/dashboard/admin/master-profile/tax");
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to delete tax profile:", error);
-    return { success: false, error: error.message || "Failed to delete tax profile." };
+    return { success: false, error: (error as Error).message || "Failed to delete tax profile." };
   }
 }
 

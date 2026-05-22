@@ -7,7 +7,6 @@ import {
   updateTaxProfileRate,
   toggleTaxProfileStatus,
   deleteTaxProfile,
-  TaxProfileInput,
 } from "./actions";
 
 interface TaxProfile {
@@ -37,17 +36,12 @@ export default function TaxProfilePage() {
 
   const [isPending, startTransition] = useTransition();
 
-  // Load tax profiles on mount
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     setIsLoading(true);
     setErrorMsg(null);
     const result = await getTaxProfiles();
     if (result.success && result.data) {
-      const casted = result.data.map((p: any) => ({
+      const casted = result.data.map((p: Omit<TaxProfile, "createdAt" | "updatedAt"> & { createdAt: string | Date; updatedAt: string | Date }) => ({
         ...p,
         createdAt: new Date(p.createdAt),
         updatedAt: new Date(p.updatedAt),
@@ -58,6 +52,13 @@ export default function TaxProfilePage() {
     }
     setIsLoading(false);
   };
+
+  // Load tax profiles on mount
+  useEffect(() => {
+    Promise.resolve().then(() => {
+      loadData();
+    });
+  }, []);
 
   const handleOpenAddModal = () => {
     setModalMode("add");
