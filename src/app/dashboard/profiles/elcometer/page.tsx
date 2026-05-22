@@ -144,6 +144,18 @@ export default function ElcometerProfilePage() {
     setViewMode("add");
   };
 
+  const handleAutoGenerateSerial = () => {
+    const elcNumbers = items
+      .map((item) => {
+        const match = item.serialNo.match(/^ELC-(\d+)$/i);
+        return match ? parseInt(match[1], 10) : null;
+      })
+      .filter((num): num is number => num !== null);
+
+    const nextNum = elcNumbers.length > 0 ? Math.max(...elcNumbers) + 1 : 1001;
+    setFormSerialNo(`ELC-${nextNum}`);
+  };
+
   const goEdit = (item: ElcometerItem) => {
     setActiveItem(item);
     setFormSerialNo(item.serialNo);
@@ -201,6 +213,10 @@ export default function ElcometerProfilePage() {
   // ─────────────────────────────────────────────────────────────────────────────
 
   const handleToggleStatus = async (item: ElcometerItem) => {
+    const actionText = item.status === "Active" ? "deactivate" : "activate";
+    if (!confirm(`Are you sure you want to ${actionText} this Elcometer (${item.serialNo})?`)) {
+      return;
+    }
     try {
       const res = await fetch("/api/profiles/elcometer", {
         method: "PATCH",
@@ -317,12 +333,23 @@ export default function ElcometerProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Elcometer Serial No */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1">
-                  Elcometer Serial No <span className="text-rose-500">*</span>
-                  {viewMode === "edit" && (
-                    <span className="text-[10px] text-zinc-400 font-normal normal-case ml-1 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
-                      locked
-                    </span>
+                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center justify-between gap-1">
+                  <span>
+                    Elcometer Serial No <span className="text-rose-500">*</span>
+                    {viewMode === "edit" && (
+                      <span className="text-[10px] text-zinc-400 font-normal normal-case ml-1 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
+                        locked
+                      </span>
+                    )}
+                  </span>
+                  {viewMode === "add" && (
+                    <button
+                      type="button"
+                      onClick={handleAutoGenerateSerial}
+                      className="text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 normal-case tracking-normal transition-colors"
+                    >
+                      Auto Generate
+                    </button>
                   )}
                 </label>
                 <input
@@ -332,7 +359,7 @@ export default function ElcometerProfilePage() {
                   disabled={viewMode === "edit"}
                   value={formSerialNo}
                   onChange={(e) => setFormSerialNo(e.target.value)}
-                  placeholder="e.g. ELCO001"
+                  placeholder="e.g. ELC-1001"
                   className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                 />
                 {viewMode === "edit" && (
@@ -541,7 +568,7 @@ export default function ElcometerProfilePage() {
             <Gauge size={22} className="text-blue-500" />
           </div>
           <p className="text-zinc-600 dark:text-zinc-400 font-semibold">
-            {search || statusFilter !== "All" ? "No Elcometer records match your filters." : "No Elcometer records yet."}
+            {search ? "No Elcometer Found" : statusFilter !== "All" ? "No Elcometer records match your filters." : "No Elcometer records yet."}
           </p>
           <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">
             {search || statusFilter !== "All"
