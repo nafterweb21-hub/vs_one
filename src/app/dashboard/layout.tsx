@@ -65,6 +65,25 @@ export default function DashboardLayout({
         </svg>
       ),
     },
+    {
+      label: "Material Profile",
+      href: "/dashboard/master-profile/material",
+      icon: (
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.75"
+            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"
+          />
+        </svg>
+      ),
+    },
   ];
 
   const sidebarContent = (
@@ -80,7 +99,7 @@ export default function DashboardLayout({
             <p className="text-[10px] text-zinc-400 font-semibold tracking-wider">EMS • VISION ONE</p>
           </div>
         </Link>
-        
+
         {/* Toggle Collapse Button (Desktop Only) */}
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -108,11 +127,10 @@ export default function DashboardLayout({
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                    isActive
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${isActive
                       ? "bg-zinc-900 text-white shadow-inner shadow-black/10 border-l-[3px] border-cyan-500 pl-[11px]"
                       : "hover:bg-zinc-900/60 hover:text-white"
-                  }`}
+                    }`}
                 >
                   <span className={isActive ? "text-cyan-400" : "text-zinc-400 group-hover:text-white"}>{item.icon}</span>
                   {isSidebarOpen && <span>{item.label}</span>}
@@ -140,7 +158,7 @@ export default function DashboardLayout({
               </svg>
             )}
           </button>
-          
+
           {isMasterProfileOpen && (
             <div className="mt-3 space-y-1 pl-1">
               {masterProfileItems.map((item) => {
@@ -149,11 +167,10 @@ export default function DashboardLayout({
                   <Link
                     key={item.label}
                     href={item.href}
-                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                      isActive
+                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${isActive
                         ? "bg-zinc-900 text-white border-l-[3px] border-cyan-500 pl-[11px]"
                         : "hover:bg-zinc-900/60 hover:text-white"
-                    }`}
+                      }`}
                   >
                     <span className={isActive ? "text-cyan-400" : "text-zinc-400 group-hover:text-white"}>{item.icon}</span>
                     {isSidebarOpen && <span>{item.label}</span>}
@@ -197,9 +214,8 @@ export default function DashboardLayout({
     <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 antialiased">
       {/* Sidebar for Desktop */}
       <aside
-        className={`hidden md:block h-screen sticky top-0 z-30 transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? "w-64" : "w-20"
-        }`}
+        className={`hidden md:block h-screen sticky top-0 z-30 transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-64" : "w-20"
+          }`}
       >
         {sidebarContent}
       </aside>
@@ -245,7 +261,7 @@ export default function DashboardLayout({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            
+
             {/* Title / Breadcrumb */}
             <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-zinc-400 dark:text-zinc-500">
               <span className="hover:text-zinc-700 dark:hover:text-zinc-300 cursor-pointer">Fitprise EMS</span>
