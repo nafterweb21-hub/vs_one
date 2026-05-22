@@ -14,6 +14,8 @@ import {
   Ruler,
   Gauge,
   Cpu,
+  Truck,
+  Package,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -145,6 +147,22 @@ export default function Sidebar() {
             >
               <UserCircle size={16} />
               <span>Customer Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/admin/master-profile/supplier"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/admin/master-profile/supplier")}
+            >
+              <Truck size={16} />
+              <span>Supplier Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/admin/master-profile/finished-good"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/admin/master-profile/finished-good")}
+            >
+              <Package size={16} />
+              <span>Finished Good Profile</span>
             </Link>
           </div>
         </div>
