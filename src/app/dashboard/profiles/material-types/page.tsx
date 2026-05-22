@@ -10,7 +10,7 @@ interface MaterialType {
   status: string;
 }
 
-export default function materialTypesPage() {
+function MaterialTypesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -298,5 +298,13 @@ export default function materialTypesPage() {
       )}
 
     </div>
+  );
+}
+
+export default function MaterialTypesPageWrapper({ params }: any) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <MaterialTypesPage  />
+    </React.Suspense>
   );
 }

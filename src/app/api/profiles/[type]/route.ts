@@ -4,8 +4,8 @@ import {
   createProfileItem,
   updateProfileItem,
   toggleProfileItemStatus,
-  PROFILE_REGISTRY,
-} from "@/lib/profiles";
+} from "@/lib/profile-actions";
+import { PROFILE_REGISTRY } from "@/lib/profiles-schema";
 
 // Helper to check if the profile type is valid
 function validateType(type: string) {

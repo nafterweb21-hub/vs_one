@@ -23,7 +23,7 @@ export async function getMaterialProfiles() {
 export async function getMaterialDetail(id: string) {
   try {
     const materials = await getMaterials();
-    const material = materials.find(m => m.id === id);
+    const material = materials.find((m: any) => m.id === id);
     if (!material) return { success: false, error: "Material not found." };
     return { success: true, data: material };
   } catch (error: any) {

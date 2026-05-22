@@ -78,28 +78,13 @@ export interface EmployeeInput {
   status?: string;
 }
 
-export async function getEmployees(): Promise<Employee[]> {
+export async function getEmployees() {
   const useDb = await checkDatabaseConnection();
   if (useDb) {
     try {
-      const dbEmployees = await prisma.employee.findMany({
+      return await prisma.employee.findMany({
         orderBy: { code: "asc" },
       });
-      return dbEmployees.map((emp: any) => ({
-        id: emp.id,
-        code: emp.code,
-        name: emp.name,
-        nricFin: emp.nricFin,
-        designation: emp.designation,
-        email: emp.email,
-        mobileNo: emp.mobileNo,
-        gender: emp.gender,
-        contactNo: emp.contactNo,
-        employmentType: emp.employmentType,
-        status: emp.status,
-        createdAt: emp.createdAt.toISOString(),
-        updatedAt: emp.updatedAt.toISOString(),
-      }));
     } catch (e) {
       console.warn("Prisma getEmployees failed, falling back to mock:", e);
     }
@@ -107,52 +92,35 @@ export async function getEmployees(): Promise<Employee[]> {
   return readMockData().sort((a, b) => a.code.localeCompare(b.code));
 }
 
-export async function getEmployeeById(id: string): Promise<Employee | null> {
+export async function getEmployeeById(id: string) {
   const useDb = await checkDatabaseConnection();
   if (useDb) {
     try {
-      const emp = await prisma.employee.findUnique({
+      return await prisma.employee.findUnique({
         where: { id },
       });
-      if (emp) {
-        return {
-          id: emp.id,
-          code: emp.code,
-          name: emp.name,
-          nricFin: emp.nricFin,
-          designation: emp.designation,
-          email: emp.email,
-          mobileNo: emp.mobileNo,
-          gender: emp.gender,
-          contactNo: emp.contactNo,
-          employmentType: emp.employmentType,
-          status: emp.status,
-          createdAt: emp.createdAt.toISOString(),
-          updatedAt: emp.updatedAt.toISOString(),
-        };
-      }
     } catch (e) {
       console.warn("Prisma getEmployeeById failed, falling back to mock:", e);
     }
   }
-  return readMockData().find((emp) => emp.id === id) || null;
+  return readMockData().find((emp: any) => emp.id === id) || null;
 }
 
-export async function createEmployee(data: EmployeeInput): Promise<Employee> {
+export async function createEmployee(data: EmployeeInput) {
   // Validate unique fields (code and nricFin)
   const currentEmployees = await getEmployees();
 
-  if (currentEmployees.some((emp) => emp.code.toLowerCase() === data.code.toLowerCase())) {
+  if (currentEmployees.some((emp: any) => emp.code.toLowerCase() === data.code.toLowerCase())) {
     throw new Error(`Employee Code "${data.code}" already exists.`);
   }
-  if (currentEmployees.some((emp) => emp.nricFin.toLowerCase() === data.nricFin.toLowerCase())) {
+  if (currentEmployees.some((emp: any) => emp.nricFin.toLowerCase() === data.nricFin.toLowerCase())) {
     throw new Error(`NRIC / FIN "${data.nricFin}" already exists.`);
   }
 
   const useDb = await checkDatabaseConnection();
   if (useDb) {
     try {
-      const emp = await prisma.employee.create({
+      return await prisma.employee.create({
         data: {
           code: data.code,
           name: data.name,
@@ -166,21 +134,6 @@ export async function createEmployee(data: EmployeeInput): Promise<Employee> {
           status: data.status || "ACTIVE",
         },
       });
-      return {
-        id: emp.id,
-        code: emp.code,
-        name: emp.name,
-        nricFin: emp.nricFin,
-        designation: emp.designation,
-        email: emp.email,
-        mobileNo: emp.mobileNo,
-        gender: emp.gender,
-        contactNo: emp.contactNo,
-        employmentType: emp.employmentType,
-        status: emp.status,
-        createdAt: emp.createdAt.toISOString(),
-        updatedAt: emp.updatedAt.toISOString(),
-      };
     } catch (e) {
       console.warn("Prisma createEmployee failed, falling back to mock:", e);
     }
@@ -208,9 +161,9 @@ export async function createEmployee(data: EmployeeInput): Promise<Employee> {
   return newEmp;
 }
 
-export async function updateEmployee(id: string, data: Partial<EmployeeInput>): Promise<Employee> {
+export async function updateEmployee(id: string, data: Partial<EmployeeInput>) {
   const currentEmployees = await getEmployees();
-  const existing = currentEmployees.find((emp) => emp.id === id);
+  const existing = currentEmployees.find((emp: any) => emp.id === id);
   if (!existing) {
     throw new Error("Employee not found");
   }
@@ -222,12 +175,12 @@ export async function updateEmployee(id: string, data: Partial<EmployeeInput>): 
 
   // Validate unique fields if changed
   if (data.code !== undefined && data.code.toLowerCase() !== existing.code.toLowerCase()) {
-    if (currentEmployees.some((emp) => emp.code.toLowerCase() === data.code!.toLowerCase() && emp.id !== id)) {
+    if (currentEmployees.some((emp: any) => emp.code.toLowerCase() === data.code!.toLowerCase() && emp.id !== id)) {
       throw new Error(`Employee Code "${data.code}" already in use.`);
     }
   }
   if (data.nricFin !== undefined && data.nricFin.toLowerCase() !== existing.nricFin.toLowerCase()) {
-    if (currentEmployees.some((emp) => emp.nricFin.toLowerCase() === data.nricFin!.toLowerCase() && emp.id !== id)) {
+    if (currentEmployees.some((emp: any) => emp.nricFin.toLowerCase() === data.nricFin!.toLowerCase() && emp.id !== id)) {
       throw new Error(`NRIC / FIN "${data.nricFin}" already in use.`);
     }
   }
@@ -235,7 +188,7 @@ export async function updateEmployee(id: string, data: Partial<EmployeeInput>): 
   const useDb = await checkDatabaseConnection();
   if (useDb) {
     try {
-      const emp = await prisma.employee.update({
+      return await prisma.employee.update({
         where: { id },
         data: {
           code: data.code,
@@ -248,21 +201,6 @@ export async function updateEmployee(id: string, data: Partial<EmployeeInput>): 
           status: data.status,
         },
       });
-      return {
-        id: emp.id,
-        code: emp.code,
-        name: emp.name,
-        nricFin: emp.nricFin,
-        designation: emp.designation,
-        email: emp.email,
-        mobileNo: emp.mobileNo,
-        gender: emp.gender,
-        contactNo: emp.contactNo,
-        employmentType: emp.employmentType,
-        status: emp.status,
-        createdAt: emp.createdAt.toISOString(),
-        updatedAt: emp.updatedAt.toISOString(),
-      };
     } catch (e) {
       console.warn("Prisma updateEmployee failed, falling back to mock:", e);
     }
@@ -285,28 +223,13 @@ export async function updateEmployee(id: string, data: Partial<EmployeeInput>): 
   throw new Error("Employee not found");
 }
 
-export async function deleteEmployee(id: string): Promise<Employee> {
+export async function deleteEmployee(id: string) {
   const useDb = await checkDatabaseConnection();
   if (useDb) {
     try {
-      const emp = await prisma.employee.delete({
+      return await prisma.employee.delete({
         where: { id },
       });
-      return {
-        id: emp.id,
-        code: emp.code,
-        name: emp.name,
-        nricFin: emp.nricFin,
-        designation: emp.designation,
-        email: emp.email,
-        mobileNo: emp.mobileNo,
-        gender: emp.gender,
-        contactNo: emp.contactNo,
-        employmentType: emp.employmentType,
-        status: emp.status,
-        createdAt: emp.createdAt.toISOString(),
-        updatedAt: emp.updatedAt.toISOString(),
-      };
     } catch (e) {
       console.warn("Prisma deleteEmployee failed, falling back to mock:", e);
     }
