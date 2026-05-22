@@ -16,6 +16,7 @@ import {
   Cpu,
   Truck,
   Package,
+  Box,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -125,6 +126,14 @@ export default function Sidebar() {
             >
               <Users size={16} />
               <span>Employee Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/material"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/material")}
+            >
+              <Box size={16} />
+              <span>Material Profile</span>
             </Link>
           </div>
 
