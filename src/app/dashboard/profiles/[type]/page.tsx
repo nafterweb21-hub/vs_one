@@ -63,8 +63,6 @@ export default function ProfilePage({
   // Fetch
   // ─────────────────────────────────────────────────────────────────────────────
 
-  useEffect(() => { fetchItems(); }, [type, search, activeOnly]);
-
   const fetchItems = async () => {
     setLoading(true);
     setListError("");
@@ -78,6 +76,8 @@ export default function ProfilePage({
       setLoading(false);
     }
   };
+
+  useEffect(() => { fetchItems(); }, [type, search, activeOnly]);
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Navigation helpers

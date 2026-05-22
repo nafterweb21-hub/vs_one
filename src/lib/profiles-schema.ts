@@ -34,5 +34,13 @@ export const PROFILE_REGISTRY: Record<
     uniqueFields: ["serialNo"],
     searchFields: ["serialNo", "remark"],
   },
+  machine: {
+    modelName: "machineProfile",
+    displayName: "Machine Profile",
+    immutableFields: ["machineCode"],
+    mandatoryFields: ["machineCode", "machineNo", "brand", "model", "machineCategory"],
+    uniqueFields: ["machineCode"],
+    searchFields: ["machineCode", "machineNo", "brand", "model"],
+  },
 };
 
