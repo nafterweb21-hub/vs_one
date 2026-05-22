@@ -193,7 +193,16 @@ model MaterialProfile {
 model WeldingTypeProfile {
   id        String   @id @default(cuid())
   type      String   @unique
-  remark    String?  @db.Text
+  remark    String?
+  status    String   @default("Active") // "Active" or "Inactive"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PaintingMethodProfile {
+  id        String   @id @default(cuid())
+  method    String   @unique
+  remark    String?
   status    String   @default("Active") // "Active" or "Inactive"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -317,3 +326,4 @@ model MachineProfile {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
