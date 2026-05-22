@@ -78,3 +78,30 @@ model Company {
   updatedAt             DateTime @updatedAt
 }
 
+model PaymentTerm {
+  id        String   @id @default(cuid())
+  term      String   @unique
+  day       Int
+  remark    String?  @db.Text
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Joint {
+  id        String   @id @default(cuid())
+  joint     String   @unique
+  remark    String?  @db.Text
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FailureMode {
+  id          String   @id @default(cuid())
+  failureMode String   @unique
+  remark      String?  @db.Text
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

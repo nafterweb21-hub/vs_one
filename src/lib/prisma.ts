@@ -58,23 +58,159 @@ if (!globalForPrisma.mockDb) {
     user: [],
     account: [],
     session: [],
-    verificationToken: []
+    verificationToken: [],
+    joint: [
+      {
+        id: "mock-joint-1",
+        joint: "Spot Weld",
+        remark: "Once saved, cannot be changed. E.g. Spot Weld",
+        status: "Active",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "mock-joint-2",
+        joint: "Single-V Butt Joint",
+        remark: "Bevel 30 deg",
+        status: "Active",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "mock-joint-3",
+        joint: "Double Fillet Joint",
+        remark: "None (Flat Face)",
+        status: "Inactive",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    ],
+    paymentTerm: [
+      {
+        id: "mock-payment-term-1",
+        term: "COD",
+        day: 0,
+        remark: "Cash on Delivery",
+        status: "Active",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "mock-payment-term-2",
+        term: "Net 15",
+        day: 15,
+        remark: "Payment due in 15 days",
+        status: "Active",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "mock-payment-term-3",
+        term: "Net 30",
+        day: 30,
+        remark: "Standard 30 day term",
+        status: "Active",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "mock-payment-term-4",
+        term: "Net 60",
+        day: 60,
+        remark: "Extended 60 day term",
+        status: "Inactive",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    ]
   };
+} else if (globalForPrisma.mockDb.paymentTerm.length === 0) {
+  // Force seed if empty in memory
+  globalForPrisma.mockDb.paymentTerm = [
+    {
+      id: "mock-payment-term-1",
+      term: "COD",
+      day: 0,
+      remark: "Cash on Delivery",
+      status: "Active",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: "mock-payment-term-2",
+      term: "Net 15",
+      day: 15,
+      remark: "Payment due in 15 days",
+      status: "Active",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: "mock-payment-term-3",
+      term: "Net 30",
+      day: 30,
+      remark: "Standard 30 day term",
+      status: "Active",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: "mock-payment-term-4",
+      term: "Net 60",
+      day: 60,
+      remark: "Extended 60 day term",
+      status: "Inactive",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+  ];
+}
+
+if (globalForPrisma.mockDb && !globalForPrisma.mockDb.joint) {
+  globalForPrisma.mockDb.joint = [];
+}
+if (globalForPrisma.mockDb && globalForPrisma.mockDb.joint.length === 0) {
+  globalForPrisma.mockDb.joint = [
+      {
+        id: "mock-joint-1",
+        joint: "Spot Weld",
+        remark: "Once saved, cannot be changed. E.g. Spot Weld",
+        status: "Active",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "mock-joint-2",
+        joint: "Single-V Butt Joint",
+        remark: "Bevel 30 deg",
+        status: "Active",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "mock-joint-3",
+        joint: "Double Fillet Joint",
+        remark: "None (Flat Face)",
+        status: "Inactive",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+  ];
 }
 
 // Simple in-memory runner for Prisma queries
 function runMockQuery(model: string, operation: string, args: any) {
-  const store = globalForPrisma.mockDb[model];
-  if (!store) {
-    throw new Error(`In-Memory Mock: Model '${model}' not found.`);
+  if (!globalForPrisma.mockDb[model]) {
+    globalForPrisma.mockDb[model] = [];
   }
+  const store = globalForPrisma.mockDb[model];
 
   console.log(`[Prisma Mock] ${model}.${operation} called with:`, JSON.stringify(args, null, 2));
 
   switch (operation) {
     case "findMany": {
       const results = [...store];
-      
+
       // Handle simple sorting by criteria if provided
       if (args?.orderBy) {
         const orderKey = Object.keys(args.orderBy)[0];
@@ -177,7 +313,7 @@ export const prisma = new Proxy({} as any, {
 
     // Direct properties or methods on PrismaClient
     if (modelName === "$connect" || modelName === "$disconnect") {
-      return async () => {};
+      return async () => { };
     }
 
     return new Proxy({} as any, {
@@ -195,7 +331,7 @@ export const prisma = new Proxy({} as any, {
             return await underlyingPrisma[modelName][operation](args);
           } catch (error: any) {
             // Check if error is database connectivity related
-            const isConnectionError = 
+            const isConnectionError =
               error.message?.includes("Can't reach database") ||
               error.message?.includes("connect") ||
               error.message?.includes("Driver Adapter") ||

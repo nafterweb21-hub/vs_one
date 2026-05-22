@@ -249,11 +249,6 @@ function SubNavItem({
         </span>
         <span className="truncate">{label}</span>
       </div>
-      {isRoadmap ? (
-        <span className="flex-shrink-0 ml-1.5 w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" title="Planned Roadmap Module" />
-      ) : (
-        <span className="flex-shrink-0 ml-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50 animate-pulse" title="Active Module" />
-      )}
     </Link>
   );
 }
