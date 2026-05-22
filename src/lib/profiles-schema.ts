@@ -26,4 +26,13 @@ export const PROFILE_REGISTRY: Record<
     uniqueFields: ["uomName"],
     searchFields: ["uomName", "remarks"],
   },
+  elcometer: {
+    modelName: "elcometerProfile",
+    displayName: "Elcometer Profile",
+    immutableFields: ["serialNo"],
+    mandatoryFields: ["serialNo"],
+    uniqueFields: ["serialNo"],
+    searchFields: ["serialNo", "remark"],
+  },
 };
+

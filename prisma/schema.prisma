@@ -214,9 +214,6 @@ model UomProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-<<<<<<< HEAD
-
-
 model SupplierProfile {
   id             String                  @id @default(cuid())
   supplierCode   String                  @unique
@@ -278,4 +275,16 @@ model Currency {
   status       String   @default("Active")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+// ==========================================
+// Elcometer Profile
+// ==========================================
+model ElcometerProfile {
+  id        String   @id @default(cuid())
+  serialNo  String   @unique // Immutable after save
+  remark    String?
+  status    String   @default("Active") // "Active" or "Inactive"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
