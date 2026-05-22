@@ -8,6 +8,19 @@ import {
   LayoutDashboard,
   Menu,
   X,
+  Users,
+  Percent,
+  UserCircle,
+  Ruler,
+  Gauge,
+  Cpu,
+  Truck,
+  Package,
+  Box,
+  Flame,
+  ShoppingCart,
+  CreditCard,
+  Paintbrush,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -75,6 +88,20 @@ export default function Sidebar() {
 
           <div className="pt-4">
             <p className="px-3 py-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              Sales
+            </p>
+            <Link
+              href="/dashboard/sales/sales-order"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/sales/sales-order")}
+            >
+              <ShoppingCart size={16} />
+              <span>Sales Orders</span>
+            </Link>
+          </div>
+
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
               Settings / Master
             </p>
             <Link
@@ -84,6 +111,108 @@ export default function Sidebar() {
             >
               <Coins size={16} />
               <span>Currency Master</span>
+            </Link>
+            <Link
+              href="/dashboard/profiles/uom"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/uom")}
+            >
+              <Ruler size={16} />
+              <span>UOM Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/profiles/elcometer"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/elcometer")}
+            >
+              <Gauge size={16} />
+              <span>Elcometer Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/profiles/machine"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/machine")}
+            >
+              <Cpu size={16} />
+              <span>Machine Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/employee"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/employee")}
+            >
+              <Users size={16} />
+              <span>Employee Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/material"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/material")}
+            >
+              <Box size={16} />
+              <span>Material Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/welding-type"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/welding-type")}
+            >
+              <Flame size={16} />
+              <span>Welding Type Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/painting-method"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/painting-method")}
+            >
+              <Paintbrush size={16} />
+              <span>Painting Method Profile</span>
+            </Link>
+          </div>
+
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              Admin Master
+            </p>
+            <Link
+              href="/dashboard/admin/master-profile/tax"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/admin/master-profile/tax")}
+            >
+              <Percent size={16} />
+              <span>Tax Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/admin/master-profile/customer"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/admin/master-profile/customer")}
+            >
+              <UserCircle size={16} />
+              <span>Customer Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/admin/master-profile/supplier"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/admin/master-profile/supplier")}
+            >
+              <Truck size={16} />
+              <span>Supplier Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/admin/master-profile/finished-good"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/admin/master-profile/finished-good")}
+            >
+              <Package size={16} />
+              <span>Finished Good Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/profiles/payment-term"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/payment-term")}
+            >
+              <CreditCard size={16} />
+              <span>Payment Term Profile</span>
             </Link>
           </div>
         </div>
