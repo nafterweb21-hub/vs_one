@@ -10,6 +10,8 @@ export default function CompanyClient({ initialData }: { initialData: CompanyRec
   const [companies, setCompanies] = useState(initialData);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [companyToDelete, setCompanyToDelete] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   
   const [formData, setFormData] = useState<CompanyData>({
     name: "",
@@ -80,14 +82,21 @@ export default function CompanyClient({ initialData }: { initialData: CompanyRec
     setIsFormOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this company?")) return;
-    const res = await deleteCompany(id);
+  const handleDelete = (id: string) => {
+    setCompanyToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!companyToDelete) return;
+    setDeleting(true);
+    const res = await deleteCompany(companyToDelete);
     if (res.success) {
-      setCompanies((prev) => prev.filter((c) => c.id !== id));
+      setCompanies((prev) => prev.filter((c) => c.id !== companyToDelete));
+      setCompanyToDelete(null);
     } else {
       alert("Failed to delete company.");
     }
+    setDeleting(false);
   };
 
   const handleStatusChange = async (id: string, newStatus: string) => {
@@ -386,6 +395,47 @@ export default function CompanyClient({ initialData }: { initialData: CompanyRec
           </table>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {companyToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
+                <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-500" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Delete Company</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+                Are you sure you want to delete this company? This action cannot be undone.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setCompanyToDelete(null)}
+                  disabled={deleting}
+                  className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={deleting}
+                  className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 shadow-md shadow-red-500/20 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {deleting ? (
+                    <>
+                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                      Deleting...
+                    </>
+                  ) : (
+                    "Delete"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
