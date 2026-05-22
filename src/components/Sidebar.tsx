@@ -11,6 +11,7 @@ import {
   Users,
   Percent,
   UserCircle,
+  Ruler,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -88,6 +89,14 @@ export default function Sidebar() {
             >
               <Coins size={16} />
               <span>Currency Master</span>
+            </Link>
+            <Link
+              href="/dashboard/profiles/uom"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/uom")}
+            >
+              <Ruler size={16} />
+              <span>UOM Profile</span>
             </Link>
             <Link
               href="/dashboard/master-profile/employee"

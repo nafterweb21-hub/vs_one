@@ -154,6 +154,9 @@ export async function updateProfileItem(type: string, id: string, data: any) {
     } else if (existing.isDefault === true && processedData.isDefault === false) {
       throw new Error("At least one currency must be set as default. Set another currency as default first.");
     }
+    if (existing.isDefault === true && processedData.status === "Inactive") {
+      throw new Error("Cannot deactivate the default currency. Please assign another currency as default first.");
+    }
   }
 
   return await model.update({

@@ -18,4 +18,12 @@ export const PROFILE_REGISTRY: Record<
     uniqueFields: ["code", "name"],
     searchFields: ["code", "name"],
   },
+  uom: {
+    modelName: "uomProfile",
+    displayName: "UOM Profile",
+    immutableFields: ["uomName"],
+    mandatoryFields: ["uomName"],
+    uniqueFields: ["uomName"],
+    searchFields: ["uomName", "remarks"],
+  },
 };
