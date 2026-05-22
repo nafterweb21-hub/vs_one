@@ -727,7 +727,7 @@ export default function CustomerProfilePage() {
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-zinc-200 mt-4">
+            <div className="flex border-b border-zinc-200 mt-4 justify-center">
               {[
                 { id: "general", label: "General Info" },
                 { id: "contacts", label: `Contact Persons (${customerDetail?.contactPersons.length || 0})` },
