@@ -9,15 +9,16 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String           @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String           @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  approvals     ApprovalPerson[]
 }
 
 model Account {
@@ -56,6 +57,37 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model ApprovalLevelProfile {
+  id           String           @id @default(cuid())
+  module       String           // e.g., "Purchase Order - Material", "Purchase Order - Subcon"
+  actionButton String?          // e.g., "First Level", "Second Level"
+  minRange     Decimal?         @db.Decimal(12, 2)
+  maxRange     Decimal?         @db.Decimal(12, 2)
+  status       String           @default("Active") // "Active" or "Inactive"
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  approvers    ApprovalPerson[]
+}
+
+model ApprovalPerson {
+  id                     String               @id @default(cuid())
+  approvalLevelProfileId String
+  userId                 String
+  status                 String               @default("Active") // "Active" or "Inactive"
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+
+  approvalLevelProfile   ApprovalLevelProfile @relation(fields: [approvalLevelProfileId], references: [id], onDelete: Cascade)
+  user                   User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([approvalLevelProfileId, userId])
+}
+
+model MaterialType {
+  id        String   @id @default(cuid())
+  type      String   @unique
+  remark    String?
+  status    String   @default("Active") // "Active", "Inactive", or "Void"
 // ==========================================
 // Currency Profile
 // ==========================================
@@ -144,7 +176,7 @@ model CustomerAddress {
 model MaterialCategory {
   id          String            @id @default(cuid())
   name        String            @unique
-  description String?           
+  description String?
   status      String            @default("Active") // "Active" or "Inactive"
   materials   MaterialProfile[]
   createdAt   DateTime          @default(now())
@@ -154,12 +186,12 @@ model MaterialCategory {
 model MaterialProfile {
   id                 String           @id @default(cuid())
   partNo             String?          @unique // Not mandatory, unique
-  description        String           @unique  // Mandatory, unique
+  description        String           @unique // Mandatory, unique
   shape              String           // Mandatory
   size               String?          // Not mandatory
   categoryId         String           // Dropdown from Material Category profile
   category           MaterialCategory @relation(fields: [categoryId], references: [id])
-  remark             String?          
+  remark             String?
   status             String           @default("Active") // Default Active
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
@@ -168,10 +200,44 @@ model MaterialProfile {
 model WeldingTypeProfile {
   id        String   @id @default(cuid())
   type      String   @unique
-  remark    String?  
+  remark             String?
   status    String   @default("Active") // "Active" or "Inactive"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model PaintingMethodProfile {
+  id        String   @id @default(cuid())
+  method    String   @unique
+  remark    String?
+  status    String   @default("Active") // "Active" or "Inactive"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MainProcess {
+  id              String           @id @default(cuid())
+  process         String           @unique
+  remark          String?
+  status          String           @default("Active") // "Active", "Inactive", or "Void"
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  processProfiles ProcessProfile[]
+}
+
+model ProcessProfile {
+  id              String      @id @default(cuid())
+  mainProcessId   String
+  mainProcess     MainProcess @relation(fields: [mainProcessId], references: [id])
+  routingProcess  String      @unique
+  welding         Boolean     @default(false)
+  sprayPainting   Boolean     @default(false)
+  machining       Boolean     @default(false)
+  costPerMinute   Decimal     @db.Decimal(12, 2)
+  remark          String?
+  status          String      @default("Active") // "Active", "Inactive", or "Void"
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 model SupplierProfile {
