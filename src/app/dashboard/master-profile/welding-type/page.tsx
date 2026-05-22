@@ -73,13 +73,13 @@ export default function WeldingTypeProfilePage() {
   );
 
   return (
-    <div className="flex-1 flex flex-col p-6 space-y-6 max-w-7xl mx-auto w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div className="flex-1 flex flex-col p-6 space-y-6 max-w-7xl mx-auto w-full bg-blue-50 text-blue-900 ">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-blue-900 ">
             Welding Type Profile
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-sm text-blue-500 mt-1">
             Maintain the master list of welding types used in work orders.
           </p>
         </div>
@@ -95,10 +95,10 @@ export default function WeldingTypeProfilePage() {
         </Link>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+      <div className="rounded-xl border border-blue-200 bg-white p-4">
         <div className="relative max-w-md">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <svg className="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
           </div>
@@ -107,34 +107,34 @@ export default function WeldingTypeProfilePage() {
             placeholder="Search by type or remark..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 py-2 pl-10 pr-4 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full rounded-lg border border-blue-200 bg-blue-50 py-2 pl-10 pr-4 text-sm text-blue-900 outline-none focus:ring-2 focus:ring-cyan-500"
           />
         </div>
       </div>
 
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 overflow-hidden shadow-sm flex-1 flex flex-col">
+      <div className="bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-sm flex-1 flex flex-col">
         {isLoading ? (
           <div className="flex h-48 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-cyan-600" />
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-cyan-600" />
           </div>
         ) : errorMsg ? (
           <div className="flex flex-col items-center justify-center flex-1 gap-2 p-6 text-center">
             <svg className="h-10 w-10 text-rose-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
             </svg>
-            <p className="font-semibold text-zinc-900 dark:text-zinc-100">Error loading welding types</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">{errorMsg}</p>
+            <p className="font-semibold text-blue-900 ">Error loading welding types</p>
+            <p className="text-sm text-blue-500 ">{errorMsg}</p>
             <button onClick={loadData} className="mt-2 text-sm font-semibold text-cyan-600 hover:text-cyan-500 cursor-pointer">
               Try again
             </button>
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center flex-1 p-6 text-center">
-            <svg className="h-12 w-12 text-zinc-300 dark:text-zinc-700" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <svg className="h-12 w-12 text-blue-300 " fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
             </svg>
-            <p className="mt-3 font-semibold text-zinc-900 dark:text-zinc-100">No welding types found</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+            <p className="mt-3 font-semibold text-blue-900 ">No welding types found</p>
+            <p className="text-sm text-blue-500 mt-1">
               {searchQuery ? "No matches for your criteria." : "Create your first Welding Type to begin."}
             </p>
           </div>
@@ -142,7 +142,7 @@ export default function WeldingTypeProfilePage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[600px]">
               <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <tr className="border-b border-blue-200 bg-blue-50 text-xs font-bold uppercase tracking-wider text-blue-500 ">
                   <th className="px-6 py-4 w-16">SN</th>
                   <th className="px-6 py-4">Type</th>
                   <th className="px-6 py-4">Remark</th>
@@ -150,19 +150,19 @@ export default function WeldingTypeProfilePage() {
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+              <tbody className="divide-y divide-blue-200 ">
                 {filteredItems.map((item, index) => (
                   <tr
                     key={item.id}
-                    className="group hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors"
+                    className="group hover:bg-blue-50 :bg-blue-800/30 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm text-zinc-500 dark:text-zinc-400">
+                    <td className="px-6 py-4 text-sm text-blue-500 ">
                       {index + 1}
                     </td>
-                    <td className="px-6 py-4 text-sm font-bold text-zinc-900 dark:text-white whitespace-nowrap">
+                    <td className="px-6 py-4 text-sm font-bold text-blue-900 whitespace-nowrap">
                       {item.type}
                     </td>
-                    <td className="px-6 py-4 text-sm text-zinc-700 dark:text-zinc-300">
+                    <td className="px-6 py-4 text-sm text-blue-700 ">
                       {item.remark || "-"}
                     </td>
                     <td className="px-6 py-4">
@@ -173,15 +173,15 @@ export default function WeldingTypeProfilePage() {
                           disabled={isPending}
                           className={`inline-flex items-center gap-1.5 rounded-full pl-3 pr-7 py-1 text-xs font-bold border appearance-none cursor-pointer outline-none transition-colors ${
                             item.status === "Active"
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200 focus:ring-2 focus:ring-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
-                              : "bg-zinc-100 text-zinc-600 border-zinc-200 focus:ring-2 focus:ring-zinc-500/20 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200 focus:ring-2 focus:ring-emerald-500/20 "
+                              : "bg-blue-100 text-blue-600 border-blue-200 focus:ring-2 focus:ring-blue-500/20 "
                           }`}
                         >
                           <option value="Active">Active</option>
                           <option value="Inactive">Inactive</option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
-                          <svg className={`h-3.5 w-3.5 ${item.status === "Active" ? "text-emerald-600 dark:text-emerald-400" : "text-zinc-500 dark:text-zinc-400"}`} viewBox="0 0 20 20" fill="currentColor">
+                          <svg className={`h-3.5 w-3.5 ${item.status === "Active" ? "text-emerald-600 " : "text-blue-500 "}`} viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
                           </svg>
                         </div>
@@ -191,7 +191,7 @@ export default function WeldingTypeProfilePage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/dashboard/master-profile/welding-type/${item.id}/edit`}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-150"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200 text-blue-500 hover:text-blue-950 :text-white hover:bg-blue-100 :bg-blue-800/80 hover:border-blue-300 :border-blue-700 transition-all duration-150"
                           title="Edit Profile"
                         >
                           <svg className="h-4.5 w-4.5 text-[18px] block" width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -202,7 +202,7 @@ export default function WeldingTypeProfilePage() {
                           type="button"
                           onClick={() => handleDelete(item.id)}
                           disabled={isPending}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 text-rose-500 hover:text-white hover:bg-rose-500 hover:border-rose-600 dark:hover:bg-rose-950/30 transition-all duration-150 cursor-pointer disabled:opacity-50"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200 text-rose-500 hover:text-white hover:bg-rose-500 hover:border-rose-600 :bg-rose-950/30 transition-all duration-150 cursor-pointer disabled:opacity-50"
                           title="Delete Profile"
                         >
                           <svg className="h-4.5 w-4.5 text-[18px] block" width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24">

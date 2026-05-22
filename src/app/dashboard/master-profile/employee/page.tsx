@@ -178,8 +178,8 @@ export default function EmployeeProfilePage() {
         <div
           className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl border text-sm transition-all duration-300 transform translate-y-0 scale-100 ${
             notification.type === "success"
-              ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
-              : "bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300"
+              ? "bg-emerald-50 border-emerald-200 text-emerald-800 "
+              : "bg-rose-50 border-rose-200 text-rose-800 "
           }`}
         >
           {notification.type === "success" ? (
@@ -198,10 +198,10 @@ export default function EmployeeProfilePage() {
       {/* Title block */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-blue-900 ">
             Employee Profiles
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-sm text-blue-500 mt-1">
             Manage system operators, welders, inspectors, and organizational personnel.
           </p>
         </div>
@@ -219,10 +219,10 @@ export default function EmployeeProfilePage() {
       </div>
 
       {/* Control Panel: Search & Filters */}
-      <div className="grid gap-4 md:grid-cols-12 bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 shadow-sm">
+      <div className="grid gap-4 md:grid-cols-12 bg-white p-5 rounded-2xl border border-blue-200 shadow-sm">
         {/* Search */}
         <div className="md:col-span-6 relative">
-          <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-400">
+          <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-blue-400">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -232,7 +232,7 @@ export default function EmployeeProfilePage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by name, employee code, NRIC, email..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-sm focus:bg-white dark:focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-150 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-sm focus:bg-white :bg-blue-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-150 text-blue-900 placeholder-blue-400 "
           />
         </div>
 
@@ -241,7 +241,7 @@ export default function EmployeeProfilePage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-sm focus:bg-white dark:focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-150 text-zinc-700 dark:text-zinc-300"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-sm focus:bg-white :bg-blue-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-150 text-blue-700 "
           >
             <option value="ALL">All Statuses</option>
             <option value="ACTIVE">Active Only</option>
@@ -254,7 +254,7 @@ export default function EmployeeProfilePage() {
           <select
             value={employmentFilter}
             onChange={(e) => setEmploymentFilter(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-sm focus:bg-white dark:focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-150 text-zinc-700 dark:text-zinc-300"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-sm focus:bg-white :bg-blue-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-150 text-blue-700 "
           >
             <option value="ALL">All Employment Types</option>
             {employmentTypes.map((type) => (
@@ -267,30 +267,30 @@ export default function EmployeeProfilePage() {
       </div>
 
       {/* Main Grid/Table */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 overflow-hidden shadow-sm flex-1 flex flex-col">
+      <div className="bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-sm flex-1 flex flex-col">
         {isLoading ? (
           // Loading Skeletons
           <div className="p-6 space-y-4 flex-1">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="flex gap-4 items-center animate-pulse">
-                <div className="h-10 bg-zinc-100 dark:bg-zinc-800 rounded-lg w-12" />
-                <div className="h-6 bg-zinc-100 dark:bg-zinc-800 rounded-md flex-1" />
-                <div className="h-6 bg-zinc-100 dark:bg-zinc-800 rounded-md w-32" />
-                <div className="h-6 bg-zinc-100 dark:bg-zinc-800 rounded-md w-20" />
+                <div className="h-10 bg-blue-100 rounded-lg w-12" />
+                <div className="h-6 bg-blue-100 rounded-md flex-1" />
+                <div className="h-6 bg-blue-100 rounded-md w-32" />
+                <div className="h-6 bg-blue-100 rounded-md w-20" />
               </div>
             ))}
           </div>
         ) : filteredEmployees.length === 0 ? (
           // Empty State
           <div className="flex-1 flex flex-col items-center justify-center p-12 text-center max-w-md mx-auto space-y-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 text-zinc-400 dark:text-zinc-500 border border-zinc-200/60 dark:border-zinc-800">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-400 border border-blue-200/60 ">
               <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
             <div>
-              <h3 className="text-base font-bold text-zinc-900 dark:text-white">No employees found</h3>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+              <h3 className="text-base font-bold text-blue-900 ">No employees found</h3>
+              <p className="text-sm text-blue-500 mt-1">
                 There are no employee profiles matching the search queries or filters. Try adjusting your settings.
               </p>
             </div>
@@ -300,7 +300,7 @@ export default function EmployeeProfilePage() {
                 setStatusFilter("ALL");
                 setEmploymentFilter("ALL");
               }}
-              className="px-4 py-2 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-800/80 transition-colors"
+              className="px-4 py-2 rounded-xl border border-blue-200 text-xs font-semibold hover:bg-blue-50 :bg-blue-800/80 transition-colors"
             >
               Reset Filters
             </button>
@@ -308,8 +308,8 @@ export default function EmployeeProfilePage() {
         ) : (
           // Employee List Table
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm text-zinc-500 dark:text-zinc-400">
-              <thead className="bg-zinc-50 dark:bg-zinc-950 text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 border-b border-zinc-200 dark:border-zinc-800">
+            <table className="w-full border-collapse text-left text-sm text-blue-500 ">
+              <thead className="bg-blue-50 text-xs font-bold uppercase tracking-wider text-blue-600 border-b border-blue-200 ">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Code</th>
                   <th className="px-6 py-4 font-semibold">Employee Details</th>
@@ -320,34 +320,34 @@ export default function EmployeeProfilePage() {
                   <th className="px-6 py-4 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800/60">
+              <tbody className="divide-y divide-blue-200 ">
                 {filteredEmployees.map((emp) => (
                   <tr
                     key={emp.id}
-                    className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/30 transition-colors group"
+                    className="hover:bg-blue-50/50 :bg-blue-900/30 transition-colors group"
                   >
                     {/* Code */}
-                    <td className="px-6 py-4 font-mono font-bold text-zinc-900 dark:text-white">
+                    <td className="px-6 py-4 font-mono font-bold text-blue-900 ">
                       {emp.code}
                     </td>
                     {/* Details */}
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-zinc-900 dark:text-white">
+                        <span className="font-semibold text-blue-900 ">
                           {emp.name}
                         </span>
-                        <span className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">
+                        <span className="text-xs text-blue-400 mt-0.5">
                           {emp.designation || "No designation"}
                         </span>
                       </div>
                     </td>
                     {/* NRIC FIN */}
-                    <td className="px-6 py-4 font-mono text-zinc-700 dark:text-zinc-300">
+                    <td className="px-6 py-4 font-mono text-blue-700 ">
                       <div className="flex items-center gap-2">
                         <span>{maskNric(emp.nricFin, showNricMap[emp.id])}</span>
                         <button
                           onClick={() => toggleNricReveal(emp.id)}
-                          className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1 rounded-md transition-colors"
+                          className="text-blue-400 hover:text-blue-600 :text-blue-200 p-1 rounded-md transition-colors"
                           title="Reveal / Mask NRIC"
                         >
                           {showNricMap[emp.id] ? (
@@ -368,18 +368,18 @@ export default function EmployeeProfilePage() {
                       <div className="flex flex-col text-xs">
                         <a
                           href={`mailto:${emp.email}`}
-                          className="hover:underline text-cyan-600 dark:text-cyan-400 font-medium truncate max-w-[180px]"
+                          className="hover:underline text-cyan-600 font-medium truncate max-w-[180px]"
                         >
                           {emp.email}
                         </a>
-                        <span className="text-zinc-400 dark:text-zinc-500 mt-1 font-mono">
+                        <span className="text-blue-400 mt-1 font-mono">
                           {emp.mobileNo || emp.contactNo || "—"}
                         </span>
                       </div>
                     </td>
                     {/* Employment */}
-                    <td className="px-6 py-4 text-zinc-700 dark:text-zinc-300">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200">
+                    <td className="px-6 py-4 text-blue-700 ">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-100 text-blue-800 ">
                         {emp.employmentType || "—"}
                       </span>
                     </td>
@@ -389,11 +389,11 @@ export default function EmployeeProfilePage() {
                         onClick={() => handleToggleStatus(emp)}
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold transition-all hover:scale-[1.02] cursor-pointer ${
                           emp.status === "ACTIVE"
-                            ? "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                            : "bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-500 border border-zinc-500/30"
+                            ? "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 border border-emerald-500/30"
+                            : "bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 border border-blue-500/30"
                         }`}
                       >
-                        <span className={`mr-1.5 h-1.5 w-1.5 rounded-full ${emp.status === "ACTIVE" ? "bg-emerald-500 animate-pulse" : "bg-zinc-400"}`} />
+                        <span className={`mr-1.5 h-1.5 w-1.5 rounded-full ${emp.status === "ACTIVE" ? "bg-emerald-500 animate-pulse" : "bg-blue-400"}`} />
                         {emp.status}
                       </button>
                     </td>
@@ -402,7 +402,7 @@ export default function EmployeeProfilePage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/dashboard/master-profile/employee/${emp.id}/edit`}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-150"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200 text-blue-500 hover:text-blue-950 :text-white hover:bg-blue-100 :bg-blue-800/80 hover:border-blue-300 :border-blue-700 transition-all duration-150"
                           title="Edit Profile"
                         >
                           <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -412,7 +412,7 @@ export default function EmployeeProfilePage() {
                         <button
                           type="button"
                           onClick={() => setEmployeeToDelete(emp)}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 text-rose-500 hover:text-white hover:bg-rose-500 hover:border-rose-600 dark:hover:bg-rose-950/30 transition-all duration-150 cursor-pointer"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200 text-rose-500 hover:text-white hover:bg-rose-500 hover:border-rose-600 :bg-rose-950/30 transition-all duration-150 cursor-pointer"
                           title="Delete Profile"
                         >
                           <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -434,44 +434,44 @@ export default function EmployeeProfilePage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Glass backdrop */}
           <div 
-            className="absolute inset-0 bg-zinc-950/60 backdrop-blur-md transition-opacity duration-300"
+            className="absolute inset-0 bg-blue-950/60 backdrop-blur-md transition-opacity duration-300"
             onClick={() => !isDeleting && setEmployeeToDelete(null)}
           />
           
           {/* Modal Container */}
-          <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-6 text-left align-middle shadow-2xl transition-all duration-300 animate-in fade-in zoom-in-95">
+          <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white border border-blue-200 p-6 text-left align-middle shadow-2xl transition-all duration-300 animate-in fade-in zoom-in-95">
             {/* Danger Warning Header */}
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 ">
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                <h3 className="text-lg font-bold text-blue-900 ">
                   Delete Employee Profile
                 </h3>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs text-blue-500 ">
                   This action is highly destructive and cannot be undone.
                 </p>
               </div>
             </div>
 
             {/* Employee Info Block */}
-            <div className="mt-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-850">
+            <div className="mt-4 p-4 rounded-xl bg-blue-50 border border-blue-150 ">
               <div className="grid grid-cols-3 gap-y-2 text-xs">
-                <span className="text-zinc-400 font-medium">Code:</span>
-                <span className="col-span-2 text-zinc-900 dark:text-zinc-200 font-mono font-bold">{employeeToDelete.code}</span>
+                <span className="text-blue-400 font-medium">Code:</span>
+                <span className="col-span-2 text-blue-900 font-mono font-bold">{employeeToDelete.code}</span>
                 
-                <span className="text-zinc-400 font-medium">Name:</span>
-                <span className="col-span-2 text-zinc-900 dark:text-zinc-200 font-semibold">{employeeToDelete.name}</span>
+                <span className="text-blue-400 font-medium">Name:</span>
+                <span className="col-span-2 text-blue-900 font-semibold">{employeeToDelete.name}</span>
                 
-                <span className="text-zinc-400 font-medium">Designation:</span>
-                <span className="col-span-2 text-zinc-900 dark:text-zinc-250">{employeeToDelete.designation || "—"}</span>
+                <span className="text-blue-400 font-medium">Designation:</span>
+                <span className="col-span-2 text-blue-900 ">{employeeToDelete.designation || "—"}</span>
               </div>
             </div>
 
-            <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <p className="mt-4 text-sm text-blue-600 leading-relaxed">
               Are you sure you want to permanently delete this employee? This will purge all organizational records linked to this user.
             </p>
 
@@ -481,7 +481,7 @@ export default function EmployeeProfilePage() {
                 type="button"
                 disabled={isDeleting}
                 onClick={() => setEmployeeToDelete(null)}
-                className="px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                className="px-4 py-2.5 rounded-xl border border-blue-200 text-sm font-semibold text-blue-700 hover:bg-blue-50 :bg-blue-900 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
               >
                 Cancel
               </button>

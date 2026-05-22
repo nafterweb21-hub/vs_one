@@ -49,28 +49,28 @@ export default function EditMaterialCategoryPage({ params }: { params: Promise<{
       
       {/* Header section */}
       <div>
-        <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 uppercase tracking-wider">
           <a href="/dashboard/profiles" className="hover:underline">Master Profiles</a>
           <span>/</span>
           <a href="/dashboard/profiles/material-categories" className="hover:underline">Material Category Profile</a>
           <span>/</span>
           <span>Modify Category</span>
         </div>
-        <h2 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+        <h2 className="mt-1 text-2xl font-bold tracking-tight text-blue-900 ">
           Modify Material Category
         </h2>
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-xs text-blue-500 ">
           Modify description remarks or status parameters for this category. Category name is immutable.
         </p>
       </div>
 
       {loading ? (
-        <div className="w-full flex h-64 flex-col items-center justify-center rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-sm">
+        <div className="w-full flex h-64 flex-col items-center justify-center rounded-2xl border border-blue-200 bg-white shadow-sm">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent"></div>
-          <span className="mt-4 text-xs font-medium text-zinc-500">Retrieving material category details...</span>
+          <span className="mt-4 text-xs font-medium text-blue-500">Retrieving material category details...</span>
         </div>
       ) : error ? (
-        <div className="w-full rounded-2xl border border-rose-200 bg-rose-50/50 p-6 text-center text-rose-800 dark:border-rose-950/20 dark:bg-rose-950/10 dark:text-rose-400 shadow-sm">
+        <div className="w-full rounded-2xl border border-rose-200 bg-rose-50/50 p-6 text-center text-rose-800 shadow-sm">
           <p className="text-sm font-semibold">{error}</p>
           <a
             href="/dashboard/profiles/material-categories"

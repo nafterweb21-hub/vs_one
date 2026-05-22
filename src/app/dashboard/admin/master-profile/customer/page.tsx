@@ -442,7 +442,7 @@ export default function CustomerProfilePage() {
           <h1 className="text-2xl font-bold tracking-tight text-black">
             Customer Profile
           </h1>
-          <p className="text-sm text-zinc-650">
+          <p className="text-sm text-blue-650">
             Maintain the master list of customers along with their multiple contact persons and addresses.
           </p>
         </div>
@@ -462,7 +462,7 @@ export default function CustomerProfilePage() {
       <div className="rounded-xl glossy-bg p-4 bg-white">
         <div className="relative max-w-md">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <svg className="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
           </div>
@@ -471,7 +471,7 @@ export default function CustomerProfilePage() {
             placeholder="Search by code or name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg glossy-input py-2 pl-10 pr-4 text-sm outline-hidden placeholder:text-zinc-500 bg-white"
+            className="w-full rounded-lg glossy-input py-2 pl-10 pr-4 text-sm outline-hidden placeholder:text-blue-500 bg-white"
           />
         </div>
       </div>
@@ -480,7 +480,7 @@ export default function CustomerProfilePage() {
       <div className="overflow-hidden rounded-xl glossy-bg bg-white">
         {isLoading ? (
           <div className="flex h-48 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-blue-600" />
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
           </div>
         ) : errorMsg ? (
           <div className="flex h-48 flex-col items-center justify-center gap-2 p-6 text-center">
@@ -488,18 +488,18 @@ export default function CustomerProfilePage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
             </svg>
             <p className="font-semibold text-black">Error loading customers</p>
-            <p className="text-sm text-zinc-600">{errorMsg}</p>
+            <p className="text-sm text-blue-600">{errorMsg}</p>
             <button onClick={loadCustomers} className="mt-2 text-sm font-semibold text-blue-600 hover:text-blue-500 cursor-pointer">
               Try again
             </button>
           </div>
         ) : filteredCustomers.length === 0 ? (
           <div className="flex h-48 flex-col items-center justify-center p-6 text-center">
-            <svg className="h-12 w-12 text-zinc-300" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <svg className="h-12 w-12 text-blue-300" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             <p className="mt-2 font-semibold text-black">No customers found</p>
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-blue-600">
               {searchQuery ? "No matches for your criteria." : "Create your first Customer Profile to begin."}
             </p>
           </div>
@@ -507,7 +507,7 @@ export default function CustomerProfilePage() {
           <div className="overflow-x-auto bg-white">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-zinc-200 bg-zinc-50 text-xs font-bold uppercase tracking-wider text-zinc-700">
+                <tr className="border-b border-blue-200 bg-blue-50 text-xs font-bold uppercase tracking-wider text-blue-700">
                   <th className="px-6 py-4.5 w-16">SN</th>
                   <th className="px-6 py-4.5">Customer Code</th>
                   <th className="px-6 py-4.5">Customer Name</th>
@@ -517,25 +517,25 @@ export default function CustomerProfilePage() {
                   <th className="px-6 py-4.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200">
+              <tbody className="divide-y divide-blue-200">
                 {filteredCustomers.map((customer, index) => (
                   <tr
                     key={customer.id}
                     className="group hover:bg-blue-50/40 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm text-zinc-500">
+                    <td className="px-6 py-4 text-sm text-blue-500">
                       {index + 1}
                     </td>
                     <td className="px-6 py-4 text-sm font-bold text-black">
                       {customer.customerCode}
                     </td>
-                    <td className="px-6 py-4 text-sm text-zinc-800 font-medium">
+                    <td className="px-6 py-4 text-sm text-blue-800 font-medium">
                       {customer.customerName}
                     </td>
-                    <td className="px-6 py-4 text-sm text-center text-zinc-800">
+                    <td className="px-6 py-4 text-sm text-center text-blue-800">
                       {customer._count.contactPersons}
                     </td>
-                    <td className="px-6 py-4 text-sm text-center text-zinc-800">
+                    <td className="px-6 py-4 text-sm text-center text-blue-800">
                       {customer._count.addresses}
                     </td>
                     <td className="px-6 py-4">
@@ -543,10 +543,10 @@ export default function CustomerProfilePage() {
                         className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold border ${
                           customer.status === "Active"
                             ? "bg-blue-50 text-blue-700 border-blue-200"
-                            : "bg-zinc-50 text-zinc-600 border-zinc-200"
+                            : "bg-blue-50 text-blue-600 border-blue-200"
                         }`}
                       >
-                        <span className={`h-1.5 w-1.5 rounded-full ${customer.status === "Active" ? "bg-blue-600" : "bg-zinc-400"}`} />
+                        <span className={`h-1.5 w-1.5 rounded-full ${customer.status === "Active" ? "bg-blue-600" : "bg-blue-400"}`} />
                         {customer.status}
                       </span>
                     </td>
@@ -589,16 +589,16 @@ export default function CustomerProfilePage() {
       {/* 1. Create Customer Modal */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
-          <div className="fixed inset-0 bg-zinc-950/30 backdrop-blur-xs" onClick={() => setIsCreateModalOpen(false)} />
+          <div className="fixed inset-0 bg-blue-950/30 backdrop-blur-xs" onClick={() => setIsCreateModalOpen(false)} />
 
-          <div className="relative w-full max-w-lg transform overflow-hidden rounded-xl bg-white p-6 shadow-xl border border-zinc-200 transition-all">
-            <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
+          <div className="relative w-full max-w-lg transform overflow-hidden rounded-xl bg-white p-6 shadow-xl border border-blue-200 transition-all">
+            <div className="flex items-center justify-between border-b border-blue-200 pb-4">
               <h2 className="text-xl font-bold text-black">
                 Create Customer Profile
               </h2>
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 cursor-pointer"
+                className="rounded-lg p-1.5 text-blue-400 hover:bg-blue-100 cursor-pointer"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -620,7 +620,7 @@ export default function CustomerProfilePage() {
 
               {/* Customer Code */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-zinc-800">
+                <label className="text-sm font-bold text-blue-800">
                   Customer Code <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -631,14 +631,14 @@ export default function CustomerProfilePage() {
                   onChange={(e) => setNewCode(e.target.value)}
                   className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden"
                 />
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-blue-500">
                   Once saved, Customer Code cannot be changed. Must be unique.
                 </p>
               </div>
 
               {/* Customer Name */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-zinc-800">
+                <label className="text-sm font-bold text-blue-800">
                   Customer Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -649,14 +649,14 @@ export default function CustomerProfilePage() {
                   onChange={(e) => setNewName(e.target.value)}
                   className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden"
                 />
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-blue-500">
                   Once saved, Customer Name cannot be changed. Must be unique.
                 </p>
               </div>
 
               {/* Remarks */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-zinc-800">
+                <label className="text-sm font-bold text-blue-800">
                   Remarks
                 </label>
                 <textarea
@@ -669,11 +669,11 @@ export default function CustomerProfilePage() {
               </div>
 
               {/* Form Buttons */}
-              <div className="flex items-center justify-end gap-3 border-t border-zinc-200 pt-5 mt-6">
+              <div className="flex items-center justify-end gap-3 border-t border-blue-200 pt-5 mt-6">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-zinc-800 cursor-pointer"
+                  className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-blue-800 cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -697,27 +697,27 @@ export default function CustomerProfilePage() {
       {/* 2. Manage Details Modal */}
       {isManageModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
-          <div className="fixed inset-0 bg-zinc-950/30 backdrop-blur-xs" onClick={() => setIsManageModalOpen(false)} />
+          <div className="fixed inset-0 bg-blue-950/30 backdrop-blur-xs" onClick={() => setIsManageModalOpen(false)} />
 
-          <div className="relative w-full max-w-4xl transform overflow-hidden rounded-xl bg-white p-6 shadow-xl border border-zinc-200 transition-all flex flex-col max-h-[85vh]">
+          <div className="relative w-full max-w-4xl transform overflow-hidden rounded-xl bg-white p-6 shadow-xl border border-blue-200 transition-all flex flex-col max-h-[85vh]">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
+            <div className="flex items-center justify-between border-b border-blue-200 pb-4">
               <div>
                 <h2 className="text-xl font-bold text-black flex items-center gap-2">
                   <span>Manage Customer Profile</span>
                   {customerDetail && (
-                    <span className="text-sm bg-zinc-150 px-2.5 py-1 rounded-md border border-zinc-200 text-zinc-650 font-semibold">
+                    <span className="text-sm bg-blue-150 px-2.5 py-1 rounded-md border border-blue-200 text-blue-650 font-semibold">
                       {customerDetail.customerCode}
                     </span>
                   )}
                 </h2>
-                <p className="text-sm text-zinc-500 mt-0.5">
+                <p className="text-sm text-blue-500 mt-0.5">
                   {customerDetail?.customerName}
                 </p>
               </div>
               <button
                 onClick={() => setIsManageModalOpen(false)}
-                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 cursor-pointer"
+                className="rounded-lg p-1.5 text-blue-400 hover:bg-blue-100 cursor-pointer"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -726,7 +726,7 @@ export default function CustomerProfilePage() {
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-zinc-200 mt-4 justify-center">
+            <div className="flex border-b border-blue-200 mt-4 justify-center">
               {[
                 { id: "general", label: "General Info" },
                 { id: "contacts", label: `Contact Persons (${customerDetail?.contactPersons.length || 0})` },
@@ -742,7 +742,7 @@ export default function CustomerProfilePage() {
                   className={`px-4 py-2.5 text-sm font-bold border-b-2 transition-all cursor-pointer ${
                     detailTab === t.id
                       ? "border-blue-600 text-blue-600"
-                      : "border-transparent text-zinc-550 hover:text-zinc-800"
+                      : "border-transparent text-blue-550 hover:text-blue-800"
                   }`}
                 >
                   {t.label}
@@ -754,7 +754,7 @@ export default function CustomerProfilePage() {
             <div className="flex-1 overflow-y-auto py-5 space-y-4 min-h-[40vh]">
               {!customerDetail ? (
                 <div className="flex h-36 items-center justify-center">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-blue-600" />
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
                 </div>
               ) : (
                 <>
@@ -763,21 +763,21 @@ export default function CustomerProfilePage() {
                     <div className="space-y-4 max-w-xl">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1">
-                          <span className="text-sm font-bold text-zinc-500 uppercase">Customer Code</span>
-                          <span className="text-base font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">
+                          <span className="text-sm font-bold text-blue-500 uppercase">Customer Code</span>
+                          <span className="text-base font-bold text-black bg-blue-50 border border-blue-200 px-3 py-2 rounded-lg">
                             {customerDetail.customerCode}
                           </span>
                         </div>
                         <div className="flex flex-col gap-1">
-                          <span className="text-sm font-bold text-zinc-500 uppercase">Customer Name</span>
-                          <span className="text-base font-bold text-black bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg">
+                          <span className="text-sm font-bold text-blue-500 uppercase">Customer Name</span>
+                          <span className="text-base font-bold text-black bg-blue-50 border border-blue-200 px-3 py-2 rounded-lg">
                             {customerDetail.customerName}
                           </span>
                         </div>
                       </div>
 
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-base font-bold text-zinc-800">
+                        <label className="text-base font-bold text-blue-800">
                           Remarks
                         </label>
                         <textarea
@@ -840,7 +840,7 @@ export default function CustomerProfilePage() {
                           {/* Row 1: Contact Person, Tel No, Mobile No — spec order */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div className="flex flex-col gap-1">
-                              <label className="text-xs font-bold text-zinc-700">Contact Person <span className="text-red-500">*</span></label>
+                              <label className="text-xs font-bold text-blue-700">Contact Person <span className="text-red-500">*</span></label>
                               <input
                                 type="text"
                                 required
@@ -850,7 +850,7 @@ export default function CustomerProfilePage() {
                               />
                             </div>
                             <div className="flex flex-col gap-1">
-                              <label className="text-xs font-bold text-zinc-700">Tel No</label>
+                              <label className="text-xs font-bold text-blue-700">Tel No</label>
                               <input
                                 type="text"
                                 value={contactTel}
@@ -859,7 +859,7 @@ export default function CustomerProfilePage() {
                               />
                             </div>
                             <div className="flex flex-col gap-1">
-                              <label className="text-xs font-bold text-zinc-700">Mobile No</label>
+                              <label className="text-xs font-bold text-blue-700">Mobile No</label>
                               <input
                                 type="text"
                                 value={contactMobile}
@@ -872,7 +872,7 @@ export default function CustomerProfilePage() {
                           {/* Row 2: Fax No, Email, Designation — spec order */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div className="flex flex-col gap-1">
-                              <label className="text-xs font-bold text-zinc-700">Fax No</label>
+                              <label className="text-xs font-bold text-blue-700">Fax No</label>
                               <input
                                 type="text"
                                 value={contactFax}
@@ -881,7 +881,7 @@ export default function CustomerProfilePage() {
                               />
                             </div>
                             <div className="flex flex-col gap-1">
-                              <label className="text-xs font-bold text-zinc-700">Email</label>
+                              <label className="text-xs font-bold text-blue-700">Email</label>
                               <input
                                 type="email"
                                 value={contactEmail}
@@ -890,7 +890,7 @@ export default function CustomerProfilePage() {
                               />
                             </div>
                             <div className="flex flex-col gap-1">
-                              <label className="text-xs font-bold text-zinc-700">Designation</label>
+                              <label className="text-xs font-bold text-blue-700">Designation</label>
                               <input
                                 type="text"
                                 value={contactDesignation}
@@ -907,9 +907,9 @@ export default function CustomerProfilePage() {
                                 id="contactDefault"
                                 checked={contactIsDefault}
                                 onChange={(e) => setContactIsDefault(e.target.checked)}
-                                className="h-4.5 w-4.5 rounded-sm border-zinc-300 text-blue-600 focus:ring-blue-500"
+                                className="h-4.5 w-4.5 rounded-sm border-blue-300 text-blue-600 focus:ring-blue-500"
                               />
-                              <label htmlFor="contactDefault" className="text-sm font-semibold text-zinc-800">
+                              <label htmlFor="contactDefault" className="text-sm font-semibold text-blue-800">
                                 Set as Default Contact Person
                               </label>
                             </div>
@@ -936,14 +936,14 @@ export default function CustomerProfilePage() {
 
                       {/* Contact Persons Table */}
                       {customerDetail.contactPersons.length === 0 ? (
-                        <div className="text-center py-6 text-xs text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
+                        <div className="text-center py-6 text-xs text-blue-500 border border-dashed border-blue-200 rounded-lg">
                           No contact persons added yet. Click &quot;Add Contact Person&quot; above.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto border border-zinc-200 rounded-lg">
+                        <div className="overflow-x-auto border border-blue-200 rounded-lg">
                           <table className="w-full text-left border-collapse text-xs">
                             <thead>
-                              <tr className="border-b border-zinc-200 bg-zinc-50 font-bold text-zinc-700">
+                              <tr className="border-b border-blue-200 bg-blue-50 font-bold text-blue-700">
                                 <th className="px-4 py-3">Contact Person</th>
                                 <th className="px-4 py-3">Tel No</th>
                                 <th className="px-4 py-3">Mobile No</th>
@@ -955,15 +955,15 @@ export default function CustomerProfilePage() {
                                 <th className="px-4 py-3 text-right">Actions</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-zinc-150">
+                            <tbody className="divide-y divide-blue-150">
                               {customerDetail.contactPersons.map((contact) => (
-                                <tr key={contact.id} className="hover:bg-zinc-50">
+                                <tr key={contact.id} className="hover:bg-blue-50">
                                   <td className="px-4 py-3 font-bold text-black">{contact.contactPersonName}</td>
-                                  <td className="px-4 py-3 text-zinc-800">{contact.telNo || "—"}</td>
-                                  <td className="px-4 py-3 text-zinc-800">{contact.mobileNo || "—"}</td>
-                                  <td className="px-4 py-3 text-zinc-800">{contact.faxNo || "—"}</td>
-                                  <td className="px-4 py-3 text-zinc-800">{contact.email || "—"}</td>
-                                  <td className="px-4 py-3 text-zinc-800">{contact.designation || "—"}</td>
+                                  <td className="px-4 py-3 text-blue-800">{contact.telNo || "—"}</td>
+                                  <td className="px-4 py-3 text-blue-800">{contact.mobileNo || "—"}</td>
+                                  <td className="px-4 py-3 text-blue-800">{contact.faxNo || "—"}</td>
+                                  <td className="px-4 py-3 text-blue-800">{contact.email || "—"}</td>
+                                  <td className="px-4 py-3 text-blue-800">{contact.designation || "—"}</td>
                                   <td className="px-4 py-3 text-center">
                                     {contact.isDefault ? (
                                       <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700 border border-blue-200">
@@ -983,7 +983,7 @@ export default function CustomerProfilePage() {
                                       className={`inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold border ${
                                         contact.status === "Active"
                                           ? "bg-blue-50 text-blue-700 border-blue-200"
-                                          : "bg-zinc-50 text-zinc-600 border-zinc-200"
+                                          : "bg-blue-50 text-blue-600 border-blue-200"
                                       }`}
                                     >
                                       {contact.status}
@@ -1054,7 +1054,7 @@ export default function CustomerProfilePage() {
                           )}
 
                           <div className="flex flex-col gap-1">
-                            <label className="text-xs font-bold text-zinc-700">Street Address <span className="text-red-500">*</span></label>
+                            <label className="text-xs font-bold text-blue-700">Street Address <span className="text-red-500">*</span></label>
                             <textarea
                               required
                               rows={3}
@@ -1072,9 +1072,9 @@ export default function CustomerProfilePage() {
                                 id="addressDefault"
                                 checked={addressIsDefault}
                                 onChange={(e) => setAddressIsDefault(e.target.checked)}
-                                className="h-4.5 w-4.5 rounded-sm border-zinc-300 text-blue-600 focus:ring-blue-500"
+                                className="h-4.5 w-4.5 rounded-sm border-blue-300 text-blue-600 focus:ring-blue-500"
                               />
-                              <label htmlFor="addressDefault" className="text-sm font-semibold text-zinc-800">
+                              <label htmlFor="addressDefault" className="text-sm font-semibold text-blue-800">
                                 Set as Default Address
                               </label>
                             </div>
@@ -1101,24 +1101,24 @@ export default function CustomerProfilePage() {
 
                       {/* Addresses Table */}
                       {customerDetail.addresses.length === 0 ? (
-                        <div className="text-center py-6 text-xs text-zinc-500 border border-dashed border-zinc-200 rounded-lg">
+                        <div className="text-center py-6 text-xs text-blue-500 border border-dashed border-blue-200 rounded-lg">
                           No addresses added yet. Click &quot;Add Address&quot; above.
                         </div>
                       ) : (
-                        <div className="overflow-x-auto border border-zinc-200 rounded-lg">
+                        <div className="overflow-x-auto border border-blue-200 rounded-lg">
                           <table className="w-full text-left border-collapse text-xs">
                             <thead>
-                              <tr className="border-b border-zinc-200 bg-zinc-50 font-bold text-zinc-700">
+                              <tr className="border-b border-blue-200 bg-blue-50 font-bold text-blue-700">
                                 <th className="px-4 py-3">Address</th>
                                 <th className="px-4 py-3 text-center">Default</th>
                                 <th className="px-4 py-3 text-center">Status</th>
                                 <th className="px-4 py-3 text-right">Actions</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-zinc-150">
+                            <tbody className="divide-y divide-blue-150">
                               {customerDetail.addresses.map((addr) => (
-                                <tr key={addr.id} className="hover:bg-zinc-50">
-                                  <td className="px-4 py-3 text-zinc-800 whitespace-pre-line font-medium leading-relaxed">
+                                <tr key={addr.id} className="hover:bg-blue-50">
+                                  <td className="px-4 py-3 text-blue-800 whitespace-pre-line font-medium leading-relaxed">
                                     {addr.address}
                                   </td>
                                   <td className="px-4 py-3 text-center">
@@ -1140,7 +1140,7 @@ export default function CustomerProfilePage() {
                                       className={`inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold border ${
                                         addr.status === "Active"
                                           ? "bg-blue-50 text-blue-700 border-blue-200"
-                                          : "bg-zinc-50 text-zinc-600 border-zinc-200"
+                                          : "bg-blue-50 text-blue-600 border-blue-200"
                                       }`}
                                     >
                                       {addr.status}
@@ -1185,7 +1185,7 @@ export default function CustomerProfilePage() {
             </div>
 
             {/* Footer Close Button */}
-            <div className="flex items-center justify-end border-t border-zinc-200 pt-4 mt-2">
+            <div className="flex items-center justify-end border-t border-blue-200 pt-4 mt-2">
               <button
                 type="button"
                 onClick={() => setIsManageModalOpen(false)}

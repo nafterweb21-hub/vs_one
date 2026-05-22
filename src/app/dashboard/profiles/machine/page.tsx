@@ -367,24 +367,24 @@ export default function MachineProfilePage() {
   const isView = viewMode === "view";
 
   const pageHeader = (
-    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 pb-6 border-b border-blue-200 ">
       <div>
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-zinc-400 dark:text-zinc-500 font-semibold tracking-wider uppercase mb-1">
-          <Link href="/dashboard" className="hover:text-zinc-600 dark:hover:text-zinc-300">Dashboard</Link>
+        <div className="flex items-center gap-2 text-xs text-blue-400 font-semibold tracking-wider uppercase mb-1">
+          <Link href="/dashboard" className="hover:text-blue-600 :text-blue-300">Dashboard</Link>
           <span>/</span>
-          <Link href="/dashboard/profiles" className="hover:text-zinc-600 dark:hover:text-zinc-300">Profiles</Link>
+          <Link href="/dashboard/profiles" className="hover:text-blue-600 :text-blue-300">Profiles</Link>
           <span>/</span>
           {isForm || isView ? (
             <>
-              <button onClick={goList} className="hover:text-zinc-600 dark:hover:text-zinc-300">Machine Profile</button>
+              <button onClick={goList} className="hover:text-blue-600 :text-blue-300">Machine Profile</button>
               <span>/</span>
-              <span className="text-zinc-500 dark:text-zinc-400">
+              <span className="text-blue-500 ">
                 {viewMode === "add" ? "Add Machine" : viewMode === "edit" ? "Edit Machine" : "View Machine"}
               </span>
             </>
           ) : (
-            <span className="text-zinc-500 dark:text-zinc-400">Machine Profile</span>
+            <span className="text-blue-500 ">Machine Profile</span>
           )}
         </div>
 
@@ -394,10 +394,10 @@ export default function MachineProfilePage() {
             <Cpu size={20} />
           </div>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h2 className="text-2xl font-bold tracking-tight text-blue-900 ">
               {viewMode === "add" ? "Add Machine" : viewMode === "edit" ? "Edit Machine" : "Machine Profile"}
             </h2>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+            <p className="text-sm text-blue-500 mt-0.5">
               {isForm
                 ? "Fill in the specifications, categories, and upload files below."
                 : "Manage machines, CNC parameters, conventional mills, and welding parameters."}
@@ -409,8 +409,8 @@ export default function MachineProfilePage() {
       {/* Mock Role Switcher and Actions */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Mock Role Dropdown */}
-        <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800/80 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700">
-          <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Role</label>
+        <div className="flex items-center gap-2 bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200 ">
+          <label className="text-[10px] font-bold text-blue-500 uppercase tracking-wider">Role</label>
           <select
             value={role}
             onChange={(e) => {
@@ -421,7 +421,7 @@ export default function MachineProfilePage() {
                 goList();
               }
             }}
-            className="text-xs font-semibold bg-transparent border-none focus:outline-none text-zinc-700 dark:text-zinc-300 cursor-pointer"
+            className="text-xs font-semibold bg-transparent border-none focus:outline-none text-blue-700 cursor-pointer"
           >
             <option value="Admin">Admin (Full CRUD)</option>
             <option value="User">User (View Only)</option>
@@ -441,7 +441,7 @@ export default function MachineProfilePage() {
         {(isForm || isView) && (
           <button
             onClick={goList}
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-blue-600 bg-white border border-blue-200 rounded-lg hover:bg-blue-100 :bg-blue-800 transition-colors shrink-0"
           >
             <ArrowLeft size={16} /> Back to List
           </button>
@@ -459,19 +459,19 @@ export default function MachineProfilePage() {
       <div className="p-6 lg:p-8 space-y-6">
         {pageHeader}
 
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/40 flex items-center gap-3">
+        <div className="bg-white border border-blue-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-blue-100 bg-blue-50/60 flex items-center gap-3">
             <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
               <Cpu size={15} />
             </div>
-            <span className="font-semibold text-sm text-zinc-700 dark:text-zinc-300">
+            <span className="font-semibold text-sm text-blue-700 ">
               Machine Specification Form
             </span>
           </div>
 
           <form id="machine-form" onSubmit={handleSubmit} className="p-6 space-y-6">
             {formError && (
-              <div className="p-3 bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 text-sm font-medium rounded-lg flex items-center gap-2 border border-rose-200 dark:border-rose-500/20 animate-shake">
+              <div className="p-3 bg-rose-50 text-rose-700 text-sm font-medium rounded-lg flex items-center gap-2 border border-rose-200 animate-shake">
                 <AlertCircle size={15} />
                 <span>{formError}</span>
               </div>
@@ -480,10 +480,10 @@ export default function MachineProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Machine Code */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
                   Machine Code <span className="text-rose-500">*</span>
                   {viewMode === "edit" && (
-                    <span className="text-[10px] text-zinc-400 font-normal normal-case ml-1 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
+                    <span className="text-[10px] text-blue-400 font-normal normal-case ml-1 bg-blue-100 px-1.5 py-0.5 rounded">
                       locked
                     </span>
                   )}
@@ -496,13 +496,13 @@ export default function MachineProfilePage() {
                   value={formMachineCode}
                   onChange={(e) => setFormMachineCode(e.target.value.toUpperCase())}
                   placeholder="e.g. CNC-01"
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                 />
               </div>
 
               {/* Machine No */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
                   Machine No <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -512,20 +512,20 @@ export default function MachineProfilePage() {
                   value={formMachineNo}
                   onChange={(e) => setFormMachineNo(e.target.value)}
                   placeholder="e.g. M-9982"
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
                 />
               </div>
 
               {/* Machine Category */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
                   Machine Category <span className="text-rose-500">*</span>
                 </label>
                 <select
                   id="machine-category-select"
                   value={formMachineCategory}
                   onChange={(e) => setFormMachineCategory(e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-zinc-700 dark:text-zinc-300 transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-blue-700 transition-colors"
                 >
                   <option value="Machine">Machine</option>
                   <option value="Welding Machine">Welding Machine</option>
@@ -534,7 +534,7 @@ export default function MachineProfilePage() {
 
               {/* Brand */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
                   Brand <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -544,13 +544,13 @@ export default function MachineProfilePage() {
                   value={formBrand}
                   onChange={(e) => setFormBrand(e.target.value)}
                   placeholder="e.g. Mazak"
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
                 />
               </div>
 
               {/* Model */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
                   Model <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -560,14 +560,14 @@ export default function MachineProfilePage() {
                   value={formModel}
                   onChange={(e) => setFormModel(e.target.value)}
                   placeholder="e.g. Quick Turn 250"
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
                 />
               </div>
 
               {/* S/No (Serial No) */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  S/No (Serial No) <span className="text-[10px] font-normal normal-case text-zinc-400">(optional)</span>
+                <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
+                  S/No (Serial No) <span className="text-[10px] font-normal normal-case text-blue-400">(optional)</span>
                 </label>
                 <input
                   id="machine-serial-input"
@@ -575,20 +575,20 @@ export default function MachineProfilePage() {
                   value={formSerialNo}
                   onChange={(e) => setFormSerialNo(e.target.value)}
                   placeholder="e.g. SN-883719"
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
                 />
               </div>
 
               {/* Machine Type */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  Machine Type <span className="text-[10px] font-normal normal-case text-zinc-400">(optional)</span>
+                <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
+                  Machine Type <span className="text-[10px] font-normal normal-case text-blue-400">(optional)</span>
                 </label>
                 <select
                   id="machine-type-select"
                   value={formMachineType}
                   onChange={(e) => setFormMachineType(e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-zinc-700 dark:text-zinc-300 transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-blue-700 transition-colors"
                 >
                   <option value="">Select...</option>
                   <option value="CNC">CNC</option>
@@ -598,14 +598,14 @@ export default function MachineProfilePage() {
 
               {/* Operation Type */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  Operation Type <span className="text-[10px] font-normal normal-case text-zinc-400">(optional)</span>
+                <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
+                  Operation Type <span className="text-[10px] font-normal normal-case text-blue-400">(optional)</span>
                 </label>
                 <select
                   id="machine-operation-select"
                   value={formOperationType}
                   onChange={(e) => setFormOperationType(e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-zinc-700 dark:text-zinc-300 transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-blue-700 transition-colors"
                 >
                   <option value="">Select...</option>
                   <option value="Milling">Milling</option>
@@ -615,8 +615,8 @@ export default function MachineProfilePage() {
 
               {/* Current */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  Current <span className="text-[10px] font-normal normal-case text-zinc-400">(optional)</span>
+                <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
+                  Current <span className="text-[10px] font-normal normal-case text-blue-400">(optional)</span>
                 </label>
                 <input
                   id="machine-current-input"
@@ -624,15 +624,15 @@ export default function MachineProfilePage() {
                   value={formCurrent}
                   onChange={(e) => setFormCurrent(e.target.value)}
                   placeholder="e.g. 400A"
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
                 />
               </div>
             </div>
 
             {/* Remarks */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                Remarks <span className="text-[10px] font-normal normal-case text-zinc-400">(optional)</span>
+              <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
+                Remarks <span className="text-[10px] font-normal normal-case text-blue-400">(optional)</span>
               </label>
               <textarea
                 id="machine-remark-input"
@@ -640,20 +640,20 @@ export default function MachineProfilePage() {
                 onChange={(e) => setFormRemark(e.target.value)}
                 placeholder="Enter details about machine operation tolerances, maintenance schedule, or calibration values..."
                 rows={3}
-                className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 resize-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 resize-none transition-colors"
               />
             </div>
 
             {/* File Upload Component */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                Upload Specification Sheet / Image <span className="text-[10px] font-normal normal-case text-zinc-400">(optional, PDF or Image)</span>
+              <label className="text-xs font-semibold uppercase tracking-wider text-blue-500 ">
+                Upload Specification Sheet / Image <span className="text-[10px] font-normal normal-case text-blue-400">(optional, PDF or Image)</span>
               </label>
               
-              <div className="border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl p-4 bg-zinc-50/50 dark:bg-zinc-900/30 flex flex-col items-center justify-center gap-3">
+              <div className="border border-dashed border-blue-200 rounded-xl p-4 bg-blue-50/50 flex flex-col items-center justify-center gap-3">
                 {formUploadUrl ? (
-                  <div className="flex items-center justify-between w-full max-w-lg p-3 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg">
-                    <div className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  <div className="flex items-center justify-between w-full max-w-lg p-3 bg-white border border-blue-200 rounded-lg">
+                    <div className="flex items-center gap-2 text-sm font-medium text-blue-700 ">
                       <FileText size={16} className="text-amber-500" />
                       <a href={formUploadUrl} target="_blank" rel="noopener noreferrer" className="hover:underline truncate max-w-xs">
                         {formUploadUrl.split("/").pop()}
@@ -662,7 +662,7 @@ export default function MachineProfilePage() {
                     <button
                       type="button"
                       onClick={() => setFormUploadUrl("")}
-                      className="p-1.5 text-zinc-400 hover:text-rose-500 rounded-md hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
+                      className="p-1.5 text-blue-400 hover:text-rose-500 rounded-md hover:bg-blue-50 :bg-blue-900 transition-colors"
                       title="Remove file"
                     >
                       <Trash2 size={15} />
@@ -671,16 +671,16 @@ export default function MachineProfilePage() {
                 ) : uploadingFile ? (
                   <div className="flex flex-col items-center gap-2 py-4">
                     <Loader2 size={24} className="text-amber-500 animate-spin" />
-                    <span className="text-xs font-semibold text-zinc-500">Uploading attachment...</span>
+                    <span className="text-xs font-semibold text-blue-500">Uploading attachment...</span>
                   </div>
                 ) : (
                   <label className="flex flex-col items-center justify-center gap-2 cursor-pointer w-full py-4 text-center group">
-                    <UploadCloud size={28} className="text-zinc-400 group-hover:text-amber-500 transition-colors" />
+                    <UploadCloud size={28} className="text-blue-400 group-hover:text-amber-500 transition-colors" />
                     <div>
-                      <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-amber-500 transition-colors">
+                      <p className="text-sm font-semibold text-blue-700 group-hover:text-amber-500 transition-colors">
                         Click to upload specification
                       </p>
-                      <p className="text-[10px] text-zinc-400 mt-0.5">Supports PDF, PNG, JPG, JPEG, GIF up to 5MB</p>
+                      <p className="text-[10px] text-blue-400 mt-0.5">Supports PDF, PNG, JPG, JPEG, GIF up to 5MB</p>
                     </div>
                     <input
                       id="machine-file-upload"
@@ -694,16 +694,16 @@ export default function MachineProfilePage() {
               </div>
             </div>
 
-            <div className="p-3.5 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-lg text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
+            <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 leading-relaxed">
               <strong>Note:</strong> The Machine Code is unique and cannot be modified once saved. Please ensure it aligns with your asset tracking code.
             </div>
 
             {/* Form actions */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-blue-100 ">
               <button
                 type="button"
                 onClick={goList}
-                className="px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                className="px-5 py-2.5 text-sm font-semibold text-blue-600 bg-white border border-blue-200 rounded-lg hover:bg-blue-100 :bg-blue-800 transition-colors"
               >
                 Cancel
               </button>
@@ -735,25 +735,25 @@ export default function MachineProfilePage() {
       <div className="p-6 lg:p-8 space-y-6">
         {pageHeader}
 
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/40 flex items-center justify-between">
+        <div className="bg-white border border-blue-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-blue-100 bg-blue-50/60 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
                 <Cpu size={17} />
               </div>
               <div>
-                <p className="font-bold text-base text-zinc-900 dark:text-white">{activeItem.machineCode}</p>
-                <p className="text-xs text-zinc-400">Machine Specifications — {activeItem.machineCategory}</p>
+                <p className="font-bold text-base text-blue-900 ">{activeItem.machineCode}</p>
+                <p className="text-xs text-blue-400">Machine Specifications — {activeItem.machineCategory}</p>
               </div>
             </div>
             <span
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
                 activeItem.status === "Active"
-                  ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
-                  : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                  ? "bg-emerald-50 text-emerald-700 "
+                  : "bg-blue-100 text-blue-600 "
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${activeItem.status === "Active" ? "bg-emerald-500" : "bg-zinc-400"}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${activeItem.status === "Active" ? "bg-emerald-500" : "bg-blue-400"}`} />
               {activeItem.status === "Active" ? "Active" : "Deactive"}
             </span>
           </div>
@@ -766,44 +766,44 @@ export default function MachineProfilePage() {
                 { label: "Machine Category", value: activeItem.machineCategory },
                 { label: "Brand", value: activeItem.brand },
                 { label: "Model", value: activeItem.model },
-                { label: "S/No (Serial No)", value: activeItem.serialNo || <span className="text-zinc-300 dark:text-zinc-600 italic">None</span> },
-                { label: "Machine Type", value: activeItem.machineType || <span className="text-zinc-300 dark:text-zinc-600 italic">N/A</span> },
-                { label: "Operation Type", value: activeItem.operationType || <span className="text-zinc-300 dark:text-zinc-600 italic">N/A</span> },
-                { label: "Current", value: activeItem.current || <span className="text-zinc-300 dark:text-zinc-600 italic">N/A</span> },
+                { label: "S/No (Serial No)", value: activeItem.serialNo || <span className="text-blue-300 italic">None</span> },
+                { label: "Machine Type", value: activeItem.machineType || <span className="text-blue-300 italic">N/A</span> },
+                { label: "Operation Type", value: activeItem.operationType || <span className="text-blue-300 italic">N/A</span> },
+                { label: "Current", value: activeItem.current || <span className="text-blue-300 italic">N/A</span> },
                 { label: "Created Date", value: formatDate(activeItem.createdAt) },
                 { label: "Updated Date", value: formatDate(activeItem.updatedAt) },
               ].map(({ label, value }) => (
                 <div key={label} className="space-y-1">
-                  <dt className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">{label}</dt>
-                  <dd className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">{value}</dd>
+                  <dt className="text-[11px] font-bold uppercase tracking-wider text-blue-400 ">{label}</dt>
+                  <dd className="text-sm font-semibold text-blue-800 ">{value}</dd>
                 </div>
               ))}
 
               {/* Uploaded attachment */}
               <div className="space-y-1 sm:col-span-2">
-                <dt className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Specification Sheet / Image</dt>
-                <dd className="text-sm font-semibold text-zinc-850 dark:text-zinc-200 mt-1">
+                <dt className="text-[11px] font-bold uppercase tracking-wider text-blue-400 ">Specification Sheet / Image</dt>
+                <dd className="text-sm font-semibold text-blue-850 mt-1">
                   {activeItem.uploadUrl ? (
                     <a
                       href={activeItem.uploadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-amber-600 dark:text-amber-400 hover:text-amber-700 hover:border-amber-500/30 transition-all"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-amber-600 hover:text-amber-700 hover:border-amber-500/30 transition-all"
                     >
                       <Paperclip size={14} />
                       <span className="truncate max-w-xs">{activeItem.uploadUrl.split("/").pop()}</span>
                     </a>
                   ) : (
-                    <span className="text-zinc-300 dark:text-zinc-600 italic text-xs">No attachment uploaded</span>
+                    <span className="text-blue-300 italic text-xs">No attachment uploaded</span>
                   )}
                 </dd>
               </div>
 
               {/* Remark spans full width */}
               <div className="space-y-1 sm:col-span-3">
-                <dt className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Remarks</dt>
-                <dd className="text-sm font-medium text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-wrap">
-                  {activeItem.remark || <span className="text-zinc-300 dark:text-zinc-600 italic">No remarks provided</span>}
+                <dt className="text-[11px] font-bold uppercase tracking-wider text-blue-400 ">Remarks</dt>
+                <dd className="text-sm font-medium text-blue-600 leading-relaxed whitespace-pre-wrap">
+                  {activeItem.remark || <span className="text-blue-300 italic">No remarks provided</span>}
                 </dd>
               </div>
             </dl>
@@ -820,7 +820,7 @@ export default function MachineProfilePage() {
             )}
             <button
               onClick={goList}
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-blue-600 bg-white border border-blue-200 rounded-lg hover:bg-blue-100 :bg-blue-800 transition-colors"
             >
               <X size={14} /> Close View
             </button>
@@ -839,29 +839,29 @@ export default function MachineProfilePage() {
       {pageHeader}
 
       {/* ── Controls Bar ── */}
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl shadow-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-white border border-blue-200 p-4 rounded-xl shadow-sm">
         {/* Search */}
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-blue-400 " />
           <input
             id="machine-search"
             type="text"
             placeholder="Search code, number, brand, model..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
+            className="w-full pl-9 pr-4 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           {/* Category Filter */}
           <div className="flex items-center gap-2">
-            <label className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider shrink-0">Category</label>
+            <label className="text-[10px] font-bold text-blue-500 uppercase tracking-wider shrink-0">Category</label>
             <select
               id="machine-category-filter"
               value={categoryFilter}
               onChange={(e) => { setCategoryFilter(e.target.value as CategoryFilter); setPage(1); }}
-              className="text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-zinc-700 dark:text-zinc-300 cursor-pointer"
+              className="text-sm bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-blue-700 cursor-pointer"
             >
               <option value="All">All Categories</option>
               <option value="Machine">Machine</option>
@@ -871,12 +871,12 @@ export default function MachineProfilePage() {
 
           {/* Status Filter */}
           <div className="flex items-center gap-2">
-            <label className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider shrink-0">Status</label>
+            <label className="text-[10px] font-bold text-blue-500 uppercase tracking-wider shrink-0">Status</label>
             <select
               id="machine-status-filter"
               value={statusFilter}
               onChange={(e) => { setStatusFilter(e.target.value as StatusFilter); setPage(1); }}
-              className="text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-zinc-700 dark:text-zinc-300 cursor-pointer"
+              className="text-sm bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-blue-700 cursor-pointer"
             >
               <option value="All">All Statuses</option>
               <option value="Active">Active</option>
@@ -886,12 +886,12 @@ export default function MachineProfilePage() {
 
           {/* Sort */}
           <div className="flex items-center gap-2">
-            <ArrowUpDown size={14} className="text-zinc-400 shrink-0" />
+            <ArrowUpDown size={14} className="text-blue-400 shrink-0" />
             <select
               id="machine-sort"
               value={sortKey}
               onChange={(e) => { setSortKey(e.target.value as SortKey); setPage(1); }}
-              className="text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-zinc-700 dark:text-zinc-300 cursor-pointer"
+              className="text-sm bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-blue-700 cursor-pointer"
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -905,32 +905,32 @@ export default function MachineProfilePage() {
       {loading ? (
         <div className="h-64 flex flex-col items-center justify-center gap-2">
           <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
-          <p className="text-sm text-zinc-500">Loading machine profiles...</p>
+          <p className="text-sm text-blue-500">Loading machine profiles...</p>
         </div>
       ) : errorMsg ? (
-        <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 rounded-xl p-6 flex items-center gap-3 text-rose-700 dark:text-rose-400">
+        <div className="bg-rose-50 border border-rose-200 rounded-xl p-6 flex items-center gap-3 text-rose-700 ">
           <AlertCircle size={18} />
           <p className="text-sm font-medium">{errorMsg}</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-12 text-center shadow-sm">
+        <div className="bg-white border border-blue-200 rounded-xl p-12 text-center shadow-sm">
           <div className="mx-auto w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center mb-4">
             <Cpu size={22} className="text-amber-500" />
           </div>
-          <p className="text-zinc-600 dark:text-zinc-400 font-semibold">
+          <p className="text-blue-600 font-semibold">
             {search ? "No Machines Found" : "No Machine Profile records found."}
           </p>
-          <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">
+          <p className="text-xs text-blue-400 mt-1">
             {search || statusFilter !== "All" || categoryFilter !== "All"
               ? "Try adjusting your search or filters."
               : 'Click "Add Machine" in Admin mode to configure your first record.'}
           </p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-white border border-blue-200 rounded-xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm text-zinc-600 dark:text-zinc-400">
-              <thead className="bg-zinc-50 dark:bg-zinc-900/50 text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 border-b border-zinc-200 dark:border-zinc-800">
+            <table className="w-full border-collapse text-left text-sm text-blue-600 ">
+              <thead className="bg-blue-50 text-xs font-bold uppercase tracking-wider text-blue-500 border-b border-blue-200 ">
                 <tr>
                   <th className="px-5 py-4">Machine Code</th>
                   <th className="px-5 py-4">Machine No</th>
@@ -943,9 +943,9 @@ export default function MachineProfilePage() {
                   <th className="px-5 py-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tbody className="divide-y divide-blue-100 ">
                 {pageItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/20 transition-colors group">
+                  <tr key={item.id} className="hover:bg-blue-50/50 :bg-blue-800/20 transition-colors group">
                     {/* Machine Code — Click to View or Edit depending on role */}
                     <td className="px-5 py-4">
                       <button
@@ -953,57 +953,57 @@ export default function MachineProfilePage() {
                         className="inline-flex items-center gap-2 text-left group/code cursor-pointer"
                         title={role === "Admin" ? "Click to edit" : "Click to view"}
                       >
-                        <span className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover/code:bg-amber-600 group-hover/code:text-white transition-all duration-200">
+                        <span className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 group-hover/code:bg-amber-600 group-hover/code:text-white transition-all duration-200">
                           <Cpu size={14} />
                         </span>
-                        <span className="font-bold text-zinc-900 dark:text-white group-hover/code:text-amber-600 dark:group-hover/code:text-amber-400 transition-colors">
+                        <span className="font-bold text-blue-900 group-hover/code:text-amber-600 :text-amber-400 transition-colors">
                           {item.machineCode}
                         </span>
                         {role === "Admin" && (
-                          <Edit2 size={10} className="text-zinc-300 dark:text-zinc-700 group-hover/code:text-amber-500 opacity-0 group-hover/code:opacity-100 transition-all -ml-0.5" />
+                          <Edit2 size={10} className="text-blue-300 group-hover/code:text-amber-500 opacity-0 group-hover/code:opacity-100 transition-all -ml-0.5" />
                         )}
                       </button>
                     </td>
 
                     {/* Machine No */}
-                    <td className="px-5 py-4 font-medium text-zinc-700 dark:text-zinc-300">
+                    <td className="px-5 py-4 font-medium text-blue-700 ">
                       {item.machineNo}
                     </td>
 
                     {/* Brand */}
-                    <td className="px-5 py-4 font-semibold text-zinc-900 dark:text-white">
+                    <td className="px-5 py-4 font-semibold text-blue-900 ">
                       {item.brand}
                     </td>
 
                     {/* Model */}
-                    <td className="px-5 py-4 text-zinc-750 dark:text-zinc-300">
+                    <td className="px-5 py-4 text-blue-750 ">
                       {item.model}
                     </td>
 
                     {/* Machine Type */}
-                    <td className="px-5 py-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                    <td className="px-5 py-4 text-xs font-semibold text-blue-500 ">
                       {item.machineType ? (
-                        <span className="inline-block bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded font-bold">
+                        <span className="inline-block bg-blue-100 px-1.5 py-0.5 rounded font-bold">
                           {item.machineType}
                         </span>
                       ) : (
-                        <span className="text-zinc-350 dark:text-zinc-700 italic">—</span>
+                        <span className="text-blue-350 italic">—</span>
                       )}
                     </td>
 
                     {/* Operation Type */}
-                    <td className="px-5 py-4 text-xs text-zinc-500 dark:text-zinc-400">
+                    <td className="px-5 py-4 text-xs text-blue-500 ">
                       {item.operationType ? (
-                        <span className="inline-block bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
+                        <span className="inline-block bg-blue-100 px-1.5 py-0.5 rounded">
                           {item.operationType}
                         </span>
                       ) : (
-                        <span className="text-zinc-350 dark:text-zinc-700 italic">—</span>
+                        <span className="text-blue-350 italic">—</span>
                       )}
                     </td>
 
                     {/* Category */}
-                    <td className="px-5 py-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                    <td className="px-5 py-4 text-xs font-semibold text-blue-500 ">
                       {item.machineCategory}
                     </td>
 
@@ -1011,10 +1011,10 @@ export default function MachineProfilePage() {
                     <td className="px-5 py-4">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
                         item.status === "Active"
-                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-500/20"
-                          : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60 "
+                          : "bg-blue-100 text-blue-600 border border-blue-200 "
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${item.status === "Active" ? "bg-emerald-500" : "bg-zinc-400"}`} />
+                        <span className={`w-1.5 h-1.5 rounded-full ${item.status === "Active" ? "bg-emerald-500" : "bg-blue-400"}`} />
                         {item.status === "Active" ? "Active" : "Deactive"}
                       </span>
                     </td>
@@ -1024,7 +1024,7 @@ export default function MachineProfilePage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => goView(item)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all active:scale-95 cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-blue-200 hover:bg-blue-100 :bg-blue-800 text-blue-700 transition-all active:scale-95 cursor-pointer"
                           title="View Details"
                         >
                           <Eye size={12} /> View
@@ -1034,7 +1034,7 @@ export default function MachineProfilePage() {
                           <>
                             <button
                               onClick={() => goEdit(item)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all active:scale-95 cursor-pointer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-blue-200 hover:bg-blue-100 :bg-blue-800 text-blue-700 transition-all active:scale-95 cursor-pointer"
                               title="Edit Record"
                             >
                               <Edit2 size={12} /> Edit
@@ -1044,8 +1044,8 @@ export default function MachineProfilePage() {
                               onClick={() => triggerToggleStatus(item)}
                               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all active:scale-95 cursor-pointer ${
                                 item.status === "Active"
-                                  ? "text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10"
-                                  : "text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-500/10"
+                                  ? "text-rose-600 border-rose-200 hover:bg-rose-50 :bg-rose-500/10"
+                                  : "text-emerald-600 border-emerald-200 hover:bg-emerald-50 :bg-emerald-500/10"
                               }`}
                               title={item.status === "Active" ? "Deactivate" : "Activate"}
                             >
@@ -1063,14 +1063,14 @@ export default function MachineProfilePage() {
           </div>
 
           {/* Pagination footer */}
-          <div className="px-5 py-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-50/50 dark:bg-zinc-900/30">
+          <div className="px-5 py-3 border-t border-blue-100 flex items-center justify-between text-xs text-blue-500 bg-blue-50/50 ">
             <span>
               Showing{" "}
-              <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+              <span className="font-semibold text-blue-700 ">
                 {Math.min((page - 1) * PAGE_SIZE + 1, filtered.length)}–{Math.min(page * PAGE_SIZE, filtered.length)}
               </span>{" "}
               of{" "}
-              <span className="font-semibold text-zinc-700 dark:text-zinc-300">{filtered.length}</span>{" "}
+              <span className="font-semibold text-blue-700 ">{filtered.length}</span>{" "}
               records
             </span>
             <div className="flex items-center gap-1">
@@ -1078,7 +1078,7 @@ export default function MachineProfilePage() {
                 id="machine-prev-page"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-1.5 rounded-lg border border-blue-200 hover:bg-blue-100 :bg-blue-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft size={14} />
               </button>
@@ -1091,7 +1091,7 @@ export default function MachineProfilePage() {
                 }, [])
                 .map((p, i) =>
                   p === "..." ? (
-                    <span key={`ellipsis-${i}`} className="px-1 text-zinc-400">…</span>
+                    <span key={`ellipsis-${i}`} className="px-1 text-blue-400">…</span>
                   ) : (
                     <button
                       key={p}
@@ -1099,7 +1099,7 @@ export default function MachineProfilePage() {
                       className={`w-7 h-7 rounded-lg text-xs font-semibold transition-colors ${
                         page === p
                           ? "bg-amber-600 text-white shadow-sm"
-                          : "border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                          : "border border-blue-200 hover:bg-blue-100 :bg-blue-800"
                       }`}
                     >
                       {p}
@@ -1110,7 +1110,7 @@ export default function MachineProfilePage() {
                 id="machine-next-page"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-1.5 rounded-lg border border-blue-200 hover:bg-blue-100 :bg-blue-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronRight size={14} />
               </button>
@@ -1121,22 +1121,22 @@ export default function MachineProfilePage() {
 
       {/* ── Custom Deactivation Confirmation Modal ── */}
       {deactivateTarget && (
-        <div className="fixed inset-0 z-55 flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-55 flex items-center justify-center p-4 bg-blue-950/60 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-white border border-blue-200 rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="p-6 space-y-4">
-              <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
+              <div className="flex items-center gap-3 text-rose-600 ">
                 <AlertCircle size={24} />
                 <h3 className="text-lg font-bold">Confirm Deactivation</h3>
               </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Are you sure you want to deactivate machine <strong className="text-zinc-900 dark:text-white">{deactivateTarget.machineCode}</strong> (<strong className="text-zinc-900 dark:text-white">{deactivateTarget.machineNo}</strong>)?
+              <p className="text-sm text-blue-600 leading-relaxed">
+                Are you sure you want to deactivate machine <strong className="text-blue-900 ">{deactivateTarget.machineCode}</strong> (<strong className="text-blue-900 ">{deactivateTarget.machineNo}</strong>)?
                 This will make it unavailable for production orders.
               </p>
             </div>
-            <div className="flex items-center justify-end gap-3 px-6 py-4 bg-zinc-50 dark:bg-zinc-900/50 border-t border-zinc-100 dark:border-zinc-800">
+            <div className="flex items-center justify-end gap-3 px-6 py-4 bg-blue-50 border-t border-blue-100 ">
               <button
                 onClick={() => setDeactivateTarget(null)}
-                className="px-4 py-2 text-sm font-semibold text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                className="px-4 py-2 text-sm font-semibold text-blue-600 bg-white border border-blue-200 rounded-lg hover:bg-blue-100 :bg-blue-800 transition-colors"
               >
                 Cancel
               </button>

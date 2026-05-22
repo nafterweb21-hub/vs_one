@@ -44,7 +44,7 @@ export default function ProfilesDashboard() {
   return (
     <div className="p-6 lg:p-10 space-y-8 relative">
       {/* Welcome header */}
-      <div className="relative rounded-2xl overflow-hidden border border-blue-500/10 bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 p-8 lg:p-10 text-white shadow-xl">
+      <div className="relative rounded-2xl overflow-hidden border border-blue-500/10 bg-gradient-to-r from-blue-950 via-blue-900 to-blue-950 p-8 lg:p-10 text-white shadow-xl">
         <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full bg-blue-600/10 blur-[80px] pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 w-[200px] h-[200px] rounded-full bg-sky-600/10 blur-[60px] pointer-events-none" />
         
@@ -53,10 +53,10 @@ export default function ProfilesDashboard() {
             <TrendingUp size={12} />
             <span>Settings / Master</span>
           </div>
-          <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
+          <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-blue-100 to-blue-400 bg-clip-text text-transparent">
             Master Profiles
           </h2>
-          <p className="text-zinc-400 text-sm lg:text-base leading-relaxed">
+          <p className="text-blue-400 text-sm lg:text-base leading-relaxed">
             Manage system-wide configuration data, including currencies, units of measurement, measuring gauges, and machines.
           </p>
         </div>
@@ -97,16 +97,16 @@ export default function ProfilesDashboard() {
           return (
             <div
               key={i}
-              className={`rounded-xl border ${card.border} bg-white dark:bg-zinc-900 p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300`}
+              className={`rounded-xl border ${card.border} bg-white p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300`}
             >
               <div className="space-y-1.5 z-10">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-blue-400 ">
                   {card.label}
                 </p>
-                <h3 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-blue-900 tracking-tight">
                   {card.value}
                 </h3>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+                <p className="text-[11px] text-blue-500 font-medium">
                   {card.desc}
                 </p>
               </div>
@@ -153,16 +153,16 @@ export default function ProfilesDashboard() {
           return (
             <div
               key={i}
-              className={`rounded-xl border ${card.border} bg-white dark:bg-zinc-900 p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300`}
+              className={`rounded-xl border ${card.border} bg-white p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300`}
             >
               <div className="space-y-1.5 z-10">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-blue-400 ">
                   {card.label}
                 </p>
-                <h3 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-blue-900 tracking-tight">
                   {card.value}
                 </h3>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+                <p className="text-[11px] text-blue-500 font-medium">
                   {card.desc}
                 </p>
               </div>
@@ -209,16 +209,16 @@ export default function ProfilesDashboard() {
           return (
             <div
               key={i}
-              className={`rounded-xl border ${card.border} bg-white dark:bg-zinc-900 p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300`}
+              className={`rounded-xl border ${card.border} bg-white p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300`}
             >
               <div className="space-y-1.5 z-10">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-blue-400 ">
                   {card.label}
                 </p>
-                <h3 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-blue-900 tracking-tight">
                   {card.value}
                 </h3>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+                <p className="text-[11px] text-blue-500 font-medium">
                   {card.desc}
                 </p>
               </div>
@@ -264,16 +264,16 @@ export default function ProfilesDashboard() {
           return (
             <div
               key={i}
-              className={`rounded-xl border ${card.border} bg-white dark:bg-zinc-900 p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300`}
+              className={`rounded-xl border ${card.border} bg-white p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300`}
             >
               <div className="space-y-1.5 z-10">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-blue-400 ">
                   {card.label}
                 </p>
-                <h3 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-blue-900 tracking-tight">
                   {card.value}
                 </h3>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+                <p className="text-[11px] text-blue-500 font-medium">
                   {card.desc}
                 </p>
               </div>
@@ -290,38 +290,38 @@ export default function ProfilesDashboard() {
       {loading ? (
         <div className="h-32 flex flex-col items-center justify-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-          <p className="text-sm font-semibold text-zinc-500">Loading...</p>
+          <p className="text-sm font-semibold text-blue-500">Loading...</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {/* Currency card */}
           <Link
             href="/dashboard/profiles/currency"
-            className="group block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
+            className="group block bg-white border border-blue-200 rounded-xl p-6 hover:border-blue-500 :border-blue-500 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-500/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/60 dark:border-zinc-800/60 text-zinc-500 dark:text-zinc-400 group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all duration-300">
+              <div className="p-3 rounded-lg bg-blue-50 border border-blue-200/60 text-blue-500 group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all duration-300">
                 <Coins size={22} className="transform group-hover:scale-110 transition-transform duration-300" />
               </div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-base text-zinc-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  <h4 className="font-bold text-base text-blue-950 group-hover:text-blue-600 :text-blue-400 transition-colors">
                     Currency Master
                   </h4>
-                  <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-blue-600 dark:text-blue-400 transition-all duration-300" />
+                  <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-blue-600 transition-all duration-300" />
                 </div>
-                <p className="text-sm text-zinc-400 dark:text-zinc-500 leading-relaxed">
+                <p className="text-sm text-blue-400 leading-relaxed">
                   Manage currency codes, exchange rates, and default currency.
                 </p>
               </div>
             </div>
-            <div className="mt-4 pt-3.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px] font-semibold">
-              <span className="text-zinc-400 dark:text-zinc-500 font-medium">Total Records</span>
+            <div className="mt-4 pt-3.5 border-t border-blue-100 flex items-center justify-between text-[11px] font-semibold">
+              <span className="text-blue-400 font-medium">Total Records</span>
               <div className="flex items-center gap-2">
-                <span className="text-zinc-950 dark:text-white font-bold">{currencyStats.total}</span>
-                <span className="text-zinc-300 dark:text-zinc-700">|</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold">{currencyStats.active} Active</span>
+                <span className="text-blue-950 font-bold">{currencyStats.total}</span>
+                <span className="text-blue-300 ">|</span>
+                <span className="text-emerald-600 font-bold">{currencyStats.active} Active</span>
               </div>
             </div>
           </Link>
@@ -329,31 +329,31 @@ export default function ProfilesDashboard() {
           {/* UOM card */}
           <Link
             href="/dashboard/profiles/uom"
-            className="group block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 hover:border-violet-500 dark:hover:border-violet-500 hover:shadow-lg hover:shadow-violet-500/5 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
+            className="group block bg-white border border-blue-200 rounded-xl p-6 hover:border-violet-500 :border-violet-500 hover:shadow-lg hover:shadow-violet-500/5 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-violet-500/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/60 dark:border-zinc-800/60 text-zinc-500 dark:text-zinc-400 group-hover:bg-violet-600 group-hover:border-violet-600 group-hover:text-white transition-all duration-300">
+              <div className="p-3 rounded-lg bg-blue-50 border border-blue-200/60 text-blue-500 group-hover:bg-violet-600 group-hover:border-violet-600 group-hover:text-white transition-all duration-300">
                 <Ruler size={22} className="transform group-hover:scale-110 transition-transform duration-300" />
               </div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-base text-zinc-950 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+                  <h4 className="font-bold text-base text-blue-950 group-hover:text-violet-600 :text-violet-400 transition-colors">
                     UOM Profile
                   </h4>
-                  <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-violet-600 dark:text-violet-400 transition-all duration-300" />
+                  <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-violet-600 transition-all duration-300" />
                 </div>
-                <p className="text-sm text-zinc-400 dark:text-zinc-500 leading-relaxed">
+                <p className="text-sm text-blue-400 leading-relaxed">
                   Manage units of measurement (Piece, Pair, Box, Kg, Meter) for orders and materials.
                 </p>
               </div>
             </div>
-            <div className="mt-4 pt-3.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px] font-semibold">
-              <span className="text-zinc-400 dark:text-zinc-500 font-medium">Total Records</span>
+            <div className="mt-4 pt-3.5 border-t border-blue-100 flex items-center justify-between text-[11px] font-semibold">
+              <span className="text-blue-400 font-medium">Total Records</span>
               <div className="flex items-center gap-2">
-                <span className="text-zinc-950 dark:text-white font-bold">{uomStats.total}</span>
-                <span className="text-zinc-300 dark:text-zinc-700">|</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold">{uomStats.active} Active</span>
+                <span className="text-blue-950 font-bold">{uomStats.total}</span>
+                <span className="text-blue-300 ">|</span>
+                <span className="text-emerald-600 font-bold">{uomStats.active} Active</span>
               </div>
             </div>
           </Link>
@@ -361,69 +361,69 @@ export default function ProfilesDashboard() {
           {/* Elcometer card */}
           <Link
             href="/dashboard/profiles/elcometer"
-            className="group block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
+            className="group block bg-white border border-blue-200 rounded-xl p-6 hover:border-blue-500 :border-blue-500 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-500/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/60 dark:border-zinc-800/60 text-zinc-500 dark:text-zinc-400 group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all duration-300">
+              <div className="p-3 rounded-lg bg-blue-50 border border-blue-200/60 text-blue-500 group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all duration-300">
                 <Gauge size={22} className="transform group-hover:scale-110 transition-transform duration-300" />
               </div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-base text-zinc-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  <h4 className="font-bold text-base text-blue-950 group-hover:text-blue-600 :text-blue-400 transition-colors">
                     Elcometer Profile
                   </h4>
-                  <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-blue-600 dark:text-blue-400 transition-all duration-300" />
+                  <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-blue-600 transition-all duration-300" />
                 </div>
-                <p className="text-sm text-zinc-400 dark:text-zinc-500 leading-relaxed">
+                <p className="text-sm text-blue-400 leading-relaxed">
                   Manage Elcometer Serial Numbers for Dry Film Thickness spray painting measurements.
                 </p>
               </div>
             </div>
-            <div className="mt-4 pt-3.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px] font-semibold">
-              <span className="text-zinc-400 dark:text-zinc-500 font-medium">Total Records</span>
+            <div className="mt-4 pt-3.5 border-t border-blue-100 flex items-center justify-between text-[11px] font-semibold">
+              <span className="text-blue-400 font-medium">Total Records</span>
               <div className="flex items-center gap-2">
-                <span className="text-zinc-950 dark:text-white font-bold">{elcometerStats.total}</span>
-                <span className="text-zinc-300 dark:text-zinc-700">|</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold">{elcometerStats.active} Active</span>
+                <span className="text-blue-950 font-bold">{elcometerStats.total}</span>
+                <span className="text-blue-300 ">|</span>
+                <span className="text-emerald-600 font-bold">{elcometerStats.active} Active</span>
               </div>
             </div>
           </Link>
           {/* Machine card */}
           <Link
             href="/dashboard/profiles/machine"
-            className="group block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 hover:border-amber-500 dark:hover:border-amber-500 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
+            className="group block bg-white border border-blue-200 rounded-xl p-6 hover:border-amber-500 :border-amber-500 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-500/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/60 dark:border-zinc-800/60 text-zinc-500 dark:text-zinc-400 group-hover:bg-amber-600 group-hover:border-amber-600 group-hover:text-white transition-all duration-300">
+              <div className="p-3 rounded-lg bg-blue-50 border border-blue-200/60 text-blue-500 group-hover:bg-amber-600 group-hover:border-amber-600 group-hover:text-white transition-all duration-300">
                 <Cpu size={22} className="transform group-hover:scale-110 transition-transform duration-300" />
               </div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-base text-zinc-950 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  <h4 className="font-bold text-base text-blue-950 group-hover:text-amber-600 :text-amber-400 transition-colors">
                     Machine Profile
                   </h4>
-                  <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-amber-600 dark:text-amber-400 transition-all duration-300" />
+                  <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-amber-600 transition-all duration-300" />
                 </div>
-                <p className="text-sm text-zinc-400 dark:text-zinc-500 leading-relaxed">
+                <p className="text-sm text-blue-400 leading-relaxed">
                   Manage machines and welding equipment parameters, specifications, and files.
                 </p>
               </div>
             </div>
-            <div className="mt-4 pt-3.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px] font-semibold">
-              <span className="text-zinc-400 dark:text-zinc-500 font-medium">Total Records</span>
+            <div className="mt-4 pt-3.5 border-t border-blue-100 flex items-center justify-between text-[11px] font-semibold">
+              <span className="text-blue-400 font-medium">Total Records</span>
               <div className="flex items-center gap-2">
-                <span className="text-zinc-950 dark:text-white font-bold">{machineStats.total}</span>
-                <span className="text-zinc-300 dark:text-zinc-700">|</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold">{machineStats.active} Active</span>
+                <span className="text-blue-950 font-bold">{machineStats.total}</span>
+                <span className="text-blue-300 ">|</span>
+                <span className="text-emerald-600 font-bold">{machineStats.active} Active</span>
               </div>
             </div>
           </Link>
         </div>
       )}
       {/* Master Profiles Directory appended from merge */}
-      <div className="mt-12 border-t border-zinc-200 dark:border-zinc-800 pt-8">
+      <div className="mt-12 border-t border-blue-200 pt-8">
         <MasterProfilesDirectory />
       </div>
 
@@ -731,13 +731,13 @@ function MasterProfilesDirectory() {
     <div className="space-y-6">
       {/* Header section */}
       <div>
-        <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+        <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-600 ">
           Admin Portal
         </span>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+        <h2 className="mt-2 text-2xl font-bold tracking-tight text-blue-900 ">
           Master Profiles Directory
         </h2>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-blue-500 ">
           Manage system-wide static data, finance rates, operational parameters, and approval matrices.
         </p>
       </div>
@@ -746,7 +746,7 @@ function MasterProfilesDirectory() {
       <div className="space-y-10">
         {MASTER_CATEGORIES.map((category) => (
           <div key={category.name} className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-blue-400 ">
               {category.name}
             </h3>
 
@@ -754,35 +754,35 @@ function MasterProfilesDirectory() {
               {category.profiles.map((profile) => (
                 <div
                   key={profile.id}
-                  className={`group relative flex flex-col justify-between rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 ${profile.active
-                      ? "ring-1 ring-indigo-500/25 dark:ring-indigo-500/10"
+                  className={`group relative flex flex-col justify-between rounded-xl border border-blue-200 bg-white p-5 shadow-sm transition hover:shadow-md ${profile.active
+                      ? "ring-1 ring-indigo-500/25 "
                       : ""
                     }`}
                 >
                   <div>
                     <div className="flex items-start justify-between">
-                      <h4 className="text-base font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      <h4 className="text-base font-bold text-blue-900 group-hover:text-indigo-600 :text-indigo-400 transition-colors">
                         {profile.name}
                       </h4>
                       {profile.active ? (
-                        <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 uppercase tracking-wide">
+                        <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 uppercase tracking-wide">
                           Active
                         </span>
                       ) : (
-                        <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400 uppercase">
+                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-500 uppercase">
                           Spec Only
                         </span>
                       )}
                     </div>
-                    <p className="mt-2.5 text-xs text-zinc-500 leading-relaxed dark:text-zinc-400">
+                    <p className="mt-2.5 text-xs text-blue-500 leading-relaxed ">
                       {profile.desc}
                     </p>
                   </div>
 
-                  <div className="mt-5 border-t border-zinc-100 pt-3.5 flex items-center justify-between dark:border-zinc-800">
+                  <div className="mt-5 border-t border-blue-100 pt-3.5 flex items-center justify-between ">
                     <button
                       onClick={() => setSelectedProfile(profile)}
-                      className="text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+                      className="text-xs font-semibold text-blue-500 hover:text-blue-900 :text-blue-200"
                     >
                       View Profile Specification
                     </button>
@@ -796,7 +796,7 @@ function MasterProfilesDirectory() {
                     ) : (
                       <button
                         onClick={() => setSelectedProfile(profile)}
-                        className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-semibold text-zinc-400 hover:bg-zinc-50 hover:text-zinc-600 dark:border-zinc-800 dark:hover:bg-zinc-850"
+                        className="rounded-lg border border-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-400 hover:bg-blue-50 hover:text-blue-600 :bg-blue-850"
                       >
                         Locked
                       </button>
@@ -815,26 +815,26 @@ function MasterProfilesDirectory() {
           {/* Drawer backdrop */}
           <div
             onClick={() => setSelectedProfile(null)}
-            className="absolute inset-0 bg-zinc-900/60 backdrop-blur-xs transition-opacity"
+            className="absolute inset-0 bg-blue-900/60 backdrop-blur-xs transition-opacity"
           ></div>
 
           <div className="absolute inset-y-0 right-0 flex max-w-full pl-10">
-            <div className="w-screen max-w-lg transform bg-white shadow-2xl dark:bg-zinc-900 transition-transform duration-300">
+            <div className="w-screen max-w-lg transform bg-white shadow-2xl transition-transform duration-300">
               <div className="flex h-full flex-col overflow-y-scroll py-6 px-6">
 
                 {/* Drawer Header */}
-                <div className="flex items-center justify-between border-b border-zinc-100 pb-5 dark:border-zinc-800">
+                <div className="flex items-center justify-between border-b border-blue-100 pb-5 ">
                   <div>
-                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    <h3 className="text-lg font-bold text-blue-900 ">
                       {selectedProfile.name}
                     </h3>
-                    <p className="text-xs text-indigo-500 dark:text-indigo-400 font-semibold uppercase tracking-wider mt-0.5">
+                    <p className="text-xs text-indigo-500 font-semibold uppercase tracking-wider mt-0.5">
                       {selectedProfile.active ? "Interactive Module" : "Developer Reference Specs"}
                     </p>
                   </div>
                   <button
                     onClick={() => setSelectedProfile(null)}
-                    className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    className="rounded-lg p-1.5 text-blue-400 hover:bg-blue-100 :bg-blue-800"
                   >
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -846,18 +846,18 @@ function MasterProfilesDirectory() {
                 <div className="mt-6 flex-1 space-y-6">
                   {/* Summary */}
                   <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Description</h4>
-                    <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-blue-400">Description</h4>
+                    <p className="mt-2 text-sm text-blue-600 leading-relaxed">
                       {selectedProfile.desc}
                     </p>
                   </div>
 
                   {/* Profile Rules */}
                   <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Business Specifications</h4>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-blue-400">Business Specifications</h4>
                     <ul className="mt-2 space-y-2">
                       {selectedProfile.rules.map((rule, index) => (
-                        <li key={index} className="flex gap-2.5 text-sm text-zinc-600 dark:text-zinc-400">
+                        <li key={index} className="flex gap-2.5 text-sm text-blue-600 ">
                           <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500"></span>
                           <span>{rule}</span>
                         </li>
@@ -867,25 +867,25 @@ function MasterProfilesDirectory() {
 
                   {/* Profile Fields Table */}
                   <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Database &amp; UI Fields</h4>
-                    <div className="mt-3 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
-                      <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left">
-                        <thead className="bg-zinc-50 dark:bg-zinc-950 text-xs font-semibold text-zinc-500">
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-blue-400">Database &amp; UI Fields</h4>
+                    <div className="mt-3 overflow-hidden rounded-lg border border-blue-200 ">
+                      <table className="min-w-full divide-y divide-blue-200 text-left">
+                        <thead className="bg-blue-50 text-xs font-semibold text-blue-500">
                           <tr>
                             <th className="px-4 py-2">Field Name</th>
                             <th className="px-4 py-2">Type</th>
                             <th className="px-4 py-2">Mandatory</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-100 bg-white text-xs dark:divide-zinc-800 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300">
+                        <tbody className="divide-y divide-blue-100 bg-white text-xs text-blue-700 ">
                           {selectedProfile.fields.map((field) => (
                             <tr key={field.name}>
                               <td className="px-4 py-2.5 font-semibold">{field.name}</td>
-                              <td className="px-4 py-2.5 font-mono text-zinc-500 dark:text-zinc-400">{field.type}</td>
+                              <td className="px-4 py-2.5 font-mono text-blue-500 ">{field.type}</td>
                               <td className="px-4 py-2.5">
                                 <span className={`inline-block rounded-full px-1.5 py-0.5 text-[9px] font-bold ${field.mand === "Yes"
-                                    ? "bg-rose-50 text-rose-600 dark:bg-rose-950/20 dark:text-rose-400"
-                                    : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
+                                    ? "bg-rose-50 text-rose-600 "
+                                    : "bg-blue-100 text-blue-500 "
                                   }`}>
                                   {field.mand}
                                 </span>
@@ -899,10 +899,10 @@ function MasterProfilesDirectory() {
                 </div>
 
                 {/* Drawer Footer */}
-                <div className="mt-6 border-t border-zinc-100 pt-5 flex items-center justify-between dark:border-zinc-800">
+                <div className="mt-6 border-t border-blue-100 pt-5 flex items-center justify-between ">
                   <button
                     onClick={() => setSelectedProfile(null)}
-                    className="rounded-lg border border-zinc-200 px-4 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-850"
+                    className="rounded-lg border border-blue-200 px-4 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 :bg-blue-850"
                   >
                     Close spec
                   </button>
@@ -915,7 +915,7 @@ function MasterProfilesDirectory() {
                       Open Master Admin
                     </a>
                   ) : (
-                    <span className="text-xs text-zinc-400 italic">
+                    <span className="text-xs text-blue-400 italic">
                       Locked module - reference only
                     </span>
                   )}

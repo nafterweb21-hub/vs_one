@@ -90,7 +90,7 @@ export default function SupplierProfilePage() {
           <h1 className="text-2xl font-bold tracking-tight text-black">
             Supplier Profile
           </h1>
-          <p className="text-sm text-zinc-600">
+          <p className="text-sm text-blue-600">
             Maintain the master list of suppliers along with their contact persons and addresses.
           </p>
         </div>
@@ -109,7 +109,7 @@ export default function SupplierProfilePage() {
       <div className="rounded-xl glossy-bg p-4 bg-white">
         <div className="relative max-w-md">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <svg className="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
           </div>
@@ -118,7 +118,7 @@ export default function SupplierProfilePage() {
             placeholder="Search by code or name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg glossy-input py-2 pl-10 pr-4 text-sm outline-hidden placeholder:text-zinc-500 bg-white"
+            className="w-full rounded-lg glossy-input py-2 pl-10 pr-4 text-sm outline-hidden placeholder:text-blue-500 bg-white"
           />
         </div>
       </div>
@@ -127,12 +127,12 @@ export default function SupplierProfilePage() {
       <div className="overflow-hidden rounded-xl glossy-bg bg-white">
         {isLoading ? (
           <div className="flex h-48 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-blue-600" />
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
           </div>
         ) : errorMsg ? (
           <div className="flex h-48 flex-col items-center justify-center gap-2 p-6 text-center">
             <p className="font-semibold text-black">Error loading suppliers</p>
-            <p className="text-sm text-zinc-600">{errorMsg}</p>
+            <p className="text-sm text-blue-600">{errorMsg}</p>
             <button
               onClick={loadSuppliers}
               className="mt-2 text-sm font-semibold text-blue-600 hover:text-blue-500 cursor-pointer"
@@ -143,7 +143,7 @@ export default function SupplierProfilePage() {
         ) : filteredSuppliers.length === 0 ? (
           <div className="flex h-48 flex-col items-center justify-center p-6 text-center">
             <p className="mt-2 font-semibold text-black">No suppliers found</p>
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-blue-600">
               {searchQuery
                 ? "No matches for your criteria."
                 : "Create your first Supplier Profile to begin."}
@@ -153,7 +153,7 @@ export default function SupplierProfilePage() {
           <div className="overflow-x-auto bg-white">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-zinc-200 bg-zinc-50 text-xs font-bold uppercase tracking-wider text-zinc-700">
+                <tr className="border-b border-blue-200 bg-blue-50 text-xs font-bold uppercase tracking-wider text-blue-700">
                   <th className="px-6 py-4 w-16">SN</th>
                   <th className="px-6 py-4">Supplier Code</th>
                   <th className="px-6 py-4">Supplier Name</th>
@@ -163,20 +163,20 @@ export default function SupplierProfilePage() {
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200">
+              <tbody className="divide-y divide-blue-200">
                 {filteredSuppliers.map((supplier, index) => (
                   <tr key={supplier.id} className="group hover:bg-blue-50/40 transition-colors">
-                    <td className="px-6 py-4 text-sm text-zinc-500">{index + 1}</td>
+                    <td className="px-6 py-4 text-sm text-blue-500">{index + 1}</td>
                     <td className="px-6 py-4 text-sm font-bold text-black">
                       {supplier.supplierCode}
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-zinc-800">
+                    <td className="px-6 py-4 text-sm font-medium text-blue-800">
                       {supplier.supplierName}
                     </td>
-                    <td className="px-6 py-4 text-sm text-center text-zinc-850 font-semibold">
+                    <td className="px-6 py-4 text-sm text-center text-blue-850 font-semibold">
                       {supplier._count.contactPersons}
                     </td>
-                    <td className="px-6 py-4 text-sm text-center text-zinc-850 font-semibold">
+                    <td className="px-6 py-4 text-sm text-center text-blue-850 font-semibold">
                       {supplier._count.addresses}
                     </td>
                     <td className="px-6 py-4">
@@ -184,12 +184,12 @@ export default function SupplierProfilePage() {
                         className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold border ${
                           supplier.status === "Active"
                             ? "bg-blue-50 text-blue-700 border-blue-200"
-                            : "bg-zinc-50 text-zinc-600 border-zinc-200"
+                            : "bg-blue-50 text-blue-600 border-blue-200"
                         }`}
                       >
                         <span
                           className={`h-1.5 w-1.5 rounded-full ${
-                            supplier.status === "Active" ? "bg-blue-600" : "bg-zinc-400"
+                            supplier.status === "Active" ? "bg-blue-600" : "bg-blue-400"
                           }`}
                         />
                         {supplier.status}

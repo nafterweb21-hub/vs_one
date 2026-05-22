@@ -103,8 +103,8 @@ export default function NewEmployeePage() {
       {notification && (
         <div
           className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl border text-sm transition-all duration-300 transform translate-y-0 scale-100 ${notification.type === "success"
-              ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
-              : "bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300"
+              ? "bg-emerald-50 border-emerald-200 text-emerald-800 "
+              : "bg-rose-50 border-rose-200 text-rose-800 "
             }`}
         >
           {notification.type === "success" ? (
@@ -124,30 +124,30 @@ export default function NewEmployeePage() {
       <div className="flex items-center gap-3">
         <Link
           href="/dashboard/master-profile/employee"
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+          className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-200 text-blue-500 hover:text-blue-950 :text-white hover:bg-blue-50 :bg-blue-800 transition-colors"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+          <h1 className="text-xl font-bold text-blue-900 ">
             Create Employee Profile
           </h1>
-          <p className="text-xs text-zinc-500 mt-0.5">
+          <p className="text-xs text-blue-500 mt-0.5">
             Add a new personnel record to FITPRISE EMS master database.
           </p>
         </div>
       </div>
 
       {/* Main card */}
-      <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 shadow-sm">
+      <div className="bg-white p-6 rounded-2xl border border-blue-200 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-6 sm:grid-cols-2">
             {/* Code */}
             <div>
               <div className="flex items-center justify-between">
-                <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wide">
                   Employee Code <span className="text-rose-500">*</span>
                 </label>
               </div>
@@ -158,9 +158,9 @@ export default function NewEmployeePage() {
                   setFormData({ ...formData, code: e.target.value })
                 }
                 placeholder="e.g. EMP001"
-                className={`mt-1.5 w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950 font-mono font-bold ${formErrors.code
-                    ? "border-rose-400 dark:border-rose-800"
-                    : "border-zinc-200 dark:border-zinc-800"
+                className={`mt-1.5 w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-blue-900 bg-blue-50/50 font-mono font-bold ${formErrors.code
+                    ? "border-rose-400 "
+                    : "border-blue-200 "
                   }`}
               />
               {formErrors.code && (
@@ -172,7 +172,7 @@ export default function NewEmployeePage() {
 
             {/* Name */}
             <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-blue-700 uppercase tracking-wide">
                 Employee Name <span className="text-rose-500">*</span>
               </label>
               <input
@@ -182,9 +182,9 @@ export default function NewEmployeePage() {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 placeholder="e.g. Christopher Robin"
-                className={`mt-1.5 w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950 ${formErrors.name
-                    ? "border-rose-400 dark:border-rose-800"
-                    : "border-zinc-200 dark:border-zinc-800"
+                className={`mt-1.5 w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-blue-900 bg-blue-50/50 ${formErrors.name
+                    ? "border-rose-400 "
+                    : "border-blue-200 "
                   }`}
               />
               {formErrors.name && (
@@ -196,7 +196,7 @@ export default function NewEmployeePage() {
 
             {/* NRIC/FIN */}
             <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-blue-700 uppercase tracking-wide">
                 NRIC / FIN <span className="text-rose-500">*</span>
               </label>
               <input
@@ -206,9 +206,9 @@ export default function NewEmployeePage() {
                   setFormData({ ...formData, nricFin: e.target.value })
                 }
                 placeholder="e.g. S1234567A"
-                className={`mt-1.5 w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950 ${formErrors.nricFin
-                    ? "border-rose-400 dark:border-rose-800"
-                    : "border-zinc-200 dark:border-zinc-800"
+                className={`mt-1.5 w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-blue-900 bg-blue-50/50 ${formErrors.nricFin
+                    ? "border-rose-400 "
+                    : "border-blue-200 "
                   }`}
               />
               {formErrors.nricFin && (
@@ -220,7 +220,7 @@ export default function NewEmployeePage() {
 
             {/* Designation */}
             <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-blue-700 uppercase tracking-wide">
                 Designation
               </label>
               <input
@@ -233,13 +233,13 @@ export default function NewEmployeePage() {
                   })
                 }
                 placeholder="e.g. Welding Specialist"
-                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950"
+                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-blue-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-blue-900 bg-blue-50/50 "
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-blue-700 uppercase tracking-wide">
                 Email Address <span className="text-rose-500">*</span>
               </label>
               <input
@@ -249,9 +249,9 @@ export default function NewEmployeePage() {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 placeholder="e.g. user@visionone.com"
-                className={`mt-1.5 w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950 ${formErrors.email
-                    ? "border-rose-400 dark:border-rose-800"
-                    : "border-zinc-200 dark:border-zinc-800"
+                className={`mt-1.5 w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-blue-900 bg-blue-50/50 ${formErrors.email
+                    ? "border-rose-400 "
+                    : "border-blue-200 "
                   }`}
               />
               {formErrors.email && (
@@ -263,7 +263,7 @@ export default function NewEmployeePage() {
 
             {/* Employment Type */}
             <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-blue-700 uppercase tracking-wide">
                 Employment Type
               </label>
               <select
@@ -274,7 +274,7 @@ export default function NewEmployeePage() {
                     employmentType: e.target.value,
                   })
                 }
-                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950"
+                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-blue-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-blue-900 bg-blue-50/50 "
               >
                 {employmentTypes.map((type) => (
                   <option key={type} value={type}>
@@ -286,7 +286,7 @@ export default function NewEmployeePage() {
 
             {/* Mobile No */}
             <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-blue-700 uppercase tracking-wide">
                 Mobile No
               </label>
               <input
@@ -299,13 +299,13 @@ export default function NewEmployeePage() {
                   })
                 }
                 placeholder="e.g. 98765432"
-                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950"
+                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-blue-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-blue-900 bg-blue-50/50 "
               />
             </div>
 
             {/* Contact No */}
             <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-blue-700 uppercase tracking-wide">
                 Contact No
               </label>
               <input
@@ -318,13 +318,13 @@ export default function NewEmployeePage() {
                   })
                 }
                 placeholder="e.g. 61234567"
-                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950"
+                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-blue-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-blue-900 bg-blue-50/50 "
               />
             </div>
 
             {/* Gender */}
             <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-blue-700 uppercase tracking-wide">
                 Gender
               </label>
               <select
@@ -332,7 +332,7 @@ export default function NewEmployeePage() {
                 onChange={(e) =>
                   setFormData({ ...formData, gender: e.target.value })
                 }
-                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950"
+                className="mt-1.5 w-full px-3.5 py-2.5 rounded-xl border border-blue-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-blue-900 bg-blue-50/50 "
               >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -340,12 +340,12 @@ export default function NewEmployeePage() {
             </div>
 
             {/* Status Toggle */}
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-blue-50 border border-blue-200 ">
               <div>
-                <h4 className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
+                <h4 className="text-xs font-bold text-blue-800 ">
                   Active Status
                 </h4>
-                <p className="text-[10px] text-zinc-400 mt-0.5">
+                <p className="text-[10px] text-blue-400 mt-0.5">
                   Toggled off set the employee profile to inactive.
                 </p>
               </div>
@@ -362,7 +362,7 @@ export default function NewEmployeePage() {
                 }
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${formData.status === "ACTIVE"
                     ? "bg-emerald-500"
-                    : "bg-zinc-300 dark:bg-zinc-800"
+                    : "bg-blue-300 "
                   }`}
               >
                 <span
@@ -376,10 +376,10 @@ export default function NewEmployeePage() {
           </div>
 
           {/* Form Actions */}
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-blue-200 ">
             <Link
               href="/dashboard/master-profile/employee"
-              className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-200/40 dark:hover:bg-zinc-800 text-xs font-bold text-zinc-700 dark:text-zinc-300 transition-colors"
+              className="px-5 py-2.5 rounded-xl border border-blue-200 hover:bg-blue-200/40 :bg-blue-800 text-xs font-bold text-blue-700 transition-colors"
             >
               Cancel
             </Link>
