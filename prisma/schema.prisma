@@ -142,3 +142,13 @@ model SupplierAddress {
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
 }
+
+model FinishedGoodProfile {
+  id          String   @id @default(cuid())
+  partNo      String?  @unique
+  description String   @unique @db.Text
+  remark      String?  @db.Text
+  status      String   @default("Active") // "Active" or "Inactive"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
