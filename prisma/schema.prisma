@@ -133,3 +133,15 @@ model CustomerAddress {
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
 }
+
+// ==========================================
+// UOM Profile
+// ==========================================
+model UomProfile {
+  id        String   @id @default(cuid())
+  uomName   String   @unique // Immutable after save
+  remarks   String?
+  status    String   @default("Active") // "Active" or "Inactive"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
