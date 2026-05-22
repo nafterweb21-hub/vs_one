@@ -143,3 +143,12 @@ model MaterialProfile {
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
 }
+
+model WeldingTypeProfile {
+  id        String   @id @default(cuid())
+  type      String   @unique
+  remark    String?  @db.Text
+  status    String   @default("Active") // "Active" or "Inactive"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
