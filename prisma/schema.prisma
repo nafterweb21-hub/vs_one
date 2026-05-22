@@ -128,6 +128,10 @@ model Employee {
   status         String   @default("ACTIVE") // ACTIVE / INACTIVE
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+}
+
+
 }
 
 
@@ -170,4 +174,28 @@ model CustomerAddress {
   updatedAt  DateTime        @updatedAt
 }
 
+
+model MaterialCategory {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  description String?           @db.Text
+  status      String            @default("Active") // "Active" or "Inactive"
+  materials   MaterialProfile[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model MaterialProfile {
+  id                 String           @id @default(cuid())
+  partNo             String?          @unique // Not mandatory, unique
+  description        String           @unique @db.Text // Mandatory, unique
+  shape              String           // Mandatory
+  size               String?          // Not mandatory
+  categoryId         String           // Dropdown from Material Category profile
+  category           MaterialCategory @relation(fields: [categoryId], references: [id])
+  remark             String?          @db.Text
+  status             String           @default("Active") // Default Active
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
 

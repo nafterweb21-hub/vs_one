@@ -204,11 +204,13 @@ export default function DashboardLayout({
             Sign Out
           </Link>
         </div>
+
       </aside>
 
       {/* Main Content Workspace Viewport */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-auto p-6 bg-slate-50/30 dark:bg-slate-950/30">
+
 
 
           {children}

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "cat-1779428007331",
+    "name": "machine",
+    "description": null,
+    "createdAt": "2026-05-22T05:33:27.331Z",
+    "updatedAt": "2026-05-22T05:33:27.331Z"
+  },
+  {
+    "id": "cat-1779428835038",
+    "name": "machine1",
+    "description": null,
+    "createdAt": "2026-05-22T05:47:15.038Z",
+    "updatedAt": "2026-05-22T05:47:15.038Z"
+  }
+]
