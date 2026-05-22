@@ -18,6 +18,7 @@ import {
   Package,
   Box,
   Flame,
+  Paintbrush,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -143,6 +144,14 @@ export default function Sidebar() {
             >
               <Flame size={16} />
               <span>Welding Type Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/painting-method"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/painting-method")}
+            >
+              <Paintbrush size={16} />
+              <span>Painting Method Profile</span>
             </Link>
           </div>
 
