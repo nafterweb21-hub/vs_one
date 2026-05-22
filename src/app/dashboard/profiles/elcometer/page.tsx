@@ -14,7 +14,6 @@ import {
   ArrowUpDown,
   Gauge,
   ArrowLeft,
-  Edit2,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -31,7 +30,7 @@ interface ElcometerItem {
 
 type SortKey = "serialNo_asc" | "serialNo_desc" | "createdAt_desc" | "createdAt_asc";
 type StatusFilter = "All" | "Active" | "Inactive";
-type ViewMode = "list" | "add" | "edit" | "view";
+type ViewMode = "list" | "add" | "view";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -75,7 +74,6 @@ export default function ElcometerProfilePage() {
   // ── Form state ──
   const [formSerialNo, setFormSerialNo] = useState("");
   const [formRemark, setFormRemark]     = useState("");
-  const [formStatus, setFormStatus]     = useState<"Active" | "Inactive">("Active");
   const [submitting, setSubmitting]     = useState(false);
   const [formError, setFormError]       = useState("");
 
@@ -141,18 +139,8 @@ export default function ElcometerProfilePage() {
     setActiveItem(null);
     setFormSerialNo("");
     setFormRemark("");
-    setFormStatus("Active");
     setFormError("");
     setViewMode("add");
-  };
-
-  const goEdit = (item: ElcometerItem) => {
-    setActiveItem(item);
-    setFormSerialNo(item.serialNo);
-    setFormRemark(item.remark ?? "");
-    setFormStatus(item.status);
-    setFormError("");
-    setViewMode("edit");
   };
 
   const goView = (item: ElcometerItem) => {
@@ -169,17 +157,15 @@ export default function ElcometerProfilePage() {
     setSubmitting(true);
     setFormError("");
 
-    const payload: { id?: string; serialNo: string; remark: string | null; status: "Active" | "Inactive" } = {
+    const payload = {
       serialNo: formSerialNo.trim(),
       remark:   formRemark.trim() || null,
-      status:   formStatus,
+      status:   "Active",
     };
-    if (viewMode === "edit" && activeItem) payload.id = activeItem.id;
 
     try {
-      const method = viewMode === "edit" ? "PUT" : "POST";
       const res = await fetch("/api/profiles/elcometer", {
-        method,
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -223,7 +209,7 @@ export default function ElcometerProfilePage() {
   // Shared page header
   // ─────────────────────────────────────────────────────────────────────────────
 
-  const isForm = viewMode === "add" || viewMode === "edit";
+  const isForm = viewMode === "add";
   const isView = viewMode === "view";
 
   const pageHeader = (
@@ -240,7 +226,7 @@ export default function ElcometerProfilePage() {
               <button onClick={goList} className="hover:text-zinc-600 dark:hover:text-zinc-300">Elcometer Profile</button>
               <span>/</span>
               <span className="text-zinc-500 dark:text-zinc-400">
-                {viewMode === "add" ? "Add Elcometer" : viewMode === "edit" ? "Edit Elcometer" : "View Elcometer"}
+                {viewMode === "add" ? "Add Elcometer" : "View Elcometer"}
               </span>
             </>
           ) : (
@@ -255,7 +241,7 @@ export default function ElcometerProfilePage() {
           </div>
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
-              {viewMode === "add" ? "Add Elcometer" : viewMode === "edit" ? "Edit Elcometer" : "Elcometer Profile"}
+              {viewMode === "add" ? "Add Elcometer" : "Elcometer Profile"}
             </h2>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
               {isForm
@@ -289,7 +275,7 @@ export default function ElcometerProfilePage() {
   );
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // Render — Add / Edit form (inline, no popup)
+  // Render — Add form (inline, no popup)
   // ─────────────────────────────────────────────────────────────────────────────
 
   if (isForm) {
@@ -321,43 +307,16 @@ export default function ElcometerProfilePage() {
               <div className="space-y-2">
                 <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1">
                   Elcometer Serial No <span className="text-rose-500">*</span>
-                  {viewMode === "edit" && (
-                    <span className="text-[10px] text-zinc-400 font-normal normal-case ml-1 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
-                      locked
-                    </span>
-                  )}
                 </label>
                 <input
                   id="elcometer-serial-input"
                   type="text"
                   required
-                  disabled={viewMode === "edit"}
                   value={formSerialNo}
                   onChange={(e) => setFormSerialNo(e.target.value)}
                   placeholder="e.g. ELCO001"
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
                 />
-                {viewMode === "edit" && (
-                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
-                    Elcometer Serial No is locked and cannot be changed after saving.
-                  </p>
-                )}
-              </div>
-
-              {/* Status */}
-              <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  Status
-                </label>
-                <select
-                  id="elcometer-status-input"
-                  value={formStatus}
-                  onChange={(e) => setFormStatus(e.target.value as "Active" | "Inactive")}
-                  className="w-full px-3 py-2.5 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-zinc-700 dark:text-zinc-300 transition-colors"
-                >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Deactive</option>
-                </select>
               </div>
             </div>
 
@@ -378,11 +337,9 @@ export default function ElcometerProfilePage() {
             </div>
 
             {/* Note banner */}
-            {viewMode === "add" && (
-              <div className="p-3.5 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-lg text-sm text-blue-700 dark:text-blue-400 leading-relaxed">
-                <strong>Note:</strong> Elcometer Serial No cannot be changed once the record is saved. Please double-check before submitting.
-              </div>
-            )}
+            <div className="p-3.5 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-lg text-sm text-blue-700 dark:text-blue-400 leading-relaxed">
+              <strong>Note:</strong> Elcometer Serial No cannot be changed once the record is saved. Please double-check before submitting.
+            </div>
 
             {/* Form action buttons */}
             <div className="flex items-center justify-end gap-3 pt-2 border-t border-zinc-100 dark:border-zinc-800">
@@ -402,7 +359,7 @@ export default function ElcometerProfilePage() {
                 {submitting ? (
                   <><Loader2 size={14} className="animate-spin" /> Saving...</>
                 ) : (
-                  <><Check size={14} /> {viewMode === "edit" ? "Update Elcometer" : "Save Elcometer"}</>
+                  <><Check size={14} /> Save Elcometer</>
                 )}
               </button>
             </div>
@@ -472,12 +429,6 @@ export default function ElcometerProfilePage() {
 
           {/* View footer actions */}
           <div className="px-6 pb-6 flex items-center gap-3">
-            <button
-              onClick={() => goEdit(activeItem)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 rounded-lg shadow-md shadow-blue-500/20 active:scale-95 transition-all duration-200"
-            >
-              <Edit2 size={14} /> Edit Elcometer
-            </button>
             <button
               onClick={goList}
               className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
@@ -578,8 +529,6 @@ export default function ElcometerProfilePage() {
                   <th className="px-5 py-4">Elcometer Serial No</th>
                   <th className="px-5 py-4">Remark</th>
                   <th className="px-5 py-4">Status</th>
-                  <th className="px-5 py-4">Created Date</th>
-                  <th className="px-5 py-4">Updated Date</th>
                   <th className="px-5 py-4 text-right">Action</th>
                 </tr>
               </thead>
@@ -587,12 +536,12 @@ export default function ElcometerProfilePage() {
                 {pageItems.map((item) => (
                   <tr key={item.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/20 transition-colors group">
 
-                    {/* Serial No — clickable to Edit */}
+                    {/* Serial No — clickable to View */}
                     <td className="px-5 py-4">
                       <button
-                        onClick={() => goEdit(item)}
+                        onClick={() => goView(item)}
                         className="inline-flex items-center gap-2.5 text-left group/name"
-                        title="Click to edit"
+                        title="Click to view details"
                       >
                         <span className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover/name:bg-blue-600 group-hover/name:text-white transition-all duration-200">
                           <Gauge size={14} />
@@ -600,7 +549,6 @@ export default function ElcometerProfilePage() {
                         <span className="font-semibold text-zinc-900 dark:text-white group-hover/name:text-blue-600 dark:group-hover/name:text-blue-400 transition-colors">
                           {item.serialNo}
                         </span>
-                        <Edit2 size={12} className="text-zinc-300 dark:text-zinc-700 group-hover/name:text-blue-500 opacity-0 group-hover/name:opacity-100 transition-all -ml-1" />
                       </button>
                     </td>
 
@@ -623,16 +571,6 @@ export default function ElcometerProfilePage() {
                         <span className={`w-1.5 h-1.5 rounded-full ${item.status === "Active" ? "bg-emerald-500" : "bg-zinc-400"}`} />
                         {item.status === "Active" ? "Active" : "Deactive"}
                       </span>
-                    </td>
-
-                    {/* Created Date */}
-                    <td className="px-5 py-4 text-zinc-500 dark:text-zinc-400 text-sm whitespace-nowrap">
-                      {formatDate(item.createdAt)}
-                    </td>
-
-                    {/* Updated Date */}
-                    <td className="px-5 py-4 text-zinc-500 dark:text-zinc-400 text-sm whitespace-nowrap">
-                      {formatDate(item.updatedAt)}
                     </td>
 
                      {/* Actions */}
