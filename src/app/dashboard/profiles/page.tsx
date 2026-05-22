@@ -184,7 +184,8 @@ const MASTER_CATEGORIES = [
       {
         id: "material-cat",
         name: "Material Category Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/material-categories",
         desc: "Groups items into specific categories (e.g. Raw Plates).",
         rules: [
           "Used to categorize materials in the main Material Profile.",
@@ -192,6 +193,21 @@ const MASTER_CATEGORIES = [
         ],
         fields: [
           { name: "Category", type: "Text (Immutable)", mand: "Yes" },
+          { name: "Remark", type: "Multi-text", mand: "No" }
+        ]
+      },
+      {
+        id: "material-type",
+        name: "Material Type Profile",
+        active: true,
+        href: "/dashboard/profiles/material-types",
+        desc: "Groups items into specific material types (e.g. Stainless Steel).",
+        rules: [
+          "Used to categorize material types for WO - Welding.",
+          "Type name is immutable once saved."
+        ],
+        fields: [
+          { name: "Type", type: "Text (Immutable)", mand: "Yes" },
           { name: "Remark", type: "Multi-text", mand: "No" }
         ]
       },
@@ -233,7 +249,8 @@ const MASTER_CATEGORIES = [
       {
         id: "process",
         name: "Process Profile (Routing)",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/process-profiles",
         desc: "Configures sub-process routing steps, costs, and scan parameters.",
         rules: [
           "One row corresponds to one routing process under a Main Process.",
@@ -306,16 +323,15 @@ export default function MasterProfilesDirectory() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
               {category.name}
             </h3>
-            
+
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {category.profiles.map((profile) => (
                 <div
                   key={profile.id}
-                  className={`group relative flex flex-col justify-between rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 ${
-                    profile.active 
-                      ? "ring-1 ring-indigo-500/25 dark:ring-indigo-500/10" 
+                  className={`group relative flex flex-col justify-between rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 ${profile.active
+                      ? "ring-1 ring-indigo-500/25 dark:ring-indigo-500/10"
                       : ""
-                  }`}
+                    }`}
                 >
                   <div>
                     <div className="flex items-start justify-between">
@@ -379,7 +395,7 @@ export default function MasterProfilesDirectory() {
           <div className="absolute inset-y-0 right-0 flex max-w-full pl-10">
             <div className="w-screen max-w-lg transform bg-white shadow-2xl dark:bg-zinc-900 transition-transform duration-300">
               <div className="flex h-full flex-col overflow-y-scroll py-6 px-6">
-                
+
                 {/* Drawer Header */}
                 <div className="flex items-center justify-between border-b border-zinc-100 pb-5 dark:border-zinc-800">
                   <div>
@@ -441,11 +457,10 @@ export default function MasterProfilesDirectory() {
                               <td className="px-4 py-2.5 font-semibold">{field.name}</td>
                               <td className="px-4 py-2.5 font-mono text-zinc-500 dark:text-zinc-400">{field.type}</td>
                               <td className="px-4 py-2.5">
-                                <span className={`inline-block rounded-full px-1.5 py-0.5 text-[9px] font-bold ${
-                                  field.mand === "Yes" 
-                                    ? "bg-rose-50 text-rose-600 dark:bg-rose-950/20 dark:text-rose-400" 
+                                <span className={`inline-block rounded-full px-1.5 py-0.5 text-[9px] font-bold ${field.mand === "Yes"
+                                    ? "bg-rose-50 text-rose-600 dark:bg-rose-950/20 dark:text-rose-400"
                                     : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
-                                }`}>
+                                  }`}>
                                   {field.mand}
                                 </span>
                               </td>

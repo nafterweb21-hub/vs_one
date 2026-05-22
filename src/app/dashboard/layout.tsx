@@ -6,6 +6,10 @@ import { usePathname, useRouter } from "next/navigation";
 // Define profile modules for the sidebar sub-menu
 const PROFILE_MODULES = [
   { name: "Approval Level Profile", href: "/dashboard/profiles/approval-levels", active: true },
+  { name: "Material Category Profile", href: "/dashboard/profiles/material-categories", active: true },
+  { name: "Material Type Profile", href: "/dashboard/profiles/material-types", active: true },
+  { name: "Main Process Profile", href: "/dashboard/profiles/main-processes", active: true },
+  { name: "Process Profile", href: "/dashboard/profiles/process-profiles", active: true },
 ];
 
 export default function DashboardLayout({
@@ -15,7 +19,7 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  
+
   // Interactive state
   const [activeCompany, setActiveCompany] = useState("Vision One Pte Ltd");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -55,9 +59,8 @@ export default function DashboardLayout({
     <div className="flex h-screen w-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950 font-sans">
       {/* SIDEBAR */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-zinc-200 bg-zinc-900 text-zinc-100 transition-transform duration-300 ease-in-out dark:border-zinc-800 lg:static lg:translate-x-0 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-zinc-200 bg-zinc-900 text-zinc-100 transition-transform duration-300 ease-in-out dark:border-zinc-800 lg:static lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* Brand / Logo */}
         <div className="flex h-16 items-center gap-2 border-b border-zinc-800 px-6">
@@ -81,11 +84,10 @@ export default function DashboardLayout({
               <li>
                 <a
                   href="/dashboard"
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                    pathname === "/dashboard"
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname === "/dashboard"
                       ? "bg-zinc-800 text-white"
                       : "text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
-                  }`}
+                    }`}
                 >
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
@@ -104,9 +106,8 @@ export default function DashboardLayout({
             >
               <span>Master Profiles</span>
               <svg
-                className={`h-4.5 w-4.5 transform transition-transform duration-200 ${
-                  isProfilesOpen ? "rotate-90" : ""
-                }`}
+                className={`h-4.5 w-4.5 transform transition-transform duration-200 ${isProfilesOpen ? "rotate-90" : ""
+                  }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -120,11 +121,10 @@ export default function DashboardLayout({
                 <li>
                   <a
                     href="/dashboard/profiles"
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      pathname === "/dashboard/profiles"
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname === "/dashboard/profiles"
                         ? "bg-zinc-800 text-white"
                         : "text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
-                    }`}
+                      }`}
                   >
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -139,18 +139,12 @@ export default function DashboardLayout({
                     <li key={sub.name}>
                       <a
                         href={sub.href}
-                        className={`flex items-center justify-between rounded-lg py-1.5 pl-9 pr-3 text-xs transition-colors ${
-                          isActive
+                        className={`flex items-center justify-between rounded-lg py-1.5 pl-9 pr-3 text-xs transition-colors ${isActive
                             ? "font-semibold text-indigo-400"
                             : "text-zinc-400 hover:text-zinc-200"
-                        }`}
+                          }`}
                       >
                         <span>{sub.name}</span>
-                        {sub.active && (
-                          <span className="rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-medium text-emerald-400 uppercase tracking-wide">
-                            Active
-                          </span>
-                        )}
                       </a>
                     </li>
                   );
@@ -206,7 +200,7 @@ export default function DashboardLayout({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            
+
             {/* Sidebar toggle button (Desktop) */}
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -233,9 +227,8 @@ export default function DashboardLayout({
                   <option value="Vision Laser Pte Ltd">Vision Laser Pte Ltd</option>
                 </select>
                 <span
-                  className={`inline-block h-2 w-2 rounded-full ${
-                    activeCompany === "Vision One Pte Ltd" ? "bg-indigo-500" : "bg-teal-500"
-                  }`}
+                  className={`inline-block h-2 w-2 rounded-full ${activeCompany === "Vision One Pte Ltd" ? "bg-indigo-500" : "bg-teal-500"
+                    }`}
                 ></span>
               </div>
             </div>

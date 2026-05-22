@@ -82,3 +82,46 @@ model ApprovalPerson {
   @@unique([approvalLevelProfileId, userId])
 }
 
+model MaterialCategory {
+  id        String   @id @default(cuid())
+  category  String   @unique
+  remark    String?
+  status    String   @default("Active") // "Active", "Inactive", or "Void"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MaterialType {
+  id        String   @id @default(cuid())
+  type      String   @unique
+  remark    String?
+  status    String   @default("Active") // "Active", "Inactive", or "Void"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model MainProcess {
+  id              String           @id @default(cuid())
+  process         String           @unique
+  remark          String?
+  status          String           @default("Active") // "Active", "Inactive", or "Void"
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  processProfiles ProcessProfile[]
+}
+
+model ProcessProfile {
+  id              String      @id @default(cuid())
+  mainProcessId   String
+  mainProcess     MainProcess @relation(fields: [mainProcessId], references: [id])
+  routingProcess  String      @unique
+  welding         Boolean     @default(false)
+  sprayPainting   Boolean     @default(false)
+  machining       Boolean     @default(false)
+  costPerMinute   Decimal     @db.Decimal(12, 2)
+  remark          String?
+  status          String      @default("Active") // "Active", "Inactive", or "Void"
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}

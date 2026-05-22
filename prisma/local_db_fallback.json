@@ -80,5 +80,66 @@
         }
       ]
     }
+  ],
+  "materialCategories": [
+    {
+      "id": "cat-1",
+      "category": "Raw Plates",
+      "remark": "Standard raw steel plates",
+      "status": "Active"
+    },
+    {
+      "id": "cat-2",
+      "category": "Welding Rods",
+      "remark": "Consumables for welding",
+      "status": "Void"
+    },
+    {
+      "id": "cat-new-1779426347285",
+      "category": "TEXT",
+      "remark": "MULTI TEXT",
+      "status": "Inactive"
+    }
+  ],
+  "materialTypes": [
+    {
+      "id": "mtype-1",
+      "type": "Stainless Steel",
+      "remark": "Common stainless steel material",
+      "status": "Active"
+    },
+    {
+      "id": "mtype-2",
+      "type": "Mild Steel",
+      "remark": "Standard mild steel",
+      "status": "Void"
+    }
+  ],
+  "mainProcesses": [
+    {
+      "id": "mprocess-1",
+      "process": "Welding",
+      "remark": "Main welding process",
+      "status": "Active"
+    },
+    {
+      "id": "mprocess-new-1779436276782",
+      "process": "laser",
+      "remark": "laser",
+      "status": "Void"
+    }
+  ],
+  "processProfiles": [
+    {
+      "id": "process-1779437213223",
+      "mainProcessId": "mprocess-1",
+      "routingProcess": "LASER",
+      "welding": true,
+      "sprayPainting": false,
+      "machining": false,
+      "costPerMinute": 90,
+      "remark": "FGHJK",
+      "status": "Active"
+    }
   ]
 }
