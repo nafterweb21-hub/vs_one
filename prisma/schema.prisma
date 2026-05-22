@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
+  engineType = "library"
 }
 
 datasource db {
@@ -54,3 +55,26 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Company {
+  id                    String   @id @default(cuid())
+  name                  String   @unique
+  address               String   @db.Text
+  phoneNo               String
+  faxNo                 String
+  email                 String?
+  website               String?
+  rocNo                 String?
+  gstRegistrationNo     String
+  uploadUrl             String   @db.Text
+  logoUrl               String?  @db.Text
+  footerUrl             String?  @db.Text
+  logoName              String
+  footerName            String
+  allowCreatePoForWo    Boolean  @default(false)
+  as9100RequirementNote Boolean  @default(false)
+  status                String   @default("Active")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
