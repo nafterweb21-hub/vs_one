@@ -17,6 +17,7 @@ import {
   Truck,
   Package,
   Box,
+  Flame,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -134,6 +135,14 @@ export default function Sidebar() {
             >
               <Box size={16} />
               <span>Material Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/welding-type"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/welding-type")}
+            >
+              <Flame size={16} />
+              <span>Welding Type Profile</span>
             </Link>
           </div>
 
