@@ -163,7 +163,6 @@ export default function DashboardLayout({
                     </div>
                   </button>
 
-
                   {/* 21 Profiles Sub-Submenu with dynamic scroll constraint */}
                   {isMasterExpanded && (
                     <div className="mt-1 ml-3 pl-2.5 border-l border-slate-100 dark:border-slate-800 space-y-0.5 max-h-[360px] overflow-y-auto pr-1">

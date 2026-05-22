@@ -170,6 +170,7 @@ model CustomerAddress {
   updatedAt  DateTime        @updatedAt
 }
 
+}
 
 model MaterialCategory {
   id          String            @id @default(cuid())
@@ -195,7 +196,6 @@ model MaterialProfile {
   updatedAt          DateTime         @updatedAt
 }
 
-
 model WeldingTypeProfile {
   id        String   @id @default(cuid())
   type      String   @unique
@@ -203,4 +203,44 @@ model WeldingTypeProfile {
   status    String   @default("Active") // "Active" or "Inactive"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+
+model SupplierProfile {
+  id             String                  @id @default(cuid())
+  supplierCode   String                  @unique
+  supplierName   String                  @unique
+  remarks        String?                 @db.Text
+  status         String                  @default("Active") // "Active" or "Inactive"
+  contactPersons SupplierContactPerson[]
+  addresses      SupplierAddress[]
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+}
+
+model SupplierContactPerson {
+  id                String          @id @default(cuid())
+  supplierId        String
+  supplier          SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  contactPersonName String
+  telNo             String?
+  mobileNo          String?
+  faxNo             String?
+  email             String?
+  designation       String?
+  status            String          @default("Active") // "Active" or "Inactive"
+  isDefault         Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model SupplierAddress {
+  id         String          @id @default(cuid())
+  supplierId String
+  supplier   SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  address    String          @db.Text
+  status     String          @default("Active") // "Active" or "Inactive"
+  isDefault  Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 }
