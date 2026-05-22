@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useTransition } from "react";
+import Link from "next/link";
 import {
   getFinishedGoodProfiles,
-  createFinishedGoodProfile,
   updateFinishedGoodRemark,
   toggleFinishedGoodStatus,
   deleteFinishedGoodProfile,
-  FinishedGoodProfileInput,
 } from "./actions";
 
 interface FinishedGoodProfile {
@@ -20,6 +19,16 @@ interface FinishedGoodProfile {
   updatedAt: Date;
 }
 
+interface RawFinishedGoodProfile {
+  id: string;
+  partNo: string | null;
+  description: string;
+  remark: string | null;
+  status: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+}
+
 export default function FinishedGoodProfilePage() {
   const [profiles, setProfiles] = useState<FinishedGoodProfile[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,28 +36,21 @@ export default function FinishedGoodProfilePage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Modals
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState<FinishedGoodProfile | null>(null);
 
   // Form states
-  const [partNo, setPartNo] = useState("");
-  const [description, setDescription] = useState("");
   const [remark, setRemark] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
 
   const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    loadData();
-  }, []);
 
   const loadData = async () => {
     setIsLoading(true);
     setErrorMsg(null);
     const result = await getFinishedGoodProfiles();
     if (result.success && result.data) {
-      const casted = result.data.map((p: any) => ({
+      const casted = result.data.map((p: RawFinishedGoodProfile) => ({
         ...p,
         createdAt: new Date(p.createdAt),
         updatedAt: new Date(p.updatedAt),
@@ -60,45 +62,18 @@ export default function FinishedGoodProfilePage() {
     setIsLoading(false);
   };
 
-  const handleOpenCreateModal = () => {
-    setPartNo("");
-    setDescription("");
-    setRemark("");
-    setFormError(null);
-    setIsCreateModalOpen(true);
-  };
+  useEffect(() => {
+    const run = async () => {
+      await loadData();
+    };
+    run();
+  }, []);
 
   const handleOpenEditModal = (profile: FinishedGoodProfile) => {
     setSelectedProfile(profile);
     setRemark(profile.remark || "");
     setFormError(null);
     setIsEditModalOpen(true);
-  };
-
-  const handleCreateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(null);
-
-    const descVal = description.trim();
-    if (!descVal) {
-      setFormError("Description is required.");
-      return;
-    }
-
-    startTransition(async () => {
-      const res = await createFinishedGoodProfile({
-        partNo: partNo.trim() || undefined,
-        description: descVal,
-        remark: remark.trim() || undefined,
-      });
-
-      if (res.success) {
-        setIsCreateModalOpen(false);
-        loadData();
-      } else {
-        setFormError(res.error || "Failed to create finished good profile.");
-      }
-    });
   };
 
   const handleEditSubmit = async (e: React.FormEvent) => {
@@ -167,15 +142,15 @@ export default function FinishedGoodProfilePage() {
           </p>
         </div>
 
-        <button
-          onClick={handleOpenCreateModal}
+        <Link
+          href="/dashboard/admin/master-profile/finished-good/create"
           className="inline-flex items-center gap-2 rounded-lg glossy-button-blue px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-500/10 cursor-pointer"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
           Add Finished Good
-        </button>
+        </Link>
       </div>
 
       {/* Search Panel */}
@@ -299,106 +274,7 @@ export default function FinishedGoodProfilePage() {
         )}
       </div>
 
-      {/* CREATE MODAL */}
-      {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
-          <div className="fixed inset-0 bg-zinc-950/30 backdrop-blur-xs" onClick={() => setIsCreateModalOpen(false)} />
 
-          <div className="relative w-full max-w-lg transform overflow-hidden rounded-xl bg-white p-6 shadow-xl border border-zinc-200 transition-all">
-            <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
-              <h2 className="text-xl font-bold text-black">Create Finished Good Profile</h2>
-              <button
-                onClick={() => setIsCreateModalOpen(false)}
-                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 cursor-pointer"
-              >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateSubmit} className="mt-6 space-y-5">
-              {formError && (
-                <div className="rounded-lg bg-red-50 border border-red-200 p-3.5 text-sm text-red-800">
-                  <div className="flex gap-2.5">
-                    <svg className="h-5 w-5 text-red-500 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                    </svg>
-                    <span>{formError}</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Part No Field */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-zinc-800">Part No</label>
-                <input
-                  type="text"
-                  placeholder="e.g. PN-12345"
-                  value={partNo}
-                  onChange={(e) => setPartNo(e.target.value)}
-                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden"
-                />
-                <p className="text-xs text-zinc-500">
-                  Once saved, Part No cannot be changed. Must be unique if provided.
-                </p>
-              </div>
-
-              {/* Description Field */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-zinc-800">
-                  Description <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  required
-                  placeholder="Enter finished good description..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden resize-none"
-                />
-                <p className="text-xs text-zinc-500">
-                  Once saved, Description cannot be changed. Must be unique.
-                </p>
-              </div>
-
-              {/* Remarks Field */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-zinc-800">Remark</label>
-                <textarea
-                  placeholder="Enter remark..."
-                  value={remark}
-                  onChange={(e) => setRemark(e.target.value)}
-                  rows={3}
-                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden resize-none"
-                />
-              </div>
-
-              {/* Buttons */}
-              <div className="flex items-center justify-end gap-3 border-t border-zinc-200 pt-5 mt-6">
-                <button
-                  type="button"
-                  onClick={() => setIsCreateModalOpen(false)}
-                  className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-zinc-800 cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isPending}
-                  className="inline-flex items-center justify-center rounded-lg glossy-button-blue px-5 py-2.5 text-base font-bold text-white shadow-md disabled:opacity-70 cursor-pointer"
-                >
-                  {isPending ? (
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  ) : (
-                    "Create"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* EDIT MODAL */}
       {isEditModalOpen && selectedProfile && (
