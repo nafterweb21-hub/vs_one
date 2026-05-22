@@ -61,8 +61,8 @@ model ApprovalLevelProfile {
   id           String           @id @default(cuid())
   module       String           // e.g., "Purchase Order - Material", "Purchase Order - Subcon"
   actionButton String?          // e.g., "First Level", "Second Level"
-  minRange     Decimal?         @db.Decimal(12, 2)
-  maxRange     Decimal?         @db.Decimal(12, 2)
+  minRange     Decimal?         
+  maxRange     Decimal?         
   status       String           @default("Active") // "Active" or "Inactive"
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
@@ -234,7 +234,7 @@ model ProcessProfile {
   welding         Boolean     @default(false)
   sprayPainting   Boolean     @default(false)
   machining       Boolean     @default(false)
-  costPerMinute   Decimal     @db.Decimal(12, 2)
+  costPerMinute   Decimal     
   remark          String?
   status          String      @default("Active") // "Active", "Inactive", or "Void"
   createdAt       DateTime    @default(now())
