@@ -137,7 +137,7 @@ model CustomerAddress {
 model MaterialCategory {
   id          String            @id @default(cuid())
   name        String            @unique
-  description String?
+  description String?           @db.Text
   status      String            @default("Active") // "Active" or "Inactive"
   materials   MaterialProfile[]
   createdAt   DateTime          @default(now())
@@ -147,12 +147,12 @@ model MaterialCategory {
 model MaterialProfile {
   id                 String           @id @default(cuid())
   partNo             String?          @unique // Not mandatory, unique
-  description        String           @unique // Mandatory, unique
+  description        String           @unique @db.Text // Mandatory, unique
   shape              String           // Mandatory
   size               String?          // Not mandatory
   categoryId         String           // Dropdown from Material Category profile
   category           MaterialCategory @relation(fields: [categoryId], references: [id])
-  remark             String?
+  remark             String?          @db.Text
   status             String           @default("Active") // Default Active
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
