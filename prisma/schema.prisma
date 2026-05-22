@@ -158,3 +158,25 @@ model ElcometerProfile {
   updatedAt DateTime @updatedAt
 }
 
+// ==========================================
+// Machine Profile
+// ==========================================
+model MachineProfile {
+  id              String   @id @default(cuid())
+  machineCode     String   @unique // Immutable after save
+  machineNo       String
+  brand           String
+  model           String
+  current         String?
+  serialNo        String?  // S/No
+  machineType     String?  // CNC / Convention
+  operationType   String?  // Milling / Turning
+  remark          String?
+  uploadUrl       String?  // File Upload path
+  machineCategory String   // Welding Machine / Machine
+  status          String   @default("Active") // "Active" or "Inactive"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+

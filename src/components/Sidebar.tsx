@@ -13,6 +13,7 @@ import {
   UserCircle,
   Ruler,
   Gauge,
+  Cpu,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -106,6 +107,14 @@ export default function Sidebar() {
             >
               <Gauge size={16} />
               <span>Elcometer Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/profiles/machine"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/machine")}
+            >
+              <Cpu size={16} />
+              <span>Machine Profile</span>
             </Link>
             <Link
               href="/dashboard/master-profile/employee"
