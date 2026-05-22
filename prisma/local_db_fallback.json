@@ -1,0 +1,84 @@
+{
+  "users": [
+    {
+      "id": "user-sy",
+      "name": "Shyue Yin",
+      "email": "sy@visionone.com",
+      "status": "Active"
+    },
+    {
+      "id": "user-danny",
+      "name": "Danny",
+      "email": "danny@visionone.com",
+      "status": "Active"
+    },
+    {
+      "id": "user-simeon",
+      "name": "Simeon",
+      "email": "simeon@visionone.com",
+      "status": "Active"
+    },
+    {
+      "id": "user-admin",
+      "name": "Admin",
+      "email": "admin@visionone.com",
+      "status": "Active"
+    }
+  ],
+  "approvalProfiles": [
+    {
+      "id": "prof-1",
+      "module": "Purchase Order - Material",
+      "actionButton": "First Level",
+      "minRange": 0,
+      "maxRange": 499.99,
+      "status": "Active",
+      "approvers": [
+        {
+          "id": "ap-edit-prof-1-0-1779423693045",
+          "approvalLevelProfileId": "prof-1",
+          "userId": "user-sy",
+          "status": "Active"
+        }
+      ]
+    },
+    {
+      "id": "prof-2",
+      "module": "Purchase Order - Material",
+      "actionButton": "Second Level",
+      "minRange": 500,
+      "maxRange": 1000000,
+      "status": "Active",
+      "approvers": [
+        {
+          "id": "ap-2",
+          "approvalLevelProfileId": "prof-2",
+          "userId": "user-danny",
+          "status": "Active"
+        },
+        {
+          "id": "ap-3",
+          "approvalLevelProfileId": "prof-2",
+          "userId": "user-simeon",
+          "status": "Active"
+        }
+      ]
+    },
+    {
+      "id": "prof-new-1779423682664",
+      "module": "Purchase Order - Material",
+      "actionButton": "First Level",
+      "minRange": 0,
+      "maxRange": 499.99,
+      "status": "Void",
+      "approvers": [
+        {
+          "id": "ap-create-prof-new-1779423682664-0-1779423682664",
+          "approvalLevelProfileId": "prof-new-1779423682664",
+          "userId": "user-danny",
+          "status": "Active"
+        }
+      ]
+    }
+  ]
+}
