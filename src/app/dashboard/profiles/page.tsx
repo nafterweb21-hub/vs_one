@@ -426,7 +426,9 @@ export default function ProfilesDashboard() {
       <div className="mt-12 border-t border-blue-200 pt-8">
         <MasterProfilesDirectory />
       </div>
-
+    </div>
+  );
+}
 
 // Categorized master profiles from the specification profiles.md
 const MASTER_CATEGORIES = [

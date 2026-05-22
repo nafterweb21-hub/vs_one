@@ -21,6 +21,7 @@ import {
   ShoppingCart,
   CreditCard,
   Paintbrush,
+  ClipboardList,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -98,6 +99,20 @@ export default function Sidebar() {
             >
               <ShoppingCart size={16} />
               <span>Sales Orders</span>
+            </Link>
+          </div>
+
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+              Production
+            </p>
+            <Link
+              href="/dashboard/production/work-order"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/production/work-order")}
+            >
+              <ClipboardList size={16} />
+              <span>Work Orders</span>
             </Link>
           </div>
 
