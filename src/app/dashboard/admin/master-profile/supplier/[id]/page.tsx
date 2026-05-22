@@ -336,7 +336,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
   if (isLoading) {
     return (
       <div className="flex h-72 items-center justify-center bg-white">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-blue-600" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
       </div>
     );
   }
@@ -345,7 +345,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
     return (
       <div className="w-full space-y-6 bg-white py-6 text-center text-black">
         <h2 className="text-xl font-bold text-red-600">Error loading details</h2>
-        <p className="text-sm text-zinc-600">{errorMsg || "Supplier not found."}</p>
+        <p className="text-sm text-blue-600">{errorMsg || "Supplier not found."}</p>
         <Link
           href="/dashboard/admin/master-profile/supplier"
           className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-500 transition-colors"
@@ -363,7 +363,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
         <div className="space-y-2">
           <Link
             href="/dashboard/admin/master-profile/supplier"
-            className="inline-flex items-center gap-1.5 text-base font-bold text-zinc-600 hover:text-blue-600 transition-colors"
+            className="inline-flex items-center gap-1.5 text-base font-bold text-blue-600 hover:text-blue-600 transition-colors"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -374,18 +374,18 @@ export default function ManageSupplierPage({ params }: PageProps) {
             <h1 className="text-3xl font-bold tracking-tight text-black">
               Manage Supplier
             </h1>
-            <span className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-base font-bold text-zinc-700">
+            <span className="rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-base font-bold text-blue-700">
               {supplierDetail.supplierCode}
             </span>
           </div>
-          <p className="text-base text-zinc-500">
+          <p className="text-base text-blue-500">
             {supplierDetail.supplierName}
           </p>
         </div>
       </div>
 
       {/* Main Layout - Centered Tab Selector */}
-      <div className="flex border-b border-zinc-200 mb-8 shrink-0 justify-center gap-4">
+      <div className="flex border-b border-blue-200 mb-8 shrink-0 justify-center gap-4">
         <button
           onClick={() => {
             setDetailTab("general");
@@ -395,7 +395,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
           className={`px-8 py-4 text-base md:text-lg font-bold border-b-2 transition-all cursor-pointer ${
             detailTab === "general"
               ? "border-blue-600 text-blue-600"
-              : "border-transparent text-zinc-500 hover:text-zinc-800"
+              : "border-transparent text-blue-500 hover:text-blue-800"
           }`}
         >
           General Info
@@ -409,7 +409,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
           className={`px-8 py-4 text-base md:text-lg font-bold border-b-2 transition-all cursor-pointer ${
             detailTab === "contacts"
               ? "border-blue-600 text-blue-600"
-              : "border-transparent text-zinc-500 hover:text-zinc-800"
+              : "border-transparent text-blue-500 hover:text-blue-800"
           }`}
         >
           Contact Persons ({supplierDetail.contactPersons.length})
@@ -423,7 +423,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
           className={`px-8 py-4 text-base md:text-lg font-bold border-b-2 transition-all cursor-pointer ${
             detailTab === "addresses"
               ? "border-blue-600 text-blue-600"
-              : "border-transparent text-zinc-500 hover:text-zinc-800"
+              : "border-transparent text-blue-500 hover:text-blue-800"
           }`}
         >
           Addresses ({supplierDetail.addresses.length})
@@ -436,28 +436,28 @@ export default function ManageSupplierPage({ params }: PageProps) {
         {/* GENERAL INFO TAB */}
         {detailTab === "general" && (
           <div className="flex flex-col gap-6 w-full">
-            <h3 className="text-xl font-bold text-black border-b border-zinc-150 pb-3">
+            <h3 className="text-xl font-bold text-black border-b border-blue-150 pb-3">
               General Info
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
-                <span className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Supplier Code</span>
-                <div className="rounded-lg bg-zinc-50 border border-zinc-200 px-4 py-3 text-base font-bold text-zinc-800">
+                <span className="text-sm font-bold text-blue-500 uppercase tracking-wider">Supplier Code</span>
+                <div className="rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-base font-bold text-blue-800">
                   {supplierDetail.supplierCode}
                 </div>
               </div>
 
               <div className="flex flex-col gap-2">
-                <span className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Supplier Name</span>
-                <div className="rounded-lg bg-zinc-50 border border-zinc-200 px-4 py-3 text-base font-medium text-zinc-850">
+                <span className="text-sm font-bold text-blue-500 uppercase tracking-wider">Supplier Name</span>
+                <div className="rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-base font-medium text-blue-850">
                   {supplierDetail.supplierName}
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Remarks</label>
+              <label className="text-sm font-bold text-blue-500 uppercase tracking-wider">Remarks</label>
               <textarea
                 placeholder="Enter remarks..."
                 value={remarksEdit}
@@ -504,7 +504,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
             </div>
 
             {isContactFormOpen ? (
-              <form onSubmit={handleContactSubmit} className="border-b border-zinc-200 pb-6 mb-6 space-y-6 w-full">
+              <form onSubmit={handleContactSubmit} className="border-b border-blue-200 pb-6 mb-6 space-y-6 w-full">
                 <h4 className="text-base font-bold uppercase tracking-wider text-blue-700">
                   {contactEditId ? "Edit Contact Details" : "Add New Contact"}
                 </h4>
@@ -515,7 +515,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-zinc-600">Contact Person <span className="text-red-500">*</span></label>
+                    <label className="text-sm font-bold text-blue-600">Contact Person <span className="text-red-500">*</span></label>
                     <input
                       type="text"
                       required
@@ -526,7 +526,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-zinc-600">Tel No</label>
+                    <label className="text-sm font-bold text-blue-600">Tel No</label>
                     <input
                       type="text"
                       value={contactTel}
@@ -536,7 +536,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-zinc-600">Mobile No</label>
+                    <label className="text-sm font-bold text-blue-600">Mobile No</label>
                     <input
                       type="text"
                       value={contactMobile}
@@ -546,7 +546,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-zinc-600">Fax No</label>
+                    <label className="text-sm font-bold text-blue-600">Fax No</label>
                     <input
                       type="text"
                       value={contactFax}
@@ -556,7 +556,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-zinc-600">Email</label>
+                    <label className="text-sm font-bold text-blue-600">Email</label>
                     <input
                       type="email"
                       value={contactEmail}
@@ -566,7 +566,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-zinc-600">Designation</label>
+                    <label className="text-sm font-bold text-blue-600">Designation</label>
                     <input
                       type="text"
                       value={contactDesignation}
@@ -583,9 +583,9 @@ export default function ManageSupplierPage({ params }: PageProps) {
                       id="manageContactDefault"
                       checked={contactIsDefault}
                       onChange={(e) => setContactIsDefault(e.target.checked)}
-                      className="h-5 w-5 rounded border-zinc-300 text-blue-600 cursor-pointer"
+                      className="h-5 w-5 rounded border-blue-300 text-blue-600 cursor-pointer"
                     />
-                    <label htmlFor="manageContactDefault" className="text-sm font-semibold text-zinc-700 cursor-pointer select-none">
+                    <label htmlFor="manageContactDefault" className="text-sm font-semibold text-blue-700 cursor-pointer select-none">
                       Set as Default Contact Person
                     </label>
                   </div>
@@ -608,15 +608,15 @@ export default function ManageSupplierPage({ params }: PageProps) {
                 </div>
               </form>
             ) : supplierDetail.contactPersons.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center p-8 border border-dashed border-zinc-200 rounded-lg">
-                <p className="text-base font-semibold text-zinc-800">No contacts defined</p>
-                <p className="text-sm text-zinc-550 mt-1">Click Add Contact Person to define supplier contacts.</p>
+              <div className="flex-1 flex flex-col items-center justify-center text-center p-8 border border-dashed border-blue-200 rounded-lg">
+                <p className="text-base font-semibold text-blue-800">No contacts defined</p>
+                <p className="text-sm text-blue-550 mt-1">Click Add Contact Person to define supplier contacts.</p>
               </div>
             ) : (
               <div className="flex-1 overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-zinc-200 bg-zinc-50 font-bold text-zinc-700 sticky top-0">
+                    <tr className="border-b border-blue-200 bg-blue-50 font-bold text-blue-700 sticky top-0">
                       <th className="px-4 py-3.5 text-sm font-bold">Name</th>
                       <th className="px-4 py-3.5 text-sm font-bold">Phone Details</th>
                       <th className="px-4 py-3.5 text-sm font-bold">Email</th>
@@ -626,20 +626,20 @@ export default function ManageSupplierPage({ params }: PageProps) {
                       <th className="px-4 py-3.5 text-right text-sm font-bold">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-100">
+                  <tbody className="divide-y divide-blue-100">
                     {supplierDetail.contactPersons.map((contact) => (
-                      <tr key={contact.id} className="hover:bg-zinc-50 transition-colors">
+                      <tr key={contact.id} className="hover:bg-blue-50 transition-colors">
                         <td className="px-4 py-4 text-base font-bold text-black">{contact.contactPersonName}</td>
-                        <td className="px-4 py-4 text-sm text-zinc-800 space-y-1">
+                        <td className="px-4 py-4 text-sm text-blue-800 space-y-1">
                           {contact.telNo && <div>Tel: {contact.telNo}</div>}
                           {contact.mobileNo && <div>Mob: {contact.mobileNo}</div>}
                           {contact.faxNo && <div>Fax: {contact.faxNo}</div>}
-                          {!contact.telNo && !contact.mobileNo && !contact.faxNo && <span className="text-zinc-400">—</span>}
+                          {!contact.telNo && !contact.mobileNo && !contact.faxNo && <span className="text-blue-400">—</span>}
                         </td>
-                        <td className="px-4 py-4 text-sm text-zinc-850 truncate max-w-[180px]" title={contact.email || undefined}>
+                        <td className="px-4 py-4 text-sm text-blue-850 truncate max-w-[180px]" title={contact.email || undefined}>
                           {contact.email || "—"}
                         </td>
-                        <td className="px-4 py-4 text-sm text-zinc-800">{contact.designation || "—"}</td>
+                        <td className="px-4 py-4 text-sm text-blue-800">{contact.designation || "—"}</td>
                         <td className="px-4 py-4 text-center">
                           {contact.isDefault ? (
                             <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 border border-blue-200">
@@ -658,7 +658,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                           <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold border ${
                             contact.status === "Active"
                               ? "bg-blue-55/10 text-blue-700 border-blue-200"
-                              : "bg-zinc-50 text-zinc-650 border-zinc-200"
+                              : "bg-blue-50 text-blue-650 border-blue-200"
                           }`}>
                             {contact.status}
                           </span>
@@ -667,7 +667,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleOpenEditContact(contact)}
-                              className="rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 px-3 py-1.5 text-xs font-semibold text-zinc-800 cursor-pointer"
+                              className="rounded-md border border-blue-200 bg-white hover:bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-800 cursor-pointer"
                             >
                               Edit
                             </button>
@@ -716,7 +716,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
             </div>
 
             {isAddressFormOpen ? (
-              <form onSubmit={handleAddressSubmit} className="border-b border-zinc-200 pb-6 mb-6 space-y-6 w-full">
+              <form onSubmit={handleAddressSubmit} className="border-b border-blue-200 pb-6 mb-6 space-y-6 w-full">
                 <h4 className="text-base font-bold uppercase tracking-wider text-blue-700">
                   {addressEditId ? "Edit Address Details" : "Add New Address"}
                 </h4>
@@ -726,7 +726,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                   </div>
                 )}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-bold text-zinc-655">Address Details <span className="text-red-500">*</span></label>
+                  <label className="text-sm font-bold text-blue-655">Address Details <span className="text-red-500">*</span></label>
                   <textarea
                     required
                     rows={3}
@@ -743,9 +743,9 @@ export default function ManageSupplierPage({ params }: PageProps) {
                       id="manageAddressDefault"
                       checked={addressIsDefault}
                       onChange={(e) => setAddressIsDefault(e.target.checked)}
-                      className="h-5 w-5 rounded border-zinc-300 text-blue-600 cursor-pointer"
+                      className="h-5 w-5 rounded border-blue-300 text-blue-600 cursor-pointer"
                     />
-                    <label htmlFor="manageAddressDefault" className="text-sm font-semibold text-zinc-700 cursor-pointer select-none">
+                    <label htmlFor="manageAddressDefault" className="text-sm font-semibold text-blue-700 cursor-pointer select-none">
                       Set as Default Address
                     </label>
                   </div>
@@ -768,25 +768,25 @@ export default function ManageSupplierPage({ params }: PageProps) {
                 </div>
               </form>
             ) : supplierDetail.addresses.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center p-8 border border-dashed border-zinc-200 rounded-lg">
-                <p className="text-base font-semibold text-zinc-800">No addresses defined</p>
-                <p className="text-sm text-zinc-550 mt-1">Click Add Address to define supplier shipping/billing locations.</p>
+              <div className="flex-1 flex flex-col items-center justify-center text-center p-8 border border-dashed border-blue-200 rounded-lg">
+                <p className="text-base font-semibold text-blue-800">No addresses defined</p>
+                <p className="text-sm text-blue-550 mt-1">Click Add Address to define supplier shipping/billing locations.</p>
               </div>
             ) : (
               <div className="flex-1 overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-zinc-200 bg-zinc-50 font-bold text-zinc-700 sticky top-0">
+                    <tr className="border-b border-blue-200 bg-blue-50 font-bold text-blue-700 sticky top-0">
                       <th className="px-4 py-3.5 text-sm font-bold">Address</th>
                       <th className="px-4 py-3.5 text-center text-sm font-bold">Default</th>
                       <th className="px-4 py-3.5 text-center text-sm font-bold">Status</th>
                       <th className="px-4 py-3.5 text-right text-sm font-bold">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-100">
+                  <tbody className="divide-y divide-blue-100">
                     {supplierDetail.addresses.map((addr) => (
-                      <tr key={addr.id} className="hover:bg-zinc-50 transition-colors">
-                        <td className="px-4 py-4 text-base text-zinc-850 whitespace-pre-wrap max-w-lg">
+                      <tr key={addr.id} className="hover:bg-blue-50 transition-colors">
+                        <td className="px-4 py-4 text-base text-blue-850 whitespace-pre-wrap max-w-lg">
                           {addr.address}
                         </td>
                         <td className="px-4 py-4 text-center">
@@ -807,7 +807,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                           <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold border ${
                             addr.status === "Active"
                               ? "bg-blue-55/10 text-blue-700 border-blue-200"
-                              : "bg-zinc-50 text-zinc-650 border-zinc-200"
+                              : "bg-blue-50 text-blue-650 border-blue-200"
                           }`}>
                             {addr.status}
                           </span>
@@ -816,7 +816,7 @@ export default function ManageSupplierPage({ params }: PageProps) {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleOpenEditAddress(addr)}
-                              className="rounded-md border border-zinc-200 bg-white hover:bg-zinc-55 px-3 py-1.5 text-xs font-semibold text-zinc-800 cursor-pointer"
+                              className="rounded-md border border-blue-200 bg-white hover:bg-blue-55 px-3 py-1.5 text-xs font-semibold text-blue-800 cursor-pointer"
                             >
                               Edit
                             </button>

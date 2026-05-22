@@ -89,42 +89,42 @@ export default function EditMaterialPage({ params }: { params: { id: string } })
   if (isLoading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-cyan-600" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-cyan-600" />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 w-full mx-auto max-w-7xl space-y-6 bg-zinc-50 dark:bg-zinc-950 p-6 text-zinc-900 dark:text-zinc-100">
+    <div className="flex-1 w-full mx-auto max-w-7xl space-y-6 bg-blue-50 p-6 text-blue-900 ">
       {/* Header */}
-      <div className="flex items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+      <div className="flex items-center gap-4 border-b border-blue-200 pb-4">
         <Link
           href="/dashboard/master-profile/material"
-          className="p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+          className="p-2 rounded-lg hover:bg-blue-200 :bg-blue-800 transition-colors"
         >
-          <svg className="h-5 w-5 text-zinc-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+          <svg className="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold tracking-tight text-blue-900 flex items-center gap-3">
             <span>Edit Material Profile</span>
             {partNo && (
-              <span className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400">
+              <span className="text-xs bg-blue-100 px-2 py-0.5 rounded-md border border-blue-200 text-blue-600 ">
                 {partNo}
               </span>
             )}
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-sm text-blue-500 mt-1">
             Update existing material details.
           </p>
         </div>
       </div>
 
-      <div className="rounded-xl bg-white dark:bg-zinc-900 p-6 shadow-md border border-zinc-200 dark:border-zinc-800">
+      <div className="rounded-xl bg-white p-6 shadow-md border border-blue-200 ">
         <form onSubmit={handleUpdateMaterial} className="space-y-6">
           {formError && (
-            <div className="rounded-lg bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 p-3.5 text-sm text-rose-800 dark:text-rose-400">
+            <div className="rounded-lg bg-rose-50 border border-rose-200 p-3.5 text-sm text-rose-800 ">
               <div className="flex gap-2.5">
                 <svg className="h-5 w-5 text-rose-500 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
@@ -134,22 +134,22 @@ export default function EditMaterialPage({ params }: { params: { id: string } })
             </div>
           )}
 
-          <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-lg border border-zinc-200 dark:border-zinc-800">
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase font-semibold mb-1">Description</p>
-            <p className="text-sm font-medium text-zinc-900 dark:text-white">{description}</p>
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 ">
+            <p className="text-xs text-blue-500 uppercase font-semibold mb-1">Description</p>
+            <p className="text-sm font-medium text-blue-900 ">{description}</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Category */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
+              <label className="text-sm font-bold text-blue-800 ">
                 Category <span className="text-rose-500">*</span>
               </label>
               <select
                 required
                 value={editCategoryId}
                 onChange={(e) => setEditCategoryId(e.target.value)}
-                className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-500 dark:text-white"
+                className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-500 "
               >
                 <option value="">Select Category</option>
                 {categories.map((c) => (
@@ -162,7 +162,7 @@ export default function EditMaterialPage({ params }: { params: { id: string } })
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Shape */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
+              <label className="text-sm font-bold text-blue-800 ">
                 Shape <span className="text-rose-500">*</span>
               </label>
               <input
@@ -170,44 +170,44 @@ export default function EditMaterialPage({ params }: { params: { id: string } })
                 required
                 value={editShape}
                 onChange={(e) => setEditShape(e.target.value)}
-                className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-500 dark:text-white"
+                className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-500 "
               />
             </div>
 
             {/* Size */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
+              <label className="text-sm font-bold text-blue-800 ">
                 Size
               </label>
               <input
                 type="text"
                 value={editSize}
                 onChange={(e) => setEditSize(e.target.value)}
-                className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-500 dark:text-white"
+                className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-500 "
               />
             </div>
           </div>
 
           {/* Remarks */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
+            <label className="text-sm font-bold text-blue-800 ">
               Remarks
             </label>
             <textarea
               rows={3}
               value={editRemark}
               onChange={(e) => setEditRemark(e.target.value)}
-              className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-500 resize-none dark:text-white"
+              className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-500 resize-none "
             />
           </div>
 
 
 
           {/* Form Buttons */}
-          <div className="flex items-center justify-end gap-4 border-t border-zinc-200 dark:border-zinc-800 pt-6 mt-8">
+          <div className="flex items-center justify-end gap-4 border-t border-blue-200 pt-6 mt-8">
             <Link
               href="/dashboard/master-profile/material"
-              className="rounded-lg px-6 py-2.5 text-sm font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="rounded-lg px-6 py-2.5 text-sm font-bold text-blue-700 hover:bg-blue-100 :bg-blue-800 transition-colors cursor-pointer"
             >
               Cancel
             </Link>

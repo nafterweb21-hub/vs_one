@@ -94,30 +94,30 @@ export default function CreateProcessProfilePage() {
       <div className="flex items-center gap-3">
         <Link 
           href="/dashboard/profiles/process-profiles" 
-          className="rounded-full p-2 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+          className="rounded-full p-2 text-blue-400 hover:bg-blue-100 hover:text-blue-700 transition :bg-blue-800 :text-blue-300"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
         </Link>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="text-2xl font-bold tracking-tight text-blue-900 ">
             Create Process Profile
           </h2>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-xs text-blue-500 ">
             Define a new routing process and its costing details.
           </p>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="border-b border-zinc-100 bg-zinc-50/50 px-6 py-4 dark:border-zinc-800 dark:bg-zinc-950/30">
-          <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Profile Details</h3>
+      <div className="overflow-hidden rounded-2xl border border-blue-200 bg-white shadow-sm ">
+        <div className="border-b border-blue-100 bg-blue-50/50 px-6 py-4 ">
+          <h3 className="text-sm font-bold text-blue-900 ">Profile Details</h3>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
           {errorMsg && (
-            <div className="mb-6 rounded-lg border border-rose-200 bg-rose-50/50 p-4 text-sm font-semibold text-rose-800 dark:border-rose-950/20 dark:bg-rose-950/10 dark:text-rose-400">
+            <div className="mb-6 rounded-lg border border-rose-200 bg-rose-50/50 p-4 text-sm font-semibold text-rose-800 ">
               {errorMsg}
             </div>
           )}
@@ -126,7 +126,7 @@ export default function CreateProcessProfilePage() {
             
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <label className="mb-1.5 block text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                <label className="mb-1.5 block text-xs font-bold text-blue-700 ">
                   Main Process <span className="text-rose-500">*</span>
                 </label>
                 <select
@@ -134,18 +134,18 @@ export default function CreateProcessProfilePage() {
                   required
                   value={formData.mainProcessId}
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-indigo-500"
+                  className="w-full rounded-xl border border-blue-300 bg-white px-4 py-2.5 text-sm text-blue-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition :border-indigo-500"
                 >
                   <option value="" disabled>Select a Main Process...</option>
                   {mainProcesses.map(m => (
                     <option key={m.id} value={m.id}>{m.process}</option>
                   ))}
                 </select>
-                <p className="mt-1.5 text-[11px] text-zinc-500">Group categorization for this routing process.</p>
+                <p className="mt-1.5 text-[11px] text-blue-500">Group categorization for this routing process.</p>
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                <label className="mb-1.5 block text-xs font-bold text-blue-700 ">
                   Routing Process <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -155,14 +155,14 @@ export default function CreateProcessProfilePage() {
                   value={formData.routingProcess}
                   onChange={handleChange}
                   placeholder="e.g. Laser Cutting 5KW"
-                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-indigo-500"
+                  className="w-full rounded-xl border border-blue-300 bg-white px-4 py-2.5 text-sm text-blue-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition :border-indigo-500"
                 />
-                <p className="mt-1.5 text-[11px] text-zinc-500">The specific operation name. <span className="font-semibold">Immutable once saved.</span></p>
+                <p className="mt-1.5 text-[11px] text-blue-500">The specific operation name. <span className="font-semibold">Immutable once saved.</span></p>
               </div>
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-bold text-zinc-700 dark:text-zinc-300">
+              <label className="mb-1.5 block text-xs font-bold text-blue-700 ">
                 Process Flags
               </label>
               <div className="flex flex-wrap gap-4 mt-2">
@@ -172,9 +172,9 @@ export default function CreateProcessProfilePage() {
                     name="welding"
                     checked={formData.welding}
                     onChange={handleChange}
-                    className="h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-600 dark:border-zinc-700 dark:bg-zinc-900"
+                    className="h-4 w-4 rounded border-blue-300 text-indigo-600 focus:ring-indigo-600 "
                   />
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Welding</span>
+                  <span className="text-sm font-medium text-blue-700 ">Welding</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -182,9 +182,9 @@ export default function CreateProcessProfilePage() {
                     name="sprayPainting"
                     checked={formData.sprayPainting}
                     onChange={handleChange}
-                    className="h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-600 dark:border-zinc-700 dark:bg-zinc-900"
+                    className="h-4 w-4 rounded border-blue-300 text-indigo-600 focus:ring-indigo-600 "
                   />
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Spray Painting</span>
+                  <span className="text-sm font-medium text-blue-700 ">Spray Painting</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -192,17 +192,17 @@ export default function CreateProcessProfilePage() {
                     name="machining"
                     checked={formData.machining}
                     onChange={handleChange}
-                    className="h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-600 dark:border-zinc-700 dark:bg-zinc-900"
+                    className="h-4 w-4 rounded border-blue-300 text-indigo-600 focus:ring-indigo-600 "
                   />
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Machining</span>
+                  <span className="text-sm font-medium text-blue-700 ">Machining</span>
                 </label>
               </div>
-              <p className="mt-2 text-[11px] text-zinc-500">Ticking these flags requires specific parameter inputs upon scanning out at the production terminal.</p>
+              <p className="mt-2 text-[11px] text-blue-500">Ticking these flags requires specific parameter inputs upon scanning out at the production terminal.</p>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <label className="mb-1.5 block text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                <label className="mb-1.5 block text-xs font-bold text-blue-700 ">
                   Cost Per Minute (SGD) <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -214,20 +214,20 @@ export default function CreateProcessProfilePage() {
                   value={formData.costPerMinute}
                   onChange={handleChange}
                   placeholder="0.00"
-                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm font-mono text-zinc-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-indigo-500"
+                  className="w-full rounded-xl border border-blue-300 bg-white px-4 py-2.5 text-sm font-mono text-blue-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition :border-indigo-500"
                 />
-                <p className="mt-1.5 text-[11px] text-zinc-500">Used for costing calculations.</p>
+                <p className="mt-1.5 text-[11px] text-blue-500">Used for costing calculations.</p>
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                <label className="mb-1.5 block text-xs font-bold text-blue-700 ">
                   Status
                 </label>
                 <select
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-indigo-500"
+                  className="w-full rounded-xl border border-blue-300 bg-white px-4 py-2.5 text-sm text-blue-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition :border-indigo-500"
                 >
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
@@ -236,7 +236,7 @@ export default function CreateProcessProfilePage() {
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-bold text-zinc-700 dark:text-zinc-300">
+              <label className="mb-1.5 block text-xs font-bold text-blue-700 ">
                 Remarks
               </label>
               <textarea
@@ -245,15 +245,15 @@ export default function CreateProcessProfilePage() {
                 onChange={handleChange}
                 rows={3}
                 placeholder="Optional notes or details about this routing process..."
-                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-indigo-500"
+                className="w-full rounded-xl border border-blue-300 bg-white px-4 py-3 text-sm text-blue-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition :border-indigo-500"
               />
             </div>
           </div>
 
-          <div className="mt-8 flex items-center justify-end gap-3 border-t border-zinc-100 pt-6 dark:border-zinc-800">
+          <div className="mt-8 flex items-center justify-end gap-3 border-t border-blue-100 pt-6 ">
             <Link
               href="/dashboard/profiles/process-profiles"
-              className="rounded-xl border border-zinc-200 px-5 py-2.5 text-xs font-bold text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="rounded-xl border border-blue-200 px-5 py-2.5 text-xs font-bold text-blue-600 hover:bg-blue-50 :bg-blue-800"
             >
               Cancel
             </Link>

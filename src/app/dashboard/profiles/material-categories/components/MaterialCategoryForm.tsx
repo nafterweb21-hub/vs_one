@@ -82,12 +82,12 @@ export default function MaterialCategoryForm({ editingProfile }: MaterialCategor
   };
 
   return (
-    <div className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden animate-fade-in">
+    <div className="w-full bg-white border border-blue-200 rounded-2xl shadow-sm overflow-hidden animate-fade-in">
       <form onSubmit={handleSubmit} className="flex flex-col py-8 px-8 space-y-6">
 
         {/* Error Banner */}
         {errorMessage && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-800 dark:border-rose-950/20 dark:bg-rose-950/10 dark:text-rose-400">
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-800 ">
             {errorMessage}
           </div>
         )}
@@ -97,7 +97,7 @@ export default function MaterialCategoryForm({ editingProfile }: MaterialCategor
           
           {/* Category (Text) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+            <label className="text-xs font-bold text-blue-700 uppercase tracking-wide">
               Category Name <span className="text-rose-500">*</span>
             </label>
             <input
@@ -106,11 +106,11 @@ export default function MaterialCategoryForm({ editingProfile }: MaterialCategor
               onChange={(e) => setFormCategory(e.target.value)}
               placeholder="e.g. Raw Plates, Welding Rods"
               disabled={saving || !!editingProfile}
-              className={`w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm font-semibold outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950 text-zinc-900 dark:text-white ${
-                editingProfile ? "opacity-60 cursor-not-allowed bg-zinc-100 dark:bg-zinc-900" : ""
+              className={`w-full rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2.5 text-sm font-semibold outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-blue-900 ${
+                editingProfile ? "opacity-60 cursor-not-allowed bg-blue-100 " : ""
               }`}
             />
-            <p className="text-[10px] text-zinc-400">
+            <p className="text-[10px] text-blue-400">
               {editingProfile 
                 ? "Specification Rule: Once saved, category name cannot be changed." 
                 : "Enter a unique category name to group materials."}
@@ -119,7 +119,7 @@ export default function MaterialCategoryForm({ editingProfile }: MaterialCategor
 
           {/* Remark (Multi-text) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+            <label className="text-xs font-bold text-blue-700 uppercase tracking-wide">
               Remarks
             </label>
             <textarea
@@ -128,16 +128,16 @@ export default function MaterialCategoryForm({ editingProfile }: MaterialCategor
               placeholder="Provide any additional notes or details about this category..."
               disabled={saving}
               rows={4}
-              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950 text-zinc-900 dark:text-white resize-none"
+              className="w-full rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-blue-900 resize-none"
             />
-            <p className="text-[10px] text-zinc-400">
+            <p className="text-[10px] text-blue-400">
               Optional description for the material category.
             </p>
           </div>
 
           {/* Status */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">
+            <label className="text-xs font-bold text-blue-700 uppercase tracking-wide">
               Status <span className="text-rose-500">*</span>
             </label>
             <div className="flex gap-3">
@@ -147,8 +147,8 @@ export default function MaterialCategoryForm({ editingProfile }: MaterialCategor
                 disabled={saving}
                 className={`flex-1 rounded-xl py-2.5 text-sm font-bold border transition ${
                   formStatus === "Active"
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-500 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-500/50"
-                    : "bg-zinc-50 text-zinc-600 border-zinc-200 hover:bg-zinc-100 dark:bg-zinc-950 dark:text-zinc-400 dark:border-zinc-800 dark:hover:bg-zinc-900"
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-500 "
+                    : "bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 :bg-blue-900"
                 }`}
               >
                 Active
@@ -159,14 +159,14 @@ export default function MaterialCategoryForm({ editingProfile }: MaterialCategor
                 disabled={saving}
                 className={`flex-1 rounded-xl py-2.5 text-sm font-bold border transition ${
                   formStatus === "Inactive"
-                    ? "bg-amber-50 text-amber-700 border-amber-500 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-500/50"
-                    : "bg-zinc-50 text-zinc-600 border-zinc-200 hover:bg-zinc-100 dark:bg-zinc-950 dark:text-zinc-400 dark:border-zinc-800 dark:hover:bg-zinc-900"
+                    ? "bg-amber-50 text-amber-700 border-amber-500 "
+                    : "bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 :bg-blue-900"
                 }`}
               >
                 Inactive
               </button>
             </div>
-            <p className="text-[10px] text-zinc-400">
+            <p className="text-[10px] text-blue-400">
               Active categories will be visible in the Material Profile dropdown.
             </p>
           </div>
@@ -174,12 +174,12 @@ export default function MaterialCategoryForm({ editingProfile }: MaterialCategor
         </div>
 
         {/* Footer */}
-        <div className="border-t border-zinc-100 pt-6 flex items-center justify-between dark:border-zinc-800">
+        <div className="border-t border-blue-100 pt-6 flex items-center justify-between ">
           <button
             type="button"
             onClick={() => router.push("/dashboard/profiles/material-categories")}
             disabled={saving}
-            className="rounded-xl border border-zinc-200 px-5 py-3 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-850 disabled:opacity-40"
+            className="rounded-xl border border-blue-200 px-5 py-3 text-xs font-semibold text-blue-700 hover:bg-blue-50 :bg-blue-850 disabled:opacity-40"
           >
             Cancel
           </button>

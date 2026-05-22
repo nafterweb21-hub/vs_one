@@ -123,7 +123,7 @@ export default function materialTypesPage() {
       
       {/* Toast Notice */}
       {toastMessage && (
-        <div className="fixed top-6 right-6 z-50 flex items-center gap-3 rounded-xl bg-zinc-900 px-4 py-3.5 text-xs font-bold text-white shadow-xl dark:bg-white dark:text-zinc-900 border border-zinc-800 dark:border-zinc-200 transition-all duration-300 transform translate-y-0">
+        <div className="fixed top-6 right-6 z-50 flex items-center gap-3 rounded-xl bg-blue-900 px-4 py-3.5 text-xs font-bold text-white shadow-xl border border-blue-800 transition-all duration-300 transform translate-y-0">
           <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
           {toastMessage}
         </div>
@@ -132,15 +132,15 @@ export default function materialTypesPage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 uppercase tracking-wider">
             <a href="/dashboard/profiles" className="hover:underline">Master Profiles</a>
             <span>/</span>
             <span>Material Type Profile</span>
           </div>
-          <h2 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="mt-1 text-2xl font-bold tracking-tight text-blue-900 ">
             Material Type Configuration
           </h2>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-xs text-blue-500 ">
             Define and manage group categories to classify material catalog records.
           </p>
         </div>
@@ -156,12 +156,12 @@ export default function materialTypesPage() {
       </div>
 
       {loading ? (
-        <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-sm">
+        <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-blue-200 bg-white shadow-sm">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent"></div>
-          <span className="mt-4 text-xs font-medium text-zinc-500">Retrieving material categories...</span>
+          <span className="mt-4 text-xs font-medium text-blue-500">Retrieving material categories...</span>
         </div>
       ) : errorMessage && categories.length === 0 ? (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-6 text-center text-rose-800 dark:border-rose-950/20 dark:bg-rose-950/10 dark:text-rose-400 shadow-sm">
+        <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-6 text-center text-rose-800 shadow-sm">
           <p className="text-sm font-semibold">{errorMessage}</p>
           <button
             onClick={loadData}
@@ -174,20 +174,20 @@ export default function materialTypesPage() {
         <div className="space-y-8">
           
           {/* Main Table Card */}
-          <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="border-b border-zinc-100 bg-zinc-50/50 px-6 py-4.5 dark:border-zinc-800 dark:bg-zinc-950/30">
-              <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Active Material Categories</h3>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Manage categories configured across the ERP</p>
+          <div className="overflow-hidden rounded-2xl border border-blue-200 bg-white shadow-sm ">
+            <div className="border-b border-blue-100 bg-blue-50/50 px-6 py-4.5 ">
+              <h3 className="text-sm font-bold text-blue-900 ">Active Material Categories</h3>
+              <p className="text-[11px] text-blue-500 ">Manage categories configured across the ERP</p>
             </div>
             
             {activeCategories.length === 0 ? (
-              <div className="p-8 text-center text-xs text-zinc-500 dark:text-zinc-400">
+              <div className="p-8 text-center text-xs text-blue-500 ">
                 No active material categories configured. Click "Create Material Type" to add one.
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left">
-                  <thead className="bg-zinc-50 dark:bg-zinc-950/40 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                <table className="min-w-full divide-y divide-blue-200 text-left">
+                  <thead className="bg-blue-50 text-xs font-semibold text-blue-500 uppercase tracking-wider">
                     <tr>
                       <th className="px-6 py-3.5">type Name</th>
                       <th className="px-6 py-3.5">Remarks</th>
@@ -195,17 +195,17 @@ export default function materialTypesPage() {
                       <th className="px-6 py-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-100 bg-white text-xs dark:divide-zinc-800 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300">
+                  <tbody className="divide-y divide-blue-100 bg-white text-xs text-blue-700 ">
                     {activeCategories.map((c) => (
-                      <tr key={c.id} className="hover:bg-zinc-50/40 dark:hover:bg-zinc-850/10">
+                      <tr key={c.id} className="hover:bg-blue-50/40 :bg-blue-850/10">
                         {/* Name */}
-                        <td className="px-6 py-4 font-bold text-zinc-900 dark:text-white">
+                        <td className="px-6 py-4 font-bold text-blue-900 ">
                           {c.type}
                         </td>
                         
                         {/* Remark */}
-                        <td className="px-6 py-4 max-w-xs truncate text-zinc-500 dark:text-zinc-400">
-                          {c.remark || <span className="text-zinc-300 dark:text-zinc-650 italic">—</span>}
+                        <td className="px-6 py-4 max-w-xs truncate text-blue-500 ">
+                          {c.remark || <span className="text-blue-300 italic">—</span>}
                         </td>
 
                         {/* Status Toggle Switch */}
@@ -214,8 +214,8 @@ export default function materialTypesPage() {
                             onClick={() => handleToggleStatus(c.id, c.status)}
                             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider transition hover:opacity-85 ${
                               c.status === "Active"
-                                ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400"
-                                : "bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400"
+                                ? "bg-emerald-50 text-emerald-600 "
+                                : "bg-amber-50 text-amber-600 "
                             }`}
                             title="Click to toggle status"
                           >
@@ -229,7 +229,7 @@ export default function materialTypesPage() {
                           <div className="flex items-center justify-end gap-2.5">
                             <button
                               onClick={() => handleEditOpen(c)}
-                              className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 cursor-pointer"
+                              className="rounded-lg p-1.5 text-blue-400 hover:bg-blue-100 hover:text-blue-700 :bg-blue-800 cursor-pointer"
                               title="Edit config"
                             >
                               <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -238,7 +238,7 @@ export default function materialTypesPage() {
                             </button>
                             <button
                               onClick={() => handleVoidtype(c.id)}
-                              className="rounded-lg p-1.5 text-rose-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/25 cursor-pointer"
+                              className="rounded-lg p-1.5 text-rose-400 hover:bg-rose-50 hover:text-rose-600 :bg-rose-950/25 cursor-pointer"
                               title="Void record"
                             >
                               <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -257,32 +257,32 @@ export default function materialTypesPage() {
 
           {/* Voided Categories Section */}
           {voidedCategories.length > 0 && (
-            <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900 opacity-60">
-              <div className="border-b border-zinc-100 bg-zinc-50/50 px-6 py-3.5 dark:border-zinc-800 dark:bg-zinc-950/30 flex items-center justify-between">
+            <div className="overflow-hidden rounded-2xl border border-blue-200 bg-white shadow-sm opacity-60">
+              <div className="border-b border-blue-100 bg-blue-50/50 px-6 py-3.5 flex items-center justify-between">
                 <div>
-                  <h3 className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Voided Audit Records</h3>
-                  <p className="text-[10px] text-zinc-500">No Delete Rule — Audit records retained permanently</p>
+                  <h3 className="text-xs font-bold text-blue-700 ">Voided Audit Records</h3>
+                  <p className="text-[10px] text-blue-500">No Delete Rule — Audit records retained permanently</p>
                 </div>
-                <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-[9px] font-bold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                <span className="rounded-full bg-blue-200 px-2 py-0.5 text-[9px] font-bold text-blue-500 ">
                   {voidedCategories.length} voided
                 </span>
               </div>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left">
-                  <thead className="bg-zinc-50 dark:bg-zinc-950/40 text-xs font-semibold text-zinc-500">
+                <table className="min-w-full divide-y divide-blue-200 text-left">
+                  <thead className="bg-blue-50 text-xs font-semibold text-blue-500">
                     <tr>
                       <th className="px-6 py-2">type Name</th>
                       <th className="px-6 py-2">Remarks</th>
                       <th className="px-6 py-2">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-100 bg-white text-xs dark:divide-zinc-800 dark:bg-zinc-900 text-zinc-600">
+                  <tbody className="divide-y divide-blue-100 bg-white text-xs text-blue-600">
                     {voidedCategories.map((c) => (
                       <tr key={c.id}>
                         <td className="px-6 py-2.5 font-semibold">{c.type}</td>
                         <td className="px-6 py-2.5 truncate max-w-xs">{c.remark || "—"}</td>
                         <td className="px-6 py-2.5">
-                          <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[9px] font-bold text-rose-600 dark:bg-rose-950/20 dark:text-rose-400 uppercase">
+                          <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[9px] font-bold text-rose-600 uppercase">
                             {c.status}
                           </span>
                         </td>

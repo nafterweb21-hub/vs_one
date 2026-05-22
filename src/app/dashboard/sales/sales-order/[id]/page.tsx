@@ -212,10 +212,10 @@ export default function SalesOrderFormPage({ params }: PageProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <Link href="/dashboard/sales/sales-order" className="inline-flex items-center text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors mb-2">
+          <Link href="/dashboard/sales/sales-order" className="inline-flex items-center text-sm text-blue-500 hover:text-blue-800 :text-blue-200 transition-colors mb-2">
             <ArrowLeft size={16} className="mr-1" /> Back to Orders
           </Link>
-          <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-blue-900 flex items-center gap-2">
             {isNew ? "Create Sales Order" : `Edit Sales Order: ${order.orderNo}`}
             {!isNew && (
               <span className={`text-xs px-2 py-0.5 rounded-full ${
@@ -229,14 +229,14 @@ export default function SalesOrderFormPage({ params }: PageProps) {
         <div className="flex gap-2">
           <button
             onClick={() => router.push("/dashboard/sales/sales-order")}
-            className="px-4 py-2 text-sm font-medium text-zinc-600 bg-white border border-zinc-200 rounded-lg hover:bg-zinc-50 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className="px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 :bg-blue-800"
           >
             Cancel
           </button>
           <button
             onClick={() => handleSave("Draft")}
             disabled={saving || order.status === "Confirmed" || order.status === "Closed"}
-            className="px-4 py-2 text-sm font-medium text-white bg-zinc-800 rounded-lg hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             Save Draft
@@ -253,7 +253,7 @@ export default function SalesOrderFormPage({ params }: PageProps) {
       </div>
 
       {errorMsg && (
-        <div className="p-4 rounded-lg bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-400 text-sm flex items-center gap-2">
+        <div className="p-4 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
           <AlertCircle size={16} />
           {errorMsg}
         </div>
@@ -264,24 +264,24 @@ export default function SalesOrderFormPage({ params }: PageProps) {
         <div className="lg:col-span-2 space-y-6">
           
           {/* General Information */}
-          <div className="p-6 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">General Information</h3>
+          <div className="p-6 bg-white rounded-xl border border-blue-200 shadow-sm">
+            <h3 className="text-lg font-semibold text-blue-900 mb-4">General Information</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Date <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Date <span className="text-red-500">*</span></label>
                 <input
                   type="date"
                   value={order.date}
                   onChange={(e) => handleOrderChange("date", e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Salesperson <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Salesperson <span className="text-red-500">*</span></label>
                 <select
                   value={order.salespersonId}
                   onChange={(e) => handleOrderChange("salespersonId", e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 >
                   <option value="">Select Salesperson</option>
                   {formDataCache?.employees?.map((emp: any) => (
@@ -290,11 +290,11 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Customer <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Customer <span className="text-red-500">*</span></label>
                 <select
                   value={order.customerId}
                   onChange={(e) => handleOrderChange("customerId", e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 >
                   <option value="">Select Customer</option>
                   {formDataCache?.customers?.map((cust: any) => (
@@ -303,21 +303,21 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Customer PO Ref</label>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Customer PO Ref</label>
                 <input
                   type="text"
                   value={order.customerPoRef || ""}
                   onChange={(e) => handleOrderChange("customerPoRef", e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 />
               </div>
             </div>
           </div>
 
           {/* Items Table */}
-          <div className="p-6 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+          <div className="p-6 bg-white rounded-xl border border-blue-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-blue-900 flex items-center gap-2">
                 <FileText size={20} className="text-indigo-500" />
                 Order Items
               </h3>
@@ -331,28 +331,28 @@ export default function SalesOrderFormPage({ params }: PageProps) {
             </div>
             
             {items.length === 0 ? (
-              <div className="text-center p-8 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800">
-                <p className="text-zinc-500 dark:text-zinc-400 text-sm">No items added to this order.</p>
+              <div className="text-center p-8 bg-blue-50 rounded-lg border border-dashed border-blue-200 ">
+                <p className="text-blue-500 text-sm">No items added to this order.</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {items.map((item, index) => (
-                  <div key={index} className="flex flex-col sm:flex-row gap-3 p-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg relative group">
+                  <div key={index} className="flex flex-col sm:flex-row gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg relative group">
                     <button
                       type="button"
                       onClick={() => removeItem(index)}
-                      className="absolute -top-2 -right-2 p-1 bg-white dark:bg-zinc-800 text-rose-500 border border-zinc-200 dark:border-zinc-700 rounded-full shadow-sm hover:bg-rose-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute -top-2 -right-2 p-1 bg-white text-rose-500 border border-blue-200 rounded-full shadow-sm hover:bg-rose-50 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <X size={14} />
                     </button>
                     
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-zinc-500 mb-1">Part <span className="text-red-500">*</span></label>
+                        <label className="block text-xs font-medium text-blue-500 mb-1">Part <span className="text-red-500">*</span></label>
                         <select
                           value={item.partId}
                           onChange={(e) => handleItemChange(index, "partId", e.target.value)}
-                          className="w-full px-2 py-1.5 text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         >
                           <option value="">Select Part</option>
                           {formDataCache?.finishedGoods?.map((fg: any) => (
@@ -361,21 +361,21 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-zinc-500 mb-1">Quantity <span className="text-red-500">*</span></label>
+                        <label className="block text-xs font-medium text-blue-500 mb-1">Quantity <span className="text-red-500">*</span></label>
                         <input
                           type="number"
                           min="1"
                           value={item.quantity}
                           onChange={(e) => handleItemChange(index, "quantity", parseInt(e.target.value) || 0)}
-                          className="w-full px-2 py-1.5 text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-zinc-500 mb-1">UOM <span className="text-red-500">*</span></label>
+                        <label className="block text-xs font-medium text-blue-500 mb-1">UOM <span className="text-red-500">*</span></label>
                         <select
                           value={item.uomId}
                           onChange={(e) => handleItemChange(index, "uomId", e.target.value)}
-                          className="w-full px-2 py-1.5 text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         >
                           <option value="">Select UOM</option>
                           {formDataCache?.uoms?.map((u: any) => (
@@ -384,21 +384,21 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-zinc-500 mb-1">Delivery Date <span className="text-red-500">*</span></label>
+                        <label className="block text-xs font-medium text-blue-500 mb-1">Delivery Date <span className="text-red-500">*</span></label>
                         <input
                           type="date"
                           value={item.deliveryDate}
                           onChange={(e) => handleItemChange(index, "deliveryDate", e.target.value)}
-                          className="w-full px-2 py-1.5 text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         />
                       </div>
                       <div className="sm:col-span-2 flex items-center pt-5">
-                        <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300 cursor-pointer">
+                        <label className="flex items-center gap-2 text-sm text-blue-700 cursor-pointer">
                           <input
                             type="checkbox"
                             checked={item.noRoutingProcess}
                             onChange={(e) => handleItemChange(index, "noRoutingProcess", e.target.checked)}
-                            className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500"
+                            className="rounded border-blue-300 text-indigo-600 focus:ring-indigo-500"
                           />
                           No Routing Process
                         </label>
@@ -411,29 +411,29 @@ export default function SalesOrderFormPage({ params }: PageProps) {
           </div>
           
           {/* Total Overview (Workaround for missing item prices) */}
-          <div className="p-6 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Financials</h3>
+          <div className="p-6 bg-white rounded-xl border border-blue-200 shadow-sm">
+            <h3 className="text-lg font-semibold text-blue-900 mb-4">Financials</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
               <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Total Amount Before Tax</label>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Total Amount Before Tax</label>
                 <div className="flex items-center gap-2">
-                  <span className="text-zinc-500">{formDataCache?.currencies?.find((c:any) => c.id === order.currencyId)?.code || "$"}</span>
+                  <span className="text-blue-500">{formDataCache?.currencies?.find((c:any) => c.id === order.currencyId)?.code || "$"}</span>
                   <input
                     type="number"
                     step="0.01"
                     value={order.amountBeforeTax || ""}
                     onChange={(e) => handleOrderChange("amountBeforeTax", e.target.value)}
-                    className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
                     placeholder="0.00"
                   />
                 </div>
               </div>
               <div className="flex flex-col justify-end">
                 <div className="flex justify-between items-center py-1">
-                  <span className="text-sm text-zinc-500">Tax Amount</span>
+                  <span className="text-sm text-blue-500">Tax Amount</span>
                   <span className="text-sm font-medium">{taxAmount.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-t border-zinc-200 dark:border-zinc-800 mt-1">
+                <div className="flex justify-between items-center py-2 border-t border-blue-200 mt-1">
                   <span className="font-semibold">Total</span>
                   <span className="font-bold text-indigo-600">{amountAfterTax.toFixed(2)}</span>
                 </div>
@@ -444,15 +444,15 @@ export default function SalesOrderFormPage({ params }: PageProps) {
 
         {/* Sidebar settings */}
         <div className="space-y-6">
-          <div className="p-6 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">Settings</h3>
+          <div className="p-6 bg-white rounded-xl border border-blue-200 shadow-sm space-y-4">
+            <h3 className="text-lg font-semibold text-blue-900 ">Settings</h3>
             
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Currency <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Currency <span className="text-red-500">*</span></label>
               <select
                 value={order.currencyId}
                 onChange={(e) => handleOrderChange("currencyId", e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               >
                 <option value="">Select Currency</option>
                 {formDataCache?.currencies?.map((c: any) => (
@@ -462,11 +462,11 @@ export default function SalesOrderFormPage({ params }: PageProps) {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Tax Profile</label>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Tax Profile</label>
               <select
                 value={order.taxTypeId || ""}
                 onChange={(e) => handleOrderChange("taxTypeId", e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               >
                 <option value="">No Tax</option>
                 {formDataCache?.taxes?.map((t: any) => (
@@ -476,11 +476,11 @@ export default function SalesOrderFormPage({ params }: PageProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Payment Term <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Payment Term <span className="text-red-500">*</span></label>
               <select
                 value={order.paymentTermId}
                 onChange={(e) => handleOrderChange("paymentTermId", e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               >
                 <option value="">Select Payment Term</option>
                 {formDataCache?.paymentTerms?.map((pt: any) => (
@@ -490,26 +490,26 @@ export default function SalesOrderFormPage({ params }: PageProps) {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Project Code</label>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Project Code</label>
               <input
                 type="text"
                 value={order.projectCode || ""}
                 onChange={(e) => handleOrderChange("projectCode", e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
           </div>
 
-          <div className="p-6 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">Customer Details</h3>
+          <div className="p-6 bg-white rounded-xl border border-blue-200 shadow-sm space-y-4">
+            <h3 className="text-lg font-semibold text-blue-900 ">Customer Details</h3>
             
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Contact Person</label>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Contact Person</label>
               <select
                 value={order.contactPersonId || ""}
                 onChange={(e) => handleOrderChange("contactPersonId", e.target.value)}
                 disabled={!selectedCustomer}
-                className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-50"
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-50"
               >
                 <option value="">Select Contact</option>
                 {selectedCustomer?.contactPersons?.map((cp: any) => (
@@ -519,12 +519,12 @@ export default function SalesOrderFormPage({ params }: PageProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Deliver To</label>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Deliver To</label>
               <select
                 value={order.deliverToId || ""}
                 onChange={(e) => handleOrderChange("deliverToId", e.target.value)}
                 disabled={!selectedCustomer}
-                className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-50"
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-50"
               >
                 <option value="">Select Address</option>
                 {selectedCustomer?.addresses?.map((a: any) => (
@@ -534,12 +534,12 @@ export default function SalesOrderFormPage({ params }: PageProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Bill To</label>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Bill To</label>
               <select
                 value={order.billToId || ""}
                 onChange={(e) => handleOrderChange("billToId", e.target.value)}
                 disabled={!selectedCustomer}
-                className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-50"
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-50"
               >
                 <option value="">Select Address</option>
                 {selectedCustomer?.addresses?.map((a: any) => (

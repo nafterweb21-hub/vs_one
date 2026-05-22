@@ -154,7 +154,7 @@ export default function TaxProfilePage() {
           <h1 className="text-2xl font-bold tracking-tight text-black">
             Tax Profile
           </h1>
-          <p className="text-sm text-zinc-600">
+          <p className="text-sm text-blue-600">
             Create, update, and toggle active tax rates used across Vision One Sales and Purchase Orders.
           </p>
         </div>
@@ -174,7 +174,7 @@ export default function TaxProfilePage() {
       <div className="rounded-xl glossy-bg p-4 bg-white">
         <div className="relative max-w-md">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <svg className="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
           </div>
@@ -183,7 +183,7 @@ export default function TaxProfilePage() {
             placeholder="Search by tax type..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg glossy-input py-2 pl-10 pr-4 text-sm outline-hidden placeholder:text-zinc-500 bg-white"
+            className="w-full rounded-lg glossy-input py-2 pl-10 pr-4 text-sm outline-hidden placeholder:text-blue-500 bg-white"
           />
         </div>
       </div>
@@ -192,7 +192,7 @@ export default function TaxProfilePage() {
       <div className="overflow-hidden rounded-xl glossy-bg bg-white">
         {isLoading ? (
           <div className="flex h-48 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-blue-600" />
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
           </div>
         ) : errorMsg ? (
           <div className="flex h-48 flex-col items-center justify-center gap-2 p-6 text-center">
@@ -200,18 +200,18 @@ export default function TaxProfilePage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
             </svg>
             <p className="font-semibold text-black">Error loading profiles</p>
-            <p className="text-sm text-zinc-600">{errorMsg}</p>
+            <p className="text-sm text-blue-600">{errorMsg}</p>
             <button onClick={loadData} className="mt-2 text-sm font-semibold text-blue-600 hover:text-blue-500 cursor-pointer">
               Try again
             </button>
           </div>
         ) : filteredProfiles.length === 0 ? (
           <div className="flex h-48 flex-col items-center justify-center p-6 text-center">
-            <svg className="h-12 w-12 text-zinc-300" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <svg className="h-12 w-12 text-blue-300" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 14.25l6-6m4.5-3.493V21a1.125 1.125 0 01-1.125 1.125H5.625A1.125 1.125 0 014.5 21V3.75c0-.621.504-1.125 1.125-1.125h9.75m4.5 3.493L15 3.75M9 15h.008v.008H9V15zm0-3h.008v.008H9V12zm0-3h.008v.008H9V9z" />
             </svg>
             <p className="mt-2 font-semibold text-black">No Tax Profiles found</p>
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-blue-600">
               {searchQuery ? "No matches for your search criteria." : "Get started by adding your first Tax Profile."}
             </p>
           </div>
@@ -219,7 +219,7 @@ export default function TaxProfilePage() {
           <div className="overflow-x-auto bg-white">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-zinc-200 bg-zinc-50 text-xs font-bold uppercase tracking-wider text-zinc-700">
+                <tr className="border-b border-blue-200 bg-blue-50 text-xs font-bold uppercase tracking-wider text-blue-700">
                   <th className="px-6 py-4.5 w-16">SN</th>
                   <th className="px-6 py-4.5">Tax Type</th>
                   <th className="px-6 py-4.5">Tax Rate</th>
@@ -227,19 +227,19 @@ export default function TaxProfilePage() {
                   <th className="px-6 py-4.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200">
+              <tbody className="divide-y divide-blue-200">
                 {filteredProfiles.map((profile, index) => (
                   <tr
                     key={profile.id}
                     className="group hover:bg-blue-50/40 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm text-zinc-650">
+                    <td className="px-6 py-4 text-sm text-blue-650">
                       {index + 1}
                     </td>
                     <td className="px-6 py-4 text-sm font-bold text-black">
                       {profile.taxType}
                     </td>
-                    <td className="px-6 py-4 text-sm text-zinc-800 font-medium">
+                    <td className="px-6 py-4 text-sm text-blue-800 font-medium">
                       {profile.taxRate.toFixed(3)}%
                     </td>
                     <td className="px-6 py-4">
@@ -247,10 +247,10 @@ export default function TaxProfilePage() {
                         className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold border ${
                           profile.status === "Active"
                             ? "bg-blue-50 text-blue-700 border-blue-200"
-                            : "bg-zinc-50 text-zinc-600 border-zinc-200"
+                            : "bg-blue-50 text-blue-600 border-blue-200"
                         }`}
                       >
-                        <span className={`h-1.5 w-1.5 rounded-full ${profile.status === "Active" ? "bg-blue-600" : "bg-zinc-400"}`} />
+                        <span className={`h-1.5 w-1.5 rounded-full ${profile.status === "Active" ? "bg-blue-600" : "bg-blue-400"}`} />
                         {profile.status}
                       </span>
                     </td>
@@ -258,7 +258,7 @@ export default function TaxProfilePage() {
                       <div className="flex items-center justify-end gap-2.5">
                         <button
                           onClick={() => handleOpenEditModal(profile)}
-                          className="rounded-md glossy-button-white px-2.5 py-1.5 text-xs font-bold text-zinc-800 cursor-pointer"
+                          className="rounded-md glossy-button-white px-2.5 py-1.5 text-xs font-bold text-blue-800 cursor-pointer"
                         >
                           Edit Rate
                         </button>
@@ -293,16 +293,16 @@ export default function TaxProfilePage() {
       {/* Form Dialog Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
-          <div className="fixed inset-0 bg-zinc-950/30 backdrop-blur-xs" onClick={() => setIsModalOpen(false)} />
+          <div className="fixed inset-0 bg-blue-950/30 backdrop-blur-xs" onClick={() => setIsModalOpen(false)} />
 
-          <div className="relative w-full max-w-lg transform overflow-hidden rounded-xl bg-white p-6 shadow-xl border border-zinc-200 transition-all">
-            <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
+          <div className="relative w-full max-w-lg transform overflow-hidden rounded-xl bg-white p-6 shadow-xl border border-blue-200 transition-all">
+            <div className="flex items-center justify-between border-b border-blue-200 pb-4">
               <h2 className="text-xl font-bold text-black">
                 {modalMode === "add" ? "Create Tax Profile" : "Edit Tax Profile Rate"}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 cursor-pointer"
+                className="rounded-lg p-1.5 text-blue-400 hover:bg-blue-100 cursor-pointer"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -324,7 +324,7 @@ export default function TaxProfilePage() {
 
               {/* Tax Type Field */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-zinc-800">
+                <label className="text-sm font-bold text-blue-800">
                   Tax Type <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -334,9 +334,9 @@ export default function TaxProfilePage() {
                   value={taxType}
                   onChange={(e) => setTaxType(e.target.value)}
                   disabled={modalMode === "edit"}
-                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden disabled:bg-zinc-100 disabled:text-zinc-500"
+                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden disabled:bg-blue-100 disabled:text-blue-500"
                 />
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-blue-500">
                   {modalMode === "edit"
                     ? "Once saved, Tax Type cannot be changed."
                     : "The identifier for the tax rate. Once saved, this cannot be changed (e.g. GST @ 7%)."}
@@ -345,7 +345,7 @@ export default function TaxProfilePage() {
 
               {/* Tax Rate Field */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-zinc-800">
+                <label className="text-sm font-bold text-blue-800">
                   Tax Rate (%) <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -357,17 +357,17 @@ export default function TaxProfilePage() {
                   onChange={(e) => setTaxRate(e.target.value)}
                   className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden"
                 />
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-blue-500">
                   Enter the numeric tax rate. Supports up to 3 decimal points.
                 </p>
               </div>
 
               {/* Form Buttons */}
-              <div className="flex items-center justify-end gap-3 border-t border-zinc-200 pt-5 mt-6">
+              <div className="flex items-center justify-end gap-3 border-t border-blue-200 pt-5 mt-6">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-zinc-800 cursor-pointer"
+                  className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-blue-800 cursor-pointer"
                 >
                   Cancel
                 </button>

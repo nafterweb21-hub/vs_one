@@ -47,7 +47,7 @@ export default function CreateFinishedGoodPage() {
       <div className="space-y-2">
         <Link
           href="/dashboard/admin/master-profile/finished-good"
-          className="inline-flex items-center gap-1.5 text-sm font-bold text-zinc-600 hover:text-blue-600 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-600 transition-colors"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -58,14 +58,14 @@ export default function CreateFinishedGoodPage() {
           <h1 className="text-2xl font-bold tracking-tight text-black">
             Create Finished Good Profile
           </h1>
-          <p className="text-sm text-zinc-550">
+          <p className="text-sm text-blue-550">
             Add a new finished good to the master list.
           </p>
         </div>
       </div>
 
       {/* Form Container */}
-      <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-xs">
+      <div className="rounded-xl border border-blue-200 bg-white p-6 shadow-xs">
         <form onSubmit={handleSubmit} className="space-y-6">
           {formError && (
             <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-800">
@@ -83,7 +83,7 @@ export default function CreateFinishedGoodPage() {
             <div className="flex flex-col gap-5 justify-between">
               {/* Part No Field */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-zinc-800">Part No</label>
+                <label className="text-sm font-bold text-blue-800">Part No</label>
                 <input
                   type="text"
                   placeholder="e.g. PN-12345"
@@ -91,14 +91,14 @@ export default function CreateFinishedGoodPage() {
                   onChange={(e) => setPartNo(e.target.value)}
                   className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden w-full focus:ring-2 focus:ring-blue-500/20"
                 />
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-blue-500">
                   Once saved, Part No cannot be changed. Must be unique if provided.
                 </p>
               </div>
 
               {/* Description Field */}
               <div className="flex flex-col gap-1.5 flex-1">
-                <label className="text-sm font-bold text-zinc-800">
+                <label className="text-sm font-bold text-blue-800">
                   Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -108,7 +108,7 @@ export default function CreateFinishedGoodPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden resize-none w-full flex-1 min-h-[140px] focus:ring-2 focus:ring-blue-500/20"
                 />
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-blue-500">
                   Once saved, Description cannot be changed. Must be unique.
                 </p>
               </div>
@@ -118,7 +118,7 @@ export default function CreateFinishedGoodPage() {
             <div className="flex flex-col">
               {/* Remarks Field */}
               <div className="flex flex-col gap-1.5 flex-1">
-                <label className="text-sm font-bold text-zinc-800">Remark</label>
+                <label className="text-sm font-bold text-blue-800">Remark</label>
                 <textarea
                   placeholder="Enter remark..."
                   value={remark}
@@ -130,10 +130,10 @@ export default function CreateFinishedGoodPage() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 border-t border-zinc-200 pt-5 mt-6">
+          <div className="flex items-center justify-end gap-3 border-t border-blue-200 pt-5 mt-6">
             <Link
               href="/dashboard/admin/master-profile/finished-good"
-              className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-zinc-800 text-center cursor-pointer"
+              className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-blue-800 text-center cursor-pointer"
             >
               Cancel
             </Link>

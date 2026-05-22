@@ -80,7 +80,7 @@ export default function CreateSupplierPage() {
       <div className="space-y-2">
         <Link
           href="/dashboard/admin/master-profile/supplier"
-          className="inline-flex items-center gap-1.5 text-sm font-bold text-zinc-600 hover:text-blue-600 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-600 transition-colors"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -91,7 +91,7 @@ export default function CreateSupplierPage() {
           <h1 className="text-2xl font-bold tracking-tight text-black">
             Create Supplier Profile
           </h1>
-          <p className="text-sm text-zinc-555">
+          <p className="text-sm text-blue-555">
             Add a new supplier to the system.
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function CreateSupplierPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             {/* LEFT PANEL — Supplier Profile (Span 5) */}
-            <div className="lg:col-span-5 flex flex-col gap-4.5 lg:border-r lg:border-zinc-100 pr-0 lg:pr-6">
+            <div className="lg:col-span-5 flex flex-col gap-4.5 lg:border-r lg:border-blue-100 pr-0 lg:pr-6">
               <div className="flex items-center gap-2 mb-1">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">1</span>
                 <h3 className="text-base font-bold text-black">Supplier Profile</h3>
@@ -119,7 +119,7 @@ export default function CreateSupplierPage() {
 
               {/* Code */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-bold text-zinc-700">Supplier Code <span className="text-red-500">*</span></label>
+                <label className="text-sm font-bold text-blue-700">Supplier Code <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   required
@@ -128,12 +128,12 @@ export default function CreateSupplierPage() {
                   onChange={(e) => setSupplierCode(e.target.value)}
                   className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden w-full focus:ring-2 focus:ring-blue-500/20"
                 />
-                <p className="text-xs text-zinc-500">Once saved, cannot be changed. Must be unique.</p>
+                <p className="text-xs text-blue-500">Once saved, cannot be changed. Must be unique.</p>
               </div>
 
               {/* Name */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-bold text-zinc-700">Supplier Name <span className="text-red-500">*</span></label>
+                <label className="text-sm font-bold text-blue-700">Supplier Name <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   required
@@ -142,12 +142,12 @@ export default function CreateSupplierPage() {
                   onChange={(e) => setSupplierName(e.target.value)}
                   className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden w-full focus:ring-2 focus:ring-blue-500/20"
                 />
-                <p className="text-xs text-zinc-500">Once saved, cannot be changed. Must be unique.</p>
+                <p className="text-xs text-blue-500">Once saved, cannot be changed. Must be unique.</p>
               </div>
 
               {/* Remarks */}
               <div className="flex flex-col gap-1 flex-1 min-h-[140px]">
-                <label className="text-sm font-bold text-zinc-700">Remarks</label>
+                <label className="text-sm font-bold text-blue-700">Remarks</label>
                 <textarea
                   placeholder="Enter remarks..."
                   value={remarks}
@@ -164,11 +164,11 @@ export default function CreateSupplierPage() {
                 <div className="flex items-center gap-2">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">2</span>
                   <h3 className="text-base font-bold text-black">Contact Person</h3>
-                  <span className="text-xs text-zinc-500">(optional)</span>
+                  <span className="text-xs text-blue-500">(optional)</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs font-bold text-zinc-700">Contact Person</label>
+                    <label className="text-xs font-bold text-blue-700">Contact Person</label>
                     <input
                       type="text"
                       placeholder="Full name"
@@ -178,7 +178,7 @@ export default function CreateSupplierPage() {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs font-bold text-zinc-700">Tel No</label>
+                    <label className="text-xs font-bold text-blue-700">Tel No</label>
                     <input
                       type="text"
                       placeholder="Telephone"
@@ -188,7 +188,7 @@ export default function CreateSupplierPage() {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs font-bold text-zinc-700">Mobile No</label>
+                    <label className="text-xs font-bold text-blue-700">Mobile No</label>
                     <input
                       type="text"
                       placeholder="Mobile"
@@ -198,7 +198,7 @@ export default function CreateSupplierPage() {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs font-bold text-zinc-700">Fax No</label>
+                    <label className="text-xs font-bold text-blue-700">Fax No</label>
                     <input
                       type="text"
                       placeholder="Fax"
@@ -208,7 +208,7 @@ export default function CreateSupplierPage() {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs font-bold text-zinc-700">Email</label>
+                    <label className="text-xs font-bold text-blue-700">Email</label>
                     <input
                       type="email"
                       placeholder="Email"
@@ -218,7 +218,7 @@ export default function CreateSupplierPage() {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs font-bold text-zinc-700">Designation</label>
+                    <label className="text-xs font-bold text-blue-700">Designation</label>
                     <input
                       type="text"
                       placeholder="Job title"
@@ -230,17 +230,17 @@ export default function CreateSupplierPage() {
                 </div>
               </div>
 
-              <div className="border-t border-zinc-100 my-1" />
+              <div className="border-t border-blue-100 my-1" />
 
               {/* Address */}
               <div className="flex flex-col gap-3 flex-1 min-h-[140px]">
                 <div className="flex items-center gap-2">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">3</span>
                   <h3 className="text-base font-bold text-black">Address</h3>
-                  <span className="text-xs text-zinc-500">(optional)</span>
+                  <span className="text-xs text-blue-500">(optional)</span>
                 </div>
                 <div className="flex flex-col gap-1 flex-1">
-                  <label className="text-xs font-bold text-zinc-700">Address</label>
+                  <label className="text-xs font-bold text-blue-700">Address</label>
                   <textarea
                     placeholder="Enter full address..."
                     value={addressText}
@@ -253,10 +253,10 @@ export default function CreateSupplierPage() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 border-t border-zinc-200 pt-5 mt-6">
+          <div className="flex items-center justify-end gap-3 border-t border-blue-200 pt-5 mt-6">
             <Link
               href="/dashboard/admin/master-profile/supplier"
-              className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-zinc-800 text-center cursor-pointer"
+              className="rounded-lg glossy-button-white px-5 py-2.5 text-base font-bold text-blue-800 text-center cursor-pointer"
             >
               Cancel
             </Link>

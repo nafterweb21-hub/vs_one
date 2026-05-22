@@ -103,7 +103,7 @@ export default function EditProcessProfilePage() {
     <div className="mx-auto max-w-3xl space-y-6 animate-fade-in">
       <h2 className="text-2xl font-bold">Edit Process Profile</h2>
       {errorMsg && (
-        <div className="rounded bg-rose-50 p-4 text-rose-800 dark:bg-rose-950/10 dark:text-rose-400">
+        <div className="rounded bg-rose-50 p-4 text-rose-800 ">
           {errorMsg}
         </div>
       )}

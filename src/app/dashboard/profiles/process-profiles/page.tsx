@@ -129,7 +129,7 @@ export default function ProcessProfilesPage() {
       
       {/* Toast Notice */}
       {toastMessage && (
-        <div className="fixed top-6 right-6 z-50 flex items-center gap-3 rounded-xl bg-zinc-900 px-4 py-3.5 text-xs font-bold text-white shadow-xl dark:bg-white dark:text-zinc-900 border border-zinc-800 dark:border-zinc-200 transition-all duration-300 transform translate-y-0">
+        <div className="fixed top-6 right-6 z-50 flex items-center gap-3 rounded-xl bg-blue-900 px-4 py-3.5 text-xs font-bold text-white shadow-xl border border-blue-800 transition-all duration-300 transform translate-y-0">
           <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
           {toastMessage}
         </div>
@@ -138,15 +138,15 @@ export default function ProcessProfilesPage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 uppercase tracking-wider">
             <a href="/dashboard/profiles" className="hover:underline">Master Profiles</a>
             <span>/</span>
             <span>Process Profile (Routing)</span>
           </div>
-          <h2 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="mt-1 text-2xl font-bold tracking-tight text-blue-900 ">
             Process Profile Configuration
           </h2>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-xs text-blue-500 ">
             Define routing processes, scan flags, and costing information.
           </p>
         </div>
@@ -162,12 +162,12 @@ export default function ProcessProfilesPage() {
       </div>
 
       {loading ? (
-        <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-sm">
+        <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-blue-200 bg-white shadow-sm">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent"></div>
-          <span className="mt-4 text-xs font-medium text-zinc-500">Retrieving process profiles...</span>
+          <span className="mt-4 text-xs font-medium text-blue-500">Retrieving process profiles...</span>
         </div>
       ) : errorMessage && profiles.length === 0 ? (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-6 text-center text-rose-800 dark:border-rose-950/20 dark:bg-rose-950/10 dark:text-rose-400 shadow-sm">
+        <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-6 text-center text-rose-800 shadow-sm">
           <p className="text-sm font-semibold">{errorMessage}</p>
           <button
             onClick={loadData}
@@ -180,20 +180,20 @@ export default function ProcessProfilesPage() {
         <div className="space-y-8">
           
           {/* Main Table Card */}
-          <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="border-b border-zinc-100 bg-zinc-50/50 px-6 py-4.5 dark:border-zinc-800 dark:bg-zinc-950/30">
-              <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Active Process Profiles</h3>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Manage routing processes configured across the ERP</p>
+          <div className="overflow-hidden rounded-2xl border border-blue-200 bg-white shadow-sm ">
+            <div className="border-b border-blue-100 bg-blue-50/50 px-6 py-4.5 ">
+              <h3 className="text-sm font-bold text-blue-900 ">Active Process Profiles</h3>
+              <p className="text-[11px] text-blue-500 ">Manage routing processes configured across the ERP</p>
             </div>
             
             {activeProfiles.length === 0 ? (
-              <div className="p-8 text-center text-xs text-zinc-500 dark:text-zinc-400">
+              <div className="p-8 text-center text-xs text-blue-500 ">
                 No active process profiles configured. Click "Create Process" to add one.
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left">
-                  <thead className="bg-zinc-50 dark:bg-zinc-950/40 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                <table className="min-w-full divide-y divide-blue-200 text-left">
+                  <thead className="bg-blue-50 text-xs font-semibold text-blue-500 uppercase tracking-wider">
                     <tr>
                       <th className="px-6 py-3.5">Main Process</th>
                       <th className="px-6 py-3.5">Routing Process</th>
@@ -203,31 +203,31 @@ export default function ProcessProfilesPage() {
                       <th className="px-6 py-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-100 bg-white text-xs dark:divide-zinc-800 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300">
+                  <tbody className="divide-y divide-blue-100 bg-white text-xs text-blue-700 ">
                     {activeProfiles.map((p) => (
-                      <tr key={p.id} className="hover:bg-zinc-50/40 dark:hover:bg-zinc-850/10">
+                      <tr key={p.id} className="hover:bg-blue-50/40 :bg-blue-850/10">
                         {/* Main Process */}
-                        <td className="px-6 py-4 font-medium text-zinc-600 dark:text-zinc-400">
+                        <td className="px-6 py-4 font-medium text-blue-600 ">
                           {p.mainProcess?.process || "—"}
                         </td>
                         
                         {/* Routing Process */}
-                        <td className="px-6 py-4 font-bold text-zinc-900 dark:text-white">
+                        <td className="px-6 py-4 font-bold text-blue-900 ">
                           {p.routingProcess}
                         </td>
 
                         {/* Flags */}
                         <td className="px-6 py-4 text-center">
                           <div className="flex justify-center gap-1">
-                            {p.welding && <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[10px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400" title="Welding">W</span>}
-                            {p.sprayPainting && <span className="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold text-sky-700 dark:bg-sky-900/30 dark:text-sky-400" title="Spray Painting">P</span>}
-                            {p.machining && <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-bold text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" title="Machining">M</span>}
-                            {!p.welding && !p.sprayPainting && !p.machining && <span className="text-zinc-300 dark:text-zinc-600">—</span>}
+                            {p.welding && <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[10px] font-bold text-orange-700 " title="Welding">W</span>}
+                            {p.sprayPainting && <span className="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold text-sky-700 " title="Spray Painting">P</span>}
+                            {p.machining && <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-bold text-purple-700 " title="Machining">M</span>}
+                            {!p.welding && !p.sprayPainting && !p.machining && <span className="text-blue-300 ">—</span>}
                           </div>
                         </td>
 
                         {/* Cost Per Minute */}
-                        <td className="px-6 py-4 text-right font-mono text-zinc-600 dark:text-zinc-300">
+                        <td className="px-6 py-4 text-right font-mono text-blue-600 ">
                           ${p.costPerMinute.toFixed(2)}
                         </td>
 
@@ -237,8 +237,8 @@ export default function ProcessProfilesPage() {
                             onClick={() => handleToggleStatus(p.id, p.status)}
                             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider transition hover:opacity-85 ${
                               p.status === "Active"
-                                ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400"
-                                : "bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400"
+                                ? "bg-emerald-50 text-emerald-600 "
+                                : "bg-amber-50 text-amber-600 "
                             }`}
                             title="Click to toggle status"
                           >
@@ -252,7 +252,7 @@ export default function ProcessProfilesPage() {
                           <div className="flex items-center justify-end gap-2.5">
                             <button
                               onClick={() => handleEditOpen(p)}
-                              className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 cursor-pointer"
+                              className="rounded-lg p-1.5 text-blue-400 hover:bg-blue-100 hover:text-blue-700 :bg-blue-800 cursor-pointer"
                               title="Edit record"
                             >
                               <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -261,7 +261,7 @@ export default function ProcessProfilesPage() {
                             </button>
                             <button
                               onClick={() => handleVoidProfile(p.id)}
-                              className="rounded-lg p-1.5 text-rose-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/25 cursor-pointer"
+                              className="rounded-lg p-1.5 text-rose-400 hover:bg-rose-50 hover:text-rose-600 :bg-rose-950/25 cursor-pointer"
                               title="Void record"
                             >
                               <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -280,32 +280,32 @@ export default function ProcessProfilesPage() {
 
           {/* Voided Profiles Section */}
           {voidedProfiles.length > 0 && (
-            <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900 opacity-60">
-              <div className="border-b border-zinc-100 bg-zinc-50/50 px-6 py-3.5 dark:border-zinc-800 dark:bg-zinc-950/30 flex items-center justify-between">
+            <div className="overflow-hidden rounded-2xl border border-blue-200 bg-white shadow-sm opacity-60">
+              <div className="border-b border-blue-100 bg-blue-50/50 px-6 py-3.5 flex items-center justify-between">
                 <div>
-                  <h3 className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Voided Audit Records</h3>
-                  <p className="text-[10px] text-zinc-500">No Delete Rule — Audit records retained permanently</p>
+                  <h3 className="text-xs font-bold text-blue-700 ">Voided Audit Records</h3>
+                  <p className="text-[10px] text-blue-500">No Delete Rule — Audit records retained permanently</p>
                 </div>
-                <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-[9px] font-bold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                <span className="rounded-full bg-blue-200 px-2 py-0.5 text-[9px] font-bold text-blue-500 ">
                   {voidedProfiles.length} voided
                 </span>
               </div>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left">
-                  <thead className="bg-zinc-50 dark:bg-zinc-950/40 text-xs font-semibold text-zinc-500">
+                <table className="min-w-full divide-y divide-blue-200 text-left">
+                  <thead className="bg-blue-50 text-xs font-semibold text-blue-500">
                     <tr>
                       <th className="px-6 py-2">Routing Process</th>
                       <th className="px-6 py-2">Main Process</th>
                       <th className="px-6 py-2">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-100 bg-white text-xs dark:divide-zinc-800 dark:bg-zinc-900 text-zinc-600">
+                  <tbody className="divide-y divide-blue-100 bg-white text-xs text-blue-600">
                     {voidedProfiles.map((p) => (
                       <tr key={p.id}>
                         <td className="px-6 py-2.5 font-semibold">{p.routingProcess}</td>
                         <td className="px-6 py-2.5 truncate max-w-xs">{p.mainProcess?.process || "—"}</td>
                         <td className="px-6 py-2.5">
-                          <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[9px] font-bold text-rose-600 dark:bg-rose-950/20 dark:text-rose-400 uppercase">
+                          <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[9px] font-bold text-rose-600 uppercase">
                             {p.status}
                           </span>
                         </td>

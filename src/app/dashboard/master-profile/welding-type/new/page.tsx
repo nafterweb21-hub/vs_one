@@ -27,13 +27,13 @@ export default function NewWeldingTypePage() {
   };
 
   return (
-    <div className="flex-1 p-6 max-w-7xl mx-auto w-full bg-zinc-50 dark:bg-zinc-950">
+    <div className="flex-1 p-6 max-w-7xl mx-auto w-full bg-blue-50 ">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-blue-900 ">
             Add Welding Type
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-sm text-blue-500 mt-1">
             Create a new welding type. The type name must be unique.
           </p>
         </div>
@@ -45,16 +45,16 @@ export default function NewWeldingTypePage() {
         </Link>
       </div>
 
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-blue-200 shadow-sm overflow-hidden">
         {errorMsg && (
-          <div className="bg-rose-50 dark:bg-rose-950/30 border-b border-rose-200 dark:border-rose-900 p-4">
+          <div className="bg-rose-50 border-b border-rose-200 p-4">
             <div className="flex items-start gap-3">
               <svg className="h-5 w-5 text-rose-500 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div>
-                <h3 className="text-sm font-bold text-rose-800 dark:text-rose-200">Error</h3>
-                <p className="text-sm text-rose-600 dark:text-rose-300 mt-1">{errorMsg}</p>
+                <h3 className="text-sm font-bold text-rose-800 ">Error</h3>
+                <p className="text-sm text-rose-600 mt-1">{errorMsg}</p>
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@ export default function NewWeldingTypePage() {
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="space-y-4">
             <div>
-              <label htmlFor="type" className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+              <label htmlFor="type" className="block text-sm font-semibold text-blue-900 mb-1.5">
                 Type <span className="text-rose-500">*</span>
               </label>
               <input
@@ -72,15 +72,15 @@ export default function NewWeldingTypePage() {
                 type="text"
                 required
                 placeholder="e.g. SMAW"
-                className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-900 outline-none focus:ring-2 focus:ring-cyan-500"
               />
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1.5">
+              <p className="text-xs text-blue-500 mt-1.5">
                 Once saved, this field cannot be changed.
               </p>
             </div>
 
             <div>
-              <label htmlFor="remark" className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+              <label htmlFor="remark" className="block text-sm font-semibold text-blue-900 mb-1.5">
                 Remark
               </label>
               <textarea
@@ -88,12 +88,12 @@ export default function NewWeldingTypePage() {
                 name="remark"
                 rows={4}
                 placeholder="Optional remarks..."
-                className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-cyan-500 resize-y"
+                className="w-full rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-900 outline-none focus:ring-2 focus:ring-cyan-500 resize-y"
               />
             </div>
           </div>
 
-          <div className="pt-4 flex items-center justify-end border-t border-zinc-100 dark:border-zinc-800">
+          <div className="pt-4 flex items-center justify-end border-t border-blue-100 ">
             <button
               type="submit"
               disabled={isSubmitting}
