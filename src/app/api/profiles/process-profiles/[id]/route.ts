@@ -3,10 +3,10 @@ import { saveProcessProfile, toggleProcessProfileStatus, voidProcessProfile } fr
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
 
     if (body.status) {
@@ -28,10 +28,10 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const updated = await voidProcessProfile(id);
     return NextResponse.json({ success: true, data: updated });
   } catch (error: any) {

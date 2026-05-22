@@ -27,7 +27,7 @@ interface ApprovalProfile {
   approvers: ApproverPerson[];
 }
 
-export default function ApprovalLevelProfilePage() {
+function ApprovalLevelProfilePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -380,5 +380,13 @@ export default function ApprovalLevelProfilePage() {
       )}
 
     </div>
+  );
+}
+
+export default function ApprovalLevelProfilePageWrapper() {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <ApprovalLevelProfilePage />
+    </React.Suspense>
   );
 }

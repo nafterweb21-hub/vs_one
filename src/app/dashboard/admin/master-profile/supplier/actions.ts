@@ -108,7 +108,7 @@ export async function createSupplierProfileWithDetails(
     if (existingName) return { success: false, error: "Supplier Name already exists." };
 
     // Create supplier + optional contact person + optional address in one transaction
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       const supplier = await tx.supplierProfile.create({
         data: {
           supplierCode: supplierData.supplierCode.trim(),

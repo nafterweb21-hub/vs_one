@@ -137,7 +137,7 @@ export default function CreateProcessProfilePage() {
                   className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-indigo-500"
                 >
                   <option value="" disabled>Select a Main Process...</option>
-                  {mainProcesses.map(m => (
+                  {mainProcesses.map((m: any) => (
                     <option key={m.id} value={m.id}>{m.process}</option>
                   ))}
                 </select>

@@ -190,8 +190,10 @@ export default function DashboardLayout({
                   )}
 
                 </div>
-
-
+              </div>
+            )}
+          </div>
+        </nav>
 
         {/* Sidebar Footer Area */}
         <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-zinc-900/10">

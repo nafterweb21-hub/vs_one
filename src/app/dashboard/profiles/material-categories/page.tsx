@@ -10,7 +10,7 @@ interface MaterialCategory {
   status: string;
 }
 
-export default function MaterialCategoriesPage() {
+function MaterialCategoriesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -298,5 +298,13 @@ export default function MaterialCategoriesPage() {
       )}
 
     </div>
+  );
+}
+
+export default function MaterialCategoriesPageWrapper({ params }: any) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <MaterialCategoriesPage  />
+    </React.Suspense>
   );
 }

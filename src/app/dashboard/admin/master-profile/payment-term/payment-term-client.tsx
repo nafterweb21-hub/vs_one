@@ -10,6 +10,8 @@ export default function PaymentTermClient({ initialData }: { initialData: Paymen
   const [paymentTerms, setPaymentTerms] = useState(initialData);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [termToDelete, setTermToDelete] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   
   const [formData, setFormData] = useState<PaymentTermData>({
     term: "",
@@ -41,14 +43,21 @@ export default function PaymentTermClient({ initialData }: { initialData: Paymen
     setIsFormOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this payment term?")) return;
-    const res = await deletePaymentTerm(id);
+  const handleDelete = (id: string) => {
+    setTermToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!termToDelete) return;
+    setDeleting(true);
+    const res = await deletePaymentTerm(termToDelete);
     if (res.success) {
-      setPaymentTerms((prev) => prev.filter((t) => t.id !== id));
+      setPaymentTerms((prev) => prev.filter((t) => t.id !== termToDelete));
+      setTermToDelete(null);
     } else {
       alert("Failed to delete payment term.");
     }
+    setDeleting(false);
   };
 
   const handleStatusChange = async (id: string, newStatus: string) => {
@@ -244,6 +253,47 @@ export default function PaymentTermClient({ initialData }: { initialData: Paymen
           </table>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {termToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
+                <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-500" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Delete Payment Term</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+                Are you sure you want to delete this payment term? This action cannot be undone.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setTermToDelete(null)}
+                  disabled={deleting}
+                  className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={deleting}
+                  className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 shadow-md shadow-red-500/20 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {deleting ? (
+                    <>
+                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                      Deleting...
+                    </>
+                  ) : (
+                    "Delete"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

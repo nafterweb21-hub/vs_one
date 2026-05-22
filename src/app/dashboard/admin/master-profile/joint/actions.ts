@@ -1,3 +1,4 @@
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -19,7 +20,7 @@ export async function createJoint(data: JointData) {
     const existing = await prisma.joint.findUnique({
       where: { joint: data.joint },
     });
-    
+
     if (existing) {
       return { success: false, error: "Joint must be unique." };
     }
@@ -40,7 +41,7 @@ export async function updateJoint(id: string, data: Partial<JointData>) {
   try {
     // Exclude `joint` from updatable data as it cannot be changed once saved
     const { joint, ...updatableData } = data;
-    
+
     await prisma.joint.update({
       where: { id },
       data: updatableData,

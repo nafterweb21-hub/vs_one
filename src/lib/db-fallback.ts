@@ -166,7 +166,7 @@ export async function getUsers() {
         orderBy: { name: "asc" }
       });
       if (dbUsers.length > 0) {
-        return dbUsers.map(u => ({
+        return dbUsers.map((u: any) => ({
           id: u.id,
           name: u.name || "",
           email: u.email,
@@ -200,14 +200,14 @@ export async function getApprovalProfiles() {
           { minRange: "asc" }
         ]
       });
-      return dbProfiles.map(p => ({
+      return dbProfiles.map((p: any) => ({
         id: p.id,
         module: p.module,
         actionButton: p.actionButton,
         minRange: p.minRange ? Number(p.minRange) : null,
         maxRange: p.maxRange ? Number(p.maxRange) : null,
         status: p.status,
-        approvers: p.approvers.map(a => ({
+        approvers: p.approvers.map((a: any) => ({
           id: a.id,
           userId: a.userId,
           status: a.status,
@@ -227,9 +227,9 @@ export async function getApprovalProfiles() {
   // Fallback
   const store = getFallbackStore();
   // Map approver details
-  return store.approvalProfiles.map(p => ({
+  return store.approvalProfiles.map((p: any) => ({
     ...p,
-    approvers: p.approvers.map(a => {
+    approvers: p.approvers.map((a: any) => {
       const user = store.users.find(u => u.id === a.userId);
       return {
         ...a,
@@ -253,7 +253,7 @@ export async function saveApprovalProfile(data: {
     try {
       if (data.id) {
         // Update transaction
-        return await prisma.$transaction(async (tx) => {
+        return await prisma.$transaction(async (tx: any) => {
           // Delete old approvers
           await tx.approvalPerson.deleteMany({
             where: { approvalLevelProfileId: data.id }
@@ -893,7 +893,7 @@ export async function getProcessProfiles() {
         },
         orderBy: { routingProcess: "asc" }
       });
-      return dbProfiles.map(p => ({
+      return dbProfiles.map((p: any) => ({
         ...p,
         costPerMinute: Number(p.costPerMinute)
       }));
@@ -906,7 +906,7 @@ export async function getProcessProfiles() {
   const profiles = store.processProfiles || [];
   const mainProcesses = store.mainProcesses || [];
 
-  return profiles.map(p => {
+  return profiles.map((p: any) => {
     const mainProcess = mainProcesses.find(m => m.id === p.mainProcessId);
     return {
       ...p,
