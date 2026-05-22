@@ -88,11 +88,32 @@ export async function POST(request: Request) {
         uploadUrl: orderData.uploadUrl || null,
         items: {
           create: (items || []).map((item: any) => ({
-            ...item,
-            deliveryDate: new Date(item.deliveryDate),
-            workOrderNo: null, // WO is only generated on confirmation
+            partId: item.partId,
+            quantity: item.quantity || 0,
+            unitPrice: item.unitPrice || 0,
+            uomId: item.uomId,
+            internalQuotationNo: item.internalQuotationNo || "N/A",
+            vendorMaterialNo: item.vendorMaterialNo || null,
+            materialSpecification: item.materialSpecification || null,
+            estimateNo: item.estimateNo || null,
             remark: item.remark || null,
             uploadUrl: item.uploadUrl || null,
+            batches: {
+              create: (item.batches || [{
+                quantity: item.quantity,
+                deliveryDate: item.deliveryDate || new Date(),
+                noRoutingProcess: item.noRoutingProcess || false,
+                remark: null,
+                uploadUrl: null
+              }]).map((b: any) => ({
+                quantity: Number(b.quantity) || 0,
+                deliveryDate: new Date(b.deliveryDate),
+                noRoutingProcess: b.noRoutingProcess || false,
+                workOrderNo: null,
+                remark: b.remark || null,
+                uploadUrl: b.uploadUrl || null,
+              }))
+            }
           })),
         },
       },

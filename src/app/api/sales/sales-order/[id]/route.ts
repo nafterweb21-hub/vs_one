@@ -7,7 +7,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const order = await prisma.salesOrder.findUnique({
       where: { id },
       include: {
-        items: true,
+        items: {
+          include: { batches: true },
+        },
       },
     });
 
@@ -62,23 +64,48 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     });
 
     // Prepare items with Work Order Generation if confirmed
+    // Prepare items with Work Order Generation if confirmed
     const itemsData = (items || []).map((item: any, index: number) => {
-      let woNo = item.workOrderNo;
-      // Generate Work Order No on confirmation if not already present
-      if (status === "Confirmed" && !woNo) {
-        const itemNumber = String(index + 1).padStart(3, "0");
-        woNo = `WO-${currentOrder.orderNo}-${itemNumber}`;
-      }
-
       return {
         partId: item.partId,
-        quantity: item.quantity,
+        quantity: item.quantity || 0,
+        unitPrice: item.unitPrice || 0,
         uomId: item.uomId,
-        deliveryDate: new Date(item.deliveryDate),
-        noRoutingProcess: item.noRoutingProcess || false,
-        workOrderNo: woNo || null,
+        internalQuotationNo: item.internalQuotationNo || "N/A",
+        vendorMaterialNo: item.vendorMaterialNo || null,
+        materialSpecification: item.materialSpecification || null,
+        estimateNo: item.estimateNo || null,
         remark: item.remark || null,
         uploadUrl: item.uploadUrl || null,
+        batches: {
+          create: (item.batches || [{
+            quantity: item.quantity,
+            deliveryDate: item.deliveryDate || new Date(),
+            noRoutingProcess: item.noRoutingProcess || false,
+            remark: null,
+            uploadUrl: null,
+            workOrderNo: item.workOrderNo || null,
+          }]).map((b: any, bIndex: number) => {
+            let woNo = b.workOrderNo;
+            if (status === "Confirmed" && !woNo) {
+              const itemNumber = String(index + 1).padStart(3, "0");
+              const batchNumber = String(bIndex + 1).padStart(2, "0");
+              const isSingleBatch = (item.batches || []).length <= 1;
+              woNo = isSingleBatch 
+                ? `WO-${currentOrder.orderNo}-${itemNumber}` 
+                : `WO-${currentOrder.orderNo}-${itemNumber}-${batchNumber}`;
+            }
+
+            return {
+              quantity: Number(b.quantity) || 0,
+              deliveryDate: new Date(b.deliveryDate),
+              noRoutingProcess: b.noRoutingProcess || false,
+              workOrderNo: woNo || null,
+              remark: b.remark || null,
+              uploadUrl: b.uploadUrl || null,
+            };
+          })
+        }
       };
     });
 

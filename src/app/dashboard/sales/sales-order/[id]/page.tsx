@@ -65,7 +65,10 @@ export default function SalesOrderFormPage({ params }: PageProps) {
           setItems(
             orderData.items.map((item: any) => ({
               ...item,
-              deliveryDate: new Date(item.deliveryDate).toISOString().split("T")[0],
+              batches: (item.batches || []).map((b: any) => ({
+                ...b,
+                deliveryDate: new Date(b.deliveryDate).toISOString().split("T")[0],
+              }))
             }))
           );
         } else {
@@ -129,16 +132,45 @@ export default function SalesOrderFormPage({ params }: PageProps) {
     });
   };
 
+  const handleBatchChange = (itemIndex: number, batchIndex: number, field: string, value: any) => {
+    setItems((prev) => {
+      const newItems = [...prev];
+      const newBatches = [...newItems[itemIndex].batches];
+      newBatches[batchIndex] = { ...newBatches[batchIndex], [field]: value };
+      newItems[itemIndex] = { 
+        ...newItems[itemIndex], 
+        batches: newBatches,
+      };
+      if (field === "quantity") {
+        newItems[itemIndex].quantity = newBatches.reduce((sum: number, b: any) => sum + (Number(b.quantity) || 0), 0);
+      }
+      return newItems;
+    });
+  };
+
   const addItem = () => {
     setItems((prev) => [
       ...prev,
       {
         partId: "",
+        internalQuotationNo: "",
+        vendorMaterialNo: "",
+        materialSpecification: "",
+        estimateNo: "",
+        remark: "",
+        uploadUrl: "",
         quantity: 1,
         uomId: "",
-        deliveryDate: new Date().toISOString().split("T")[0],
-        noRoutingProcess: false,
-        remark: "",
+        unitPrice: 0,
+        batches: [
+          {
+            quantity: 1,
+            deliveryDate: new Date().toISOString().split("T")[0],
+            noRoutingProcess: false,
+            remark: "",
+            uploadUrl: "",
+          }
+        ]
       },
     ]);
   };
@@ -147,14 +179,34 @@ export default function SalesOrderFormPage({ params }: PageProps) {
     setItems((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const addBatch = (itemIndex: number) => {
+    setItems((prev) => {
+      const newItems = [...prev];
+      newItems[itemIndex].batches.push({
+        quantity: 1,
+        deliveryDate: new Date().toISOString().split("T")[0],
+        noRoutingProcess: false,
+        remark: "",
+        uploadUrl: "",
+      });
+      newItems[itemIndex].quantity = newItems[itemIndex].batches.reduce((sum: number, b: any) => sum + (Number(b.quantity) || 0), 0);
+      return newItems;
+    });
+  };
+
+  const removeBatch = (itemIndex: number, batchIndex: number) => {
+    setItems((prev) => {
+      const newItems = [...prev];
+      newItems[itemIndex].batches = newItems[itemIndex].batches.filter((_: any, i: number) => i !== batchIndex);
+      newItems[itemIndex].quantity = newItems[itemIndex].batches.reduce((sum: number, b: any) => sum + (Number(b.quantity) || 0), 0);
+      return newItems;
+    });
+  };
+
   // Calculations
   const amountBeforeTax = useMemo(() => {
-    // Usually item unit price is missing in this model schema, 
-    // assuming it comes from finished goods or manual entry.
-    // The schema didn't define unit price on SalesOrderItem! Wait, let's assume it's calculated or not tracked.
-    // Actually, amountBeforeTax is on SalesOrder. We'll just provide an input for it if there's no unit price.
-    return order.amountBeforeTax || 0;
-  }, [order.amountBeforeTax]);
+    return items.reduce((acc, item) => acc + (Number(item.quantity) * Number(item.unitPrice || 0)), 0);
+  }, [items]);
 
   const taxAmount = useMemo(() => {
     return (Number(amountBeforeTax) * Number(order.taxRate)) / 100;
@@ -226,29 +278,65 @@ export default function SalesOrderFormPage({ params }: PageProps) {
             )}
           </h2>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap justify-end">
           <button
             onClick={() => router.push("/dashboard/sales/sales-order")}
-            className="px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 :bg-blue-800"
+            className="px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-200 rounded-lg hover:bg-blue-50"
           >
-            Cancel
+            Back
           </button>
-          <button
-            onClick={() => handleSave("Draft")}
-            disabled={saving || order.status === "Confirmed" || order.status === "Closed"}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-            Save Draft
-          </button>
-          <button
-            onClick={() => handleSave("Confirmed")}
-            disabled={saving || order.status === "Closed"}
-            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {saving ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
-            Confirm Order
-          </button>
+
+          {(order.status === "Draft" || order.status === "Revised") && (
+            <button
+              onClick={() => handleSave(order.status)}
+              disabled={saving}
+              className="px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 disabled:opacity-50 flex items-center gap-2"
+            >
+              {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+              Save {order.status}
+            </button>
+          )}
+
+          {!isNew && order.status !== "Void" && order.status !== "Closed" && (
+            <button
+              onClick={() => handleSave("Void")}
+              disabled={saving}
+              className="px-4 py-2 text-sm font-medium text-rose-700 bg-rose-100 rounded-lg hover:bg-rose-200 disabled:opacity-50 flex items-center gap-2"
+            >
+              Void
+            </button>
+          )}
+
+          {(!isNew && order.status === "Confirmed") && (
+            <button
+              onClick={() => handleSave("Revised")}
+              disabled={saving}
+              className="px-4 py-2 text-sm font-medium text-amber-700 bg-amber-100 rounded-lg hover:bg-amber-200 disabled:opacity-50 flex items-center gap-2"
+            >
+              Revise
+            </button>
+          )}
+
+          {(!isNew && order.status === "Confirmed") && (
+            <button
+              onClick={() => handleSave("Closed")}
+              disabled={saving}
+              className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-200 rounded-lg hover:bg-slate-300 disabled:opacity-50 flex items-center gap-2"
+            >
+              Close
+            </button>
+          )}
+
+          {(order.status === "Draft" || order.status === "Revised") && (
+            <button
+              onClick={() => handleSave("Confirmed")}
+              disabled={saving}
+              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 disabled:opacity-50 flex items-center gap-2"
+            >
+              {saving ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
+              Confirm
+            </button>
+          )}
         </div>
       </div>
 
@@ -311,6 +399,25 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                   className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 />
               </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-blue-700 mb-1">Remark</label>
+                <textarea
+                  value={order.remark || ""}
+                  onChange={(e) => handleOrderChange("remark", e.target.value)}
+                  rows={2}
+                  className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-blue-700 mb-1">Upload (File URL)</label>
+                <input
+                  type="text"
+                  value={order.uploadUrl || ""}
+                  onChange={(e) => handleOrderChange("uploadUrl", e.target.value)}
+                  placeholder="https://..."
+                  className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                />
+              </div>
             </div>
           </div>
 
@@ -346,62 +453,170 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                       <X size={14} />
                     </button>
                     
-                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-blue-500 mb-1">Part <span className="text-red-500">*</span></label>
-                        <select
-                          value={item.partId}
-                          onChange={(e) => handleItemChange(index, "partId", e.target.value)}
-                          className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                        >
-                          <option value="">Select Part</option>
-                          {formDataCache?.finishedGoods?.map((fg: any) => (
-                            <option key={fg.id} value={fg.id}>{fg.partNo} - {fg.description}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-blue-500 mb-1">Quantity <span className="text-red-500">*</span></label>
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) => handleItemChange(index, "quantity", parseInt(e.target.value) || 0)}
-                          className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-blue-500 mb-1">UOM <span className="text-red-500">*</span></label>
-                        <select
-                          value={item.uomId}
-                          onChange={(e) => handleItemChange(index, "uomId", e.target.value)}
-                          className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                        >
-                          <option value="">Select UOM</option>
-                          {formDataCache?.uoms?.map((u: any) => (
-                            <option key={u.id} value={u.id}>{u.uomName}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-blue-500 mb-1">Delivery Date <span className="text-red-500">*</span></label>
-                        <input
-                          type="date"
-                          value={item.deliveryDate}
-                          onChange={(e) => handleItemChange(index, "deliveryDate", e.target.value)}
-                          className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                        />
-                      </div>
-                      <div className="sm:col-span-2 flex items-center pt-5">
-                        <label className="flex items-center gap-2 text-sm text-blue-700 cursor-pointer">
+                    <div className="flex-1 space-y-4">
+                      {/* Item Level Info */}
+                      <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 pb-4 border-b border-blue-200">
+                        <div className="sm:col-span-2">
+                          <label className="block text-xs font-medium text-blue-500 mb-1">Part <span className="text-red-500">*</span></label>
+                          <select
+                            value={item.partId}
+                            onChange={(e) => handleItemChange(index, "partId", e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          >
+                            <option value="">Select Part</option>
+                            {formDataCache?.finishedGoods?.map((fg: any) => (
+                              <option key={fg.id} value={fg.id}>{fg.partNo} - {fg.description}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-blue-500 mb-1">Int. Quotation <span className="text-red-500">*</span></label>
                           <input
-                            type="checkbox"
-                            checked={item.noRoutingProcess}
-                            onChange={(e) => handleItemChange(index, "noRoutingProcess", e.target.checked)}
-                            className="rounded border-blue-300 text-indigo-600 focus:ring-indigo-500"
+                            type="text"
+                            value={item.internalQuotationNo || ""}
+                            onChange={(e) => handleItemChange(index, "internalQuotationNo", e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                           />
-                          No Routing Process
-                        </label>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-blue-500 mb-1">Unit Price <span className="text-red-500">*</span></label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={item.unitPrice || ""}
+                            onChange={(e) => handleItemChange(index, "unitPrice", parseFloat(e.target.value) || 0)}
+                            className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-blue-500 mb-1">UOM <span className="text-red-500">*</span></label>
+                          <select
+                            value={item.uomId}
+                            onChange={(e) => handleItemChange(index, "uomId", e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          >
+                            <option value="">Select UOM</option>
+                            {formDataCache?.uoms?.map((u: any) => (
+                              <option key={u.id} value={u.id}>{u.uomName}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-blue-500 mb-1">Vendor Material No</label>
+                          <input
+                            type="text"
+                            value={item.vendorMaterialNo || ""}
+                            onChange={(e) => handleItemChange(index, "vendorMaterialNo", e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-blue-500 mb-1">Estimate No</label>
+                          <input
+                            type="text"
+                            value={item.estimateNo || ""}
+                            onChange={(e) => handleItemChange(index, "estimateNo", e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          />
+                        </div>
+                        <div className="sm:col-span-3">
+                          <label className="block text-xs font-medium text-blue-500 mb-1">Material Specification</label>
+                          <input
+                            type="text"
+                            value={item.materialSpecification || ""}
+                            onChange={(e) => handleItemChange(index, "materialSpecification", e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="block text-xs font-medium text-blue-500 mb-1">Item Remark</label>
+                          <input
+                            type="text"
+                            value={item.remark || ""}
+                            onChange={(e) => handleItemChange(index, "remark", e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="block text-xs font-medium text-blue-500 mb-1">Item Upload URL</label>
+                          <input
+                            type="text"
+                            value={item.uploadUrl || ""}
+                            onChange={(e) => handleItemChange(index, "uploadUrl", e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          />
+                        </div>
+                        <div className="flex flex-col justify-end pb-1">
+                          <span className="text-xs font-medium text-blue-500 mb-1">Total Quantity</span>
+                          <span className="text-sm font-bold text-indigo-700">{item.quantity}</span>
+                        </div>
+                      </div>
+
+                      {/* Batches Level Info */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-bold text-blue-900 uppercase">Batches</span>
+                          <button
+                            type="button"
+                            onClick={() => addBatch(index)}
+                            className="text-xs font-medium text-indigo-600 hover:text-indigo-500 flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded"
+                          >
+                            <Plus size={12} /> Add Batch
+                          </button>
+                        </div>
+                        <div className="space-y-2">
+                          {item.batches?.map((batch: any, bIndex: number) => (
+                            <div key={bIndex} className="grid grid-cols-1 sm:grid-cols-6 gap-2 items-start relative group/batch p-2 bg-white rounded border border-blue-100">
+                               <button
+                                  type="button"
+                                  onClick={() => removeBatch(index, bIndex)}
+                                  className="absolute -top-1 -right-1 p-0.5 bg-white text-rose-500 border border-blue-200 rounded-full shadow-sm hover:bg-rose-50 opacity-0 group-hover/batch:opacity-100 transition-opacity"
+                                >
+                                  <X size={10} />
+                                </button>
+                              <div>
+                                <label className="block text-[10px] font-medium text-slate-500 mb-1">Qty</label>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  value={batch.quantity}
+                                  onChange={(e) => handleBatchChange(index, bIndex, "quantity", parseInt(e.target.value) || 0)}
+                                  className="w-full px-2 py-1 text-xs bg-slate-50 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                />
+                              </div>
+                              <div className="sm:col-span-2">
+                                <label className="block text-[10px] font-medium text-slate-500 mb-1">Delivery Date</label>
+                                <input
+                                  type="date"
+                                  value={batch.deliveryDate}
+                                  onChange={(e) => handleBatchChange(index, bIndex, "deliveryDate", e.target.value)}
+                                  className="w-full px-2 py-1 text-xs bg-slate-50 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                />
+                              </div>
+                              <div className="sm:col-span-2">
+                                <label className="block text-[10px] font-medium text-slate-500 mb-1">Remark</label>
+                                <input
+                                  type="text"
+                                  value={batch.remark || ""}
+                                  onChange={(e) => handleBatchChange(index, bIndex, "remark", e.target.value)}
+                                  className="w-full px-2 py-1 text-xs bg-slate-50 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                />
+                              </div>
+                              <div className="flex items-center pt-4">
+                                <label className="flex items-center gap-1 text-[10px] text-slate-600 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={batch.noRoutingProcess}
+                                    onChange={(e) => handleBatchChange(index, bIndex, "noRoutingProcess", e.target.checked)}
+                                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3 h-3"
+                                  />
+                                  No Routing
+                                </label>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -415,16 +630,14 @@ export default function SalesOrderFormPage({ params }: PageProps) {
             <h3 className="text-lg font-semibold text-blue-900 mb-4">Financials</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
               <div>
-                <label className="block text-sm font-medium text-blue-700 mb-1">Total Amount Before Tax</label>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Amount Before Tax (Calculated)</label>
                 <div className="flex items-center gap-2">
                   <span className="text-blue-500">{formDataCache?.currencies?.find((c:any) => c.id === order.currencyId)?.code || "$"}</span>
                   <input
-                    type="number"
-                    step="0.01"
-                    value={order.amountBeforeTax || ""}
-                    onChange={(e) => handleOrderChange("amountBeforeTax", e.target.value)}
-                    className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                    placeholder="0.00"
+                    type="text"
+                    readOnly
+                    value={amountBeforeTax.toFixed(2)}
+                    className="w-full px-3 py-2 text-sm bg-slate-100 text-slate-500 border border-slate-200 rounded-lg cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -498,6 +711,26 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                 className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Other Payment Detail</label>
+              <input
+                type="text"
+                value={order.otherPaymentDetail || ""}
+                onChange={(e) => handleOrderChange("otherPaymentDetail", e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Ref Contract</label>
+              <input
+                type="text"
+                value={order.refContract || ""}
+                onChange={(e) => handleOrderChange("refContract", e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              />
+            </div>
           </div>
 
           <div className="p-6 bg-white rounded-xl border border-blue-200 shadow-sm space-y-4">
@@ -516,6 +749,37 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                   <option key={cp.id} value={cp.id}>{cp.contactPersonName}</option>
                 ))}
               </select>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Tel</label>
+                <input
+                  type="text"
+                  value={order.tel || ""}
+                  onChange={(e) => handleOrderChange("tel", e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Fax</label>
+                <input
+                  type="text"
+                  value={order.fax || ""}
+                  onChange={(e) => handleOrderChange("fax", e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Email <span className="text-red-500">*</span></label>
+              <input
+                type="email"
+                value={order.email || ""}
+                onChange={(e) => handleOrderChange("email", e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              />
             </div>
 
             <div>
