@@ -578,6 +578,8 @@ export default function ElcometerProfilePage() {
                   <th className="px-5 py-4">Elcometer Serial No</th>
                   <th className="px-5 py-4">Remark</th>
                   <th className="px-5 py-4">Status</th>
+                  <th className="px-5 py-4">Created Date</th>
+                  <th className="px-5 py-4">Updated Date</th>
                   <th className="px-5 py-4 text-right">Action</th>
                 </tr>
               </thead>
@@ -621,6 +623,16 @@ export default function ElcometerProfilePage() {
                         <span className={`w-1.5 h-1.5 rounded-full ${item.status === "Active" ? "bg-emerald-500" : "bg-zinc-400"}`} />
                         {item.status === "Active" ? "Active" : "Deactive"}
                       </span>
+                    </td>
+
+                    {/* Created Date */}
+                    <td className="px-5 py-4 text-zinc-500 dark:text-zinc-400 text-sm whitespace-nowrap">
+                      {formatDate(item.createdAt)}
+                    </td>
+
+                    {/* Updated Date */}
+                    <td className="px-5 py-4 text-zinc-500 dark:text-zinc-400 text-sm whitespace-nowrap">
+                      {formatDate(item.updatedAt)}
                     </td>
 
                      {/* Actions */}
