@@ -68,6 +68,7 @@ model Currency {
   status       String   @default("Active")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  salesOrders  SalesOrder[]
 }
 
 model Employee {
@@ -84,6 +85,7 @@ model Employee {
   status         String   @default("ACTIVE") // ACTIVE / INACTIVE
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  salesOrders    SalesOrder[]
 }
 
 model TaxProfile {
@@ -93,6 +95,7 @@ model TaxProfile {
   status    String   @default("Active") // "Active" or "Inactive"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  salesOrders SalesOrder[]
 }
 
 model CustomerProfile {
@@ -105,6 +108,7 @@ model CustomerProfile {
   addresses      CustomerAddress[]
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
+  salesOrders    SalesOrder[]
 }
 
 model CustomerContactPerson {
@@ -121,6 +125,7 @@ model CustomerContactPerson {
   isDefault         Boolean         @default(false)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+  salesOrders       SalesOrder[]
 }
 
 model CustomerAddress {
@@ -132,12 +137,14 @@ model CustomerAddress {
   isDefault  Boolean         @default(false)
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
+  deliverToOrders SalesOrder[] @relation("DeliverTo")
+  billToOrders    SalesOrder[] @relation("BillTo")
 }
 
 model MaterialCategory {
   id          String            @id @default(cuid())
   name        String            @unique
-  description String?           @db.Text
+  description String?           
   status      String            @default("Active") // "Active" or "Inactive"
   materials   MaterialProfile[]
   createdAt   DateTime          @default(now())
@@ -147,12 +154,12 @@ model MaterialCategory {
 model MaterialProfile {
   id                 String           @id @default(cuid())
   partNo             String?          @unique // Not mandatory, unique
-  description        String           @unique @db.Text // Mandatory, unique
+  description        String           @unique  // Mandatory, unique
   shape              String           // Mandatory
   size               String?          // Not mandatory
   categoryId         String           // Dropdown from Material Category profile
   category           MaterialCategory @relation(fields: [categoryId], references: [id])
-  remark             String?          @db.Text
+  remark             String?          
   status             String           @default("Active") // Default Active
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
@@ -161,7 +168,7 @@ model MaterialProfile {
 model WeldingTypeProfile {
   id        String   @id @default(cuid())
   type      String   @unique
-  remark    String?  @db.Text
+  remark    String?  
   status    String   @default("Active") // "Active" or "Inactive"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -214,6 +221,7 @@ model FinishedGoodProfile {
   status      String   @default("Active") // "Active" or "Inactive"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  salesOrderItems SalesOrderItem[]
 }
 
 // ==========================================
@@ -226,6 +234,7 @@ model UomProfile {
   status    String   @default("Active") // "Active" or "Inactive"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  salesOrderItems SalesOrderItem[]
 }
 
 // ==========================================
@@ -259,4 +268,99 @@ model MachineProfile {
   status          String   @default("Active") // "Active" or "Inactive"
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+// ==========================================
+// Payment Term Profile
+// ==========================================
+model PaymentTermProfile {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  days      Int
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  salesOrders SalesOrder[]
+}
+
+// ==========================================
+// Sales Order
+// ==========================================
+model SalesOrder {
+  id                String   @id @default(cuid())
+  orderNo           String   @unique // Auto Generated
+  revision          Int      @default(0) // Increases on confirmation
+  date              DateTime // No backdate logic on frontend
+  
+  salespersonId     String
+  salesperson       Employee @relation(fields: [salespersonId], references: [id])
+  
+  customerId        String
+  customer          CustomerProfile @relation(fields: [customerId], references: [id])
+  
+  customerPoRef     String?
+  projectCode       String?
+  
+  paymentTermId     String
+  paymentTerm       PaymentTermProfile @relation(fields: [paymentTermId], references: [id])
+  
+  otherPaymentDetail String?
+  refContract       String?
+  
+  currencyId        String
+  currency          Currency @relation(fields: [currencyId], references: [id])
+  exchangeRate      Decimal
+  
+  amountBeforeTax   Decimal
+  
+  taxTypeId         String?
+  taxType           TaxProfile? @relation(fields: [taxTypeId], references: [id])
+  taxRate           Float?
+  taxAmount         Decimal?
+  amountAfterTax    Decimal
+  
+  contactPersonId   String?
+  contactPerson     CustomerContactPerson? @relation(fields: [contactPersonId], references: [id])
+  
+  fax               String?
+  tel               String?
+  email             String?
+  
+  deliverToId       String?
+  deliverTo         CustomerAddress? @relation("DeliverTo", fields: [deliverToId], references: [id])
+  
+  billToId          String?
+  billTo            CustomerAddress? @relation("BillTo", fields: [billToId], references: [id])
+  
+  remark            String?
+  status            String   @default("Draft") // Draft / Confirmed / Closed
+  uploadUrl         String?
+  
+  items             SalesOrderItem[]
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model SalesOrderItem {
+  id               String   @id @default(cuid())
+  salesOrderId     String
+  salesOrder       SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  
+  partId           String
+  part             FinishedGoodProfile @relation(fields: [partId], references: [id])
+  
+  quantity         Int
+  
+  uomId            String
+  uom              UomProfile @relation(fields: [uomId], references: [id])
+  
+  deliveryDate     DateTime
+  workOrderNo      String?
+  remark           String?
+  noRoutingProcess Boolean  @default(false)
+  uploadUrl        String?
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }

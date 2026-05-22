@@ -42,5 +42,13 @@ export const PROFILE_REGISTRY: Record<
     uniqueFields: ["machineCode"],
     searchFields: ["machineCode", "machineNo", "brand", "model"],
   },
+  "payment-term": {
+    modelName: "paymentTermProfile",
+    displayName: "Payment Term Profile",
+    immutableFields: ["name"],
+    mandatoryFields: ["name", "days"],
+    uniqueFields: ["name"],
+    searchFields: ["name"],
+  },
 };
 

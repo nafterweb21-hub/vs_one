@@ -18,6 +18,8 @@ import {
   Package,
   Box,
   Flame,
+  ShoppingCart,
+  CreditCard,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -83,6 +85,20 @@ export default function Sidebar() {
             <LayoutDashboard size={18} />
             <span>Dashboard Home</span>
           </Link>
+
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              Sales
+            </p>
+            <Link
+              href="/dashboard/sales/sales-order"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/sales/sales-order")}
+            >
+              <ShoppingCart size={16} />
+              <span>Sales Orders</span>
+            </Link>
+          </div>
 
           <div className="pt-4">
             <p className="px-3 py-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
@@ -181,6 +197,14 @@ export default function Sidebar() {
             >
               <Package size={16} />
               <span>Finished Good Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/profiles/payment-term"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/payment-term")}
+            >
+              <CreditCard size={16} />
+              <span>Payment Term Profile</span>
             </Link>
           </div>
         </div>
