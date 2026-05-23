@@ -33,11 +33,12 @@ const CUSTOMER_PATH = "/dashboard/admin/master-profile/customer";
 export async function getCustomerProfiles() {
   try {
     const customers = await prisma.customerProfile.findMany({
+      where: { status: { not: "Void" } },
       include: {
         _count: {
           select: {
-            contactPersons: true,
-            addresses: true,
+            contactPersons: { where: { status: { not: "Void" } } },
+            addresses: { where: { status: { not: "Void" } } },
           },
         },
       },
@@ -58,12 +59,14 @@ export async function getCustomerDetail(id: string) {
       where: { id },
       include: {
         contactPersons: {
+          where: { status: { not: "Void" } },
           orderBy: [
             { isDefault: "desc" },
             { createdAt: "desc" },
           ],
         },
         addresses: {
+          where: { status: { not: "Void" } },
           orderBy: [
             { isDefault: "desc" },
             { createdAt: "desc" },
@@ -185,15 +188,16 @@ export async function deleteCustomerProfile(id: string) {
       return { success: false, error: "Customer profile not found." };
     }
 
-    // Cascade delete is handled by database ON DELETE CASCADE defined in Prisma Schema relations
-    await prisma.customerProfile.delete({
+    // Void instead of hard delete (cross-cutting rule: No DELETE — Void only).
+    await prisma.customerProfile.update({
       where: { id },
+      data: { status: "Void" },
     });
 
     revalidatePath(CUSTOMER_PATH);
     return { success: true };
   } catch (error) {
-    console.error("Failed to delete customer profile:", error);
+    console.error("Failed to void customer profile:", error);
     return { success: false, error: (error as Error).message || "Failed to delete customer profile." };
   }
 }
@@ -211,16 +215,16 @@ export async function addContactPerson(customerId: string, data: ContactPersonIn
 
     const isDefault = !!data.isDefault;
 
-    // Check if this is the first contact person. If so, make it default regardless
+    // Check if this is the first non-void contact person. If so, make it default regardless
     const contactCount = await prisma.customerContactPerson.count({
-      where: { customerId },
+      where: { customerId, status: { not: "Void" } },
     });
     const finalIsDefault = contactCount === 0 ? true : isDefault;
 
-    // If setting default, unset other contact persons
+    // If setting default, unset other non-void contact persons
     if (finalIsDefault) {
       await prisma.customerContactPerson.updateMany({
-        where: { customerId },
+        where: { customerId, status: { not: "Void" } },
         data: { isDefault: false },
       });
     }
@@ -335,14 +339,19 @@ export async function deleteContactPerson(id: string) {
       return { success: false, error: "Contact person not found." };
     }
 
-    await prisma.customerContactPerson.delete({
+    await prisma.customerContactPerson.update({
       where: { id },
+      data: { status: "Void", isDefault: false },
     });
 
-    // If we deleted the default contact person, set the next active one to default
+    // If we voided the default contact, promote the next non-void one
     if (existing.isDefault) {
       const nextContact = await prisma.customerContactPerson.findFirst({
-        where: { customerId: existing.customerId },
+        where: {
+          customerId: existing.customerId,
+          status: { not: "Void" },
+          id: { not: id },
+        },
         orderBy: { createdAt: "asc" },
       });
       if (nextContact) {
@@ -356,7 +365,7 @@ export async function deleteContactPerson(id: string) {
     revalidatePath(CUSTOMER_PATH);
     return { success: true };
   } catch (error) {
-    console.error("Failed to delete contact person:", error);
+    console.error("Failed to void contact person:", error);
     return { success: false, error: (error as Error).message || "Failed to delete contact person." };
   }
 }
@@ -372,9 +381,9 @@ export async function addAddress(customerId: string, data: AddressInput) {
       return { success: false, error: "Address is required." };
     }
 
-    // Check if duplicate address exists for this customer
+    // Check if duplicate (non-void) address exists for this customer
     const existingAddr = await prisma.customerAddress.findFirst({
-      where: { customerId, address: addressText },
+      where: { customerId, address: addressText, status: { not: "Void" } },
     });
     if (existingAddr) {
       return { success: false, error: "This exact address already exists for this customer." };
@@ -382,15 +391,15 @@ export async function addAddress(customerId: string, data: AddressInput) {
 
     const isDefault = !!data.isDefault;
 
-    // Check if this is the first address. If so, make it default
+    // Check if this is the first non-void address. If so, make it default
     const addressCount = await prisma.customerAddress.count({
-      where: { customerId },
+      where: { customerId, status: { not: "Void" } },
     });
     const finalIsDefault = addressCount === 0 ? true : isDefault;
 
     if (finalIsDefault) {
       await prisma.customerAddress.updateMany({
-        where: { customerId },
+        where: { customerId, status: { not: "Void" } },
         data: { isDefault: false },
       });
     }
@@ -426,11 +435,12 @@ export async function updateAddress(id: string, addressText: string) {
       return { success: false, error: "Address not found." };
     }
 
-    // Check duplicate address for the same customer excluding this row
+    // Check duplicate (non-void) address for the same customer excluding this row
     const duplicate = await prisma.customerAddress.findFirst({
       where: {
         customerId: existing.customerId,
         address,
+        status: { not: "Void" },
         NOT: { id },
       },
     });
@@ -505,13 +515,18 @@ export async function deleteAddress(id: string) {
       return { success: false, error: "Address not found." };
     }
 
-    await prisma.customerAddress.delete({
+    await prisma.customerAddress.update({
       where: { id },
+      data: { status: "Void", isDefault: false },
     });
 
     if (existing.isDefault) {
       const nextAddr = await prisma.customerAddress.findFirst({
-        where: { customerId: existing.customerId },
+        where: {
+          customerId: existing.customerId,
+          status: { not: "Void" },
+          id: { not: id },
+        },
         orderBy: { createdAt: "asc" },
       });
       if (nextAddr) {
@@ -525,7 +540,7 @@ export async function deleteAddress(id: string) {
     revalidatePath(CUSTOMER_PATH);
     return { success: true };
   } catch (error) {
-    console.error("Failed to delete address:", error);
+    console.error("Failed to void address:", error);
     return { success: false, error: (error as Error).message || "Failed to delete address." };
   }
 }

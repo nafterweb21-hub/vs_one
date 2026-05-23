@@ -120,6 +120,7 @@ model Currency {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   salesOrders  SalesOrder[]
+  quotations   Quotation[]
 }
 
 model Employee {
@@ -137,6 +138,7 @@ model Employee {
   createdAt              DateTime                        @default(now())
   updatedAt              DateTime                        @updatedAt
   salesOrders            SalesOrder[]
+  quotations             Quotation[]
   qcWorkOrders           WorkOrder[]                     @relation("WorkOrderQc")
   productionTimesheets   ProductionTimesheet[]           @relation("TimesheetEmployee")
   weldingConfirmations   ProcessParameterWelding[]       @relation("WeldingConfirmedBy")
@@ -153,6 +155,7 @@ model TaxProfile {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   salesOrders SalesOrder[]
+  quotations  Quotation[]
 }
 
 model CustomerProfile {
@@ -167,6 +170,7 @@ model CustomerProfile {
   updatedAt      DateTime                @updatedAt
   salesOrders    SalesOrder[]
   workOrders     WorkOrder[]
+  quotations     Quotation[]
 }
 
 model CustomerContactPerson {
@@ -184,6 +188,7 @@ model CustomerContactPerson {
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   salesOrders       SalesOrder[]
+  quotations        Quotation[]
 }
 
 model CustomerAddress {
@@ -318,6 +323,7 @@ model FinishedGoodProfile {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   salesOrderItems SalesOrderItem[]
+  quotationItems  QuotationItem[]
 }
 
 // ==========================================
@@ -332,6 +338,7 @@ model UomProfile {
   updatedAt       DateTime         @updatedAt
   salesOrderItems SalesOrderItem[]
   workOrders      WorkOrder[]
+  quotationItems  QuotationItem[]
 }
 
 // ==========================================
@@ -382,6 +389,7 @@ model PaymentTermProfile {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   salesOrders SalesOrder[]
+  quotations  Quotation[]
 }
 
 // ==========================================
@@ -438,6 +446,8 @@ model SalesOrder {
   uploadUrl String?
 
   items SalesOrderItem[]
+
+  quotation Quotation?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -770,22 +780,102 @@ model MachiningToolList {
 // Company Profile
 // ==========================================
 model CompanyProfile {
-  id                      String   @id @default(cuid())
-  companyName             String   @unique
-  address                 String
-  phoneNo                 String
-  faxNo                   String
-  email                   String?
-  website                 String?
-  rocNo                   String?
-  gstRegistrationNo       String
-  uploadUrl               String
-  logoName                String
-  footerName              String
-  allowPoForWo            Boolean  @default(false)
-  as9100RequirementNote   Boolean  @default(false)
-  status                  String   @default("Active") // "Active" or "Inactive"
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
+  id                    String   @id @default(cuid())
+  companyName           String   @unique
+  address               String
+  phoneNo               String
+  faxNo                 String
+  email                 String?
+  website               String?
+  rocNo                 String?
+  gstRegistrationNo     String
+  uploadUrl             String
+  logoName              String
+  footerName            String
+  allowPoForWo          Boolean  @default(false)
+  as9100RequirementNote Boolean  @default(false)
+  status                String   @default("Active") // "Active" or "Inactive"
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
+// ==========================================
+// Quotation (Costing & Quotation)
+// ==========================================
+model Quotation {
+  id          String   @id @default(cuid())
+  quotationNo String // Q##### shared across revisions
+  revision    Int      @default(0)
+  date        DateTime
+
+  salespersonId String
+  salesperson   Employee @relation(fields: [salespersonId], references: [id])
+
+  customerId String
+  customer   CustomerProfile @relation(fields: [customerId], references: [id])
+
+  contactPersonId String?
+  contactPerson   CustomerContactPerson? @relation(fields: [contactPersonId], references: [id])
+
+  customerPoRef String?
+  refNo         String?
+  title         String
+
+  paymentTermId String?
+  paymentTerm   PaymentTermProfile? @relation(fields: [paymentTermId], references: [id])
+
+  quoteValidityDays Int     @default(60)
+  leadTime          String?
+  incoterms         String?
+
+  currencyId   String
+  currency     Currency @relation(fields: [currencyId], references: [id])
+  exchangeRate Decimal
+
+  subTotal    Decimal // Σ items
+  lumpSumDisc Decimal @default(0)
+
+  taxTypeId String?
+  taxType   TaxProfile? @relation(fields: [taxTypeId], references: [id])
+  taxRate   Float?
+  taxAmount Decimal?
+
+  totalAmount Decimal
+
+  termsAndConditions String?
+  remark             String?
+  uploadUrl          String?
+
+  // Draft / Issued / Confirmed / Revised / Old Version / Void / Converted
+  status String @default("Draft")
+
+  salesOrderId String?     @unique
+  salesOrder   SalesOrder? @relation(fields: [salesOrderId], references: [id])
+
+  items QuotationItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([quotationNo, revision])
+}
+
+model QuotationItem {
+  id          String    @id @default(cuid())
+  quotationId String
+  quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+
+  // Optional structured references — required for Convert-to-SO to copy the line.
+  partId String?
+  part   FinishedGoodProfile? @relation(fields: [partId], references: [id])
+  uomId  String?
+  uom    UomProfile? @relation(fields: [uomId], references: [id])
+
+  unitPrice   Decimal @default(0)
+  quantity    Int     @default(1)
+  amount      Decimal @default(0) // qty * unitPrice
+  sortOrder   Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

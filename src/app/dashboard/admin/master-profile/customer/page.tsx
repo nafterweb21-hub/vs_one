@@ -213,13 +213,13 @@ export default function CustomerProfilePage() {
   };
 
   const handleDeleteCustomer = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this customer? This will also delete all associated addresses and contact persons.")) {
+    if (window.confirm("Void this customer profile? Voided records are retained for audit and cannot be restored.")) {
       startTransition(async () => {
         const res = await deleteCustomerProfile(id);
         if (res.success) {
           loadCustomers();
         } else {
-          alert(res.error || "Failed to delete customer.");
+          alert(res.error || "Failed to void customer.");
         }
       });
     }
@@ -324,7 +324,7 @@ export default function CustomerProfilePage() {
 
   const handleDeleteContact = async (id: string) => {
     if (!selectedCustomerId) return;
-    if (window.confirm("Are you sure you want to delete this contact person?")) {
+    if (window.confirm("Void this contact person? Voided records are retained for audit.")) {
       startTransition(async () => {
         const res = await deleteContactPerson(id);
         if (res.success) {
@@ -414,7 +414,7 @@ export default function CustomerProfilePage() {
 
   const handleDeleteAddress = async (id: string) => {
     if (!selectedCustomerId) return;
-    if (window.confirm("Are you sure you want to delete this address?")) {
+    if (window.confirm("Void this address? Voided records are retained for audit.")) {
       startTransition(async () => {
         const res = await deleteAddress(id);
         if (res.success) {
@@ -574,7 +574,7 @@ export default function CustomerProfilePage() {
                           disabled={isPending}
                           className="rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100 transition cursor-pointer"
                         >
-                          Delete
+                          Void
                         </button>
                       </div>
                     </td>
@@ -1011,7 +1011,7 @@ export default function CustomerProfilePage() {
                                         onClick={() => handleDeleteContact(contact.id)}
                                         className="rounded-md border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-bold text-red-700 hover:bg-red-100 cursor-pointer"
                                       >
-                                        Delete
+                                        Void
                                       </button>
                                     </div>
                                   </td>
@@ -1168,7 +1168,7 @@ export default function CustomerProfilePage() {
                                         onClick={() => handleDeleteAddress(addr.id)}
                                         className="rounded-md border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-bold text-red-700 hover:bg-red-100 cursor-pointer"
                                       >
-                                        Delete
+                                        Void
                                       </button>
                                     </div>
                                   </td>
