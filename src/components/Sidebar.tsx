@@ -262,6 +262,14 @@ export default function Sidebar() {
               <CreditCard size={16} />
               <span>Payment Term Profile</span>
             </Link>
+            <Link
+              href="/dashboard/profiles/approval-levels"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/approval-levels")}
+            >
+              <ClipboardList size={16} />
+              <span>Approval Level Profile</span>
+            </Link>
           </div>
         </div>
 
