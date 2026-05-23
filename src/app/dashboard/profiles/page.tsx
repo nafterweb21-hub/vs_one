@@ -696,7 +696,8 @@ const MASTER_CATEGORIES = [
       {
         id: "main-process",
         name: "Main Process Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/main-process",
         desc: "Tracks high-level operational groupings (e.g. Sizing).",
         rules: [
           "Main Process name is immutable once saved.",
