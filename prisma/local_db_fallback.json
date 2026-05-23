@@ -133,6 +133,18 @@
       "process": "laser",
       "remark": "laser",
       "status": "Void"
+    },
+    {
+      "id": "mprocess-new-1779515185773",
+      "process": "sizing material",
+      "remark": "dfghj",
+      "status": "Active"
+    },
+    {
+      "id": "mprocess-new-1779515254789",
+      "process": "sizing",
+      "remark": "sdfghj",
+      "status": "Active"
     }
   ],
   "processProfiles": [
