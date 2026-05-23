@@ -177,6 +177,14 @@ export default function Sidebar() {
               <span>Welding Type Profile</span>
             </Link>
             <Link
+              href="/dashboard/master-profile/joint"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/joint")}
+            >
+              <ClipboardList size={16} />
+              <span>Joint Profile</span>
+            </Link>
+            <Link
               href="/dashboard/master-profile/painting-method"
               onClick={() => setIsOpen(false)}
               className={linkClass("/dashboard/master-profile/painting-method")}
