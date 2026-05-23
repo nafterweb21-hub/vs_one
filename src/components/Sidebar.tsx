@@ -193,6 +193,14 @@ export default function Sidebar() {
               <span>Joint Profile</span>
             </Link>
             <Link
+              href="/dashboard/master-profile/failure-mode"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/failure-mode")}
+            >
+              <ClipboardList size={16} />
+              <span>Failure Mode Profile</span>
+            </Link>
+            <Link
               href="/dashboard/master-profile/painting-method"
               onClick={() => setIsOpen(false)}
               className={linkClass("/dashboard/master-profile/painting-method")}

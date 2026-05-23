@@ -488,6 +488,21 @@ model JointProfile {
 }
 
 // ==========================================
+// Failure Mode Profile
+// ==========================================
+model FailureModeProfile {
+  id          String   @id @default(cuid())
+  failureMode String   @unique
+  remark      String?
+  status      String   @default("Active")
+  createdBy   String?
+  updatedBy   String?
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
 // Work Order Module
 // ==========================================
 model WorkOrder {
