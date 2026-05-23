@@ -216,6 +216,14 @@ export default function Sidebar() {
               <Paintbrush size={16} />
               <span>Painting Method Profile</span>
             </Link>
+            <Link
+              href="/dashboard/master-profile/process-profile"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/process-profile")}
+            >
+              <ClipboardList size={16} />
+              <span>Process Profile</span>
+            </Link>
           </div>
 
           <div className="pt-4">
