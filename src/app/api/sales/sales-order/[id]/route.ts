@@ -63,8 +63,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       where: { salesOrderId: id },
     });
 
-    // Prepare items with Work Order Generation if confirmed
-    // Prepare items with Work Order Generation if confirmed
+    // Spec WO No format: 8XXXXX-A-B (numeric).
+    // 8XXXXX = "8" + last 4 digits of SO orderNo (e.g. SO-2026-0003 -> 800003).
+    // A = sequential part index in SO (1-based). B = batch index of that part (1-based).
+    const trailingDigits = (currentOrder.orderNo.match(/(\d+)\s*$/)?.[1] ?? "0").padStart(4, "0");
+    const woBase = `8${trailingDigits.slice(-4)}`;
+
     const itemsData = (items || []).map((item: any, index: number) => {
       return {
         partId: item.partId,
@@ -88,12 +92,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           }]).map((b: any, bIndex: number) => {
             let woNo = b.workOrderNo;
             if (status === "Confirmed" && !woNo) {
-              const itemNumber = String(index + 1).padStart(3, "0");
-              const batchNumber = String(bIndex + 1).padStart(2, "0");
-              const isSingleBatch = (item.batches || []).length <= 1;
-              woNo = isSingleBatch 
-                ? `WO-${currentOrder.orderNo}-${itemNumber}` 
-                : `WO-${currentOrder.orderNo}-${itemNumber}-${batchNumber}`;
+              woNo = `${woBase}-${index + 1}-${bIndex + 1}`;
             }
 
             return {

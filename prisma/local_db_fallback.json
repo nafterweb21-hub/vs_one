@@ -114,7 +114,7 @@
       "id": "cat-new-1779426347285",
       "category": "TEXT",
       "remark": "MULTI TEXT",
-      "status": "Active"
+      "status": "Inactive"
     },
     {
       "id": "cat-new-1779513669692",
@@ -126,7 +126,7 @@
       "id": "cat-new-1779514892863",
       "category": "RAWPLATES",
       "remark": null,
-      "status": "Active"
+      "status": "Void"
     }
   ],
   "materialTypes": [
