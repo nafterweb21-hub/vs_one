@@ -86,7 +86,7 @@
       "id": "cat-1",
       "category": "Raw Plates",
       "remark": "Standard raw steel plates",
-      "status": "Active"
+      "status": "Void"
     },
     {
       "id": "cat-2",
@@ -98,7 +98,13 @@
       "id": "cat-new-1779426347285",
       "category": "TEXT",
       "remark": "MULTI TEXT",
-      "status": "Inactive"
+      "status": "Active"
+    },
+    {
+      "id": "cat-new-1779513669692",
+      "category": "raw",
+      "remark": "iuyt",
+      "status": "Active"
     }
   ],
   "materialTypes": [

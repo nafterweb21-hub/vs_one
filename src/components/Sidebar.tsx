@@ -177,6 +177,14 @@ export default function Sidebar() {
               <span>Material Profile</span>
             </Link>
             <Link
+              href="/dashboard/profiles/material-categories"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/material-categories")}
+            >
+              <Box size={16} />
+              <span>Material Category Profile</span>
+            </Link>
+            <Link
               href="/dashboard/master-profile/welding-type"
               onClick={() => setIsOpen(false)}
               className={linkClass("/dashboard/master-profile/welding-type")}
