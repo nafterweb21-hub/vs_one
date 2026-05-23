@@ -1,142 +1,29 @@
 import { prisma } from "@/lib/prisma";
-import fs from "fs";
-import path from "path";
-
-const MOCK_MAT_FILE_PATH = path.join(process.cwd(), "src/lib/mock_materials.json");
-const MOCK_CAT_FILE_PATH = path.join(process.cwd(), "src/lib/mock_categories.json");
-
-interface MockMaterial {
-  id: string;
-  partNo: string | null;
-  description: string;
-  shape: string;
-  size: string | null;
-  categoryId: string;
-  remark: string | null;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  category?: MockCategory;
-}
-
-interface MockCategory {
-  id: string;
-  name: string;
-  description: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-let isDatabaseReady = false;
-let hasCheckedDatabase = false;
-
-async function checkDb() {
-  if (hasCheckedDatabase) return isDatabaseReady;
-  try {
-    await prisma.materialCategory.count();
-    isDatabaseReady = true;
-  } catch (error) {
-    isDatabaseReady = false;
-  }
-  hasCheckedDatabase = true;
-  return isDatabaseReady;
-}
-
-// ========================
-// CATEGORIES
-// ========================
-
-function readMockCategories(): MockCategory[] {
-  try {
-    if (fs.existsSync(MOCK_CAT_FILE_PATH)) {
-      return JSON.parse(fs.readFileSync(MOCK_CAT_FILE_PATH, "utf-8"));
-    }
-  } catch (error) { }
-  return [];
-}
-
-function writeMockCategories(data: MockCategory[]) {
-  try {
-    fs.writeFileSync(MOCK_CAT_FILE_PATH, JSON.stringify(data, null, 2));
-  } catch (error) {
-    console.error("Failed to write mock categories:", error);
-  }
-}
-
-import { getMaterialCategories as getFallbackCategories, saveMaterialCategory as saveFallbackCategory } from "./db-fallback";
 
 export async function getCategories() {
-  const fallbackCats = await getFallbackCategories();
-  
-  // Map back to expected structure, filtering out voided ones
-  return fallbackCats
-    .filter(c => c.status !== "Void")
-    .map(c => ({
-      id: c.id,
-      name: c.category,
-      description: c.remark,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      status: c.status,
-    }));
+  return prisma.materialCategory.findMany({
+    where: { NOT: { status: "Void" } },
+    orderBy: { name: "asc" },
+  });
 }
 
 export async function createCategory(data: { name: string; description?: string | null }) {
-  await saveFallbackCategory({
-    category: data.name,
-    remark: data.description || null,
-    status: "Active"
+  const existing = await prisma.materialCategory.findUnique({ where: { name: data.name } });
+  if (existing) throw new Error(`Category "${data.name}" already exists.`);
+
+  return prisma.materialCategory.create({
+    data: {
+      name: data.name,
+      description: data.description || null,
+    },
   });
-
-  // We return a mock-like structure as createCategory historically did
-  return {
-    id: "new-cat-" + Date.now().toString(),
-    name: data.name,
-    description: data.description || null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-}
-
-// ========================
-// MATERIALS
-// ========================
-
-function readMockMaterials(): MockMaterial[] {
-  try {
-    if (fs.existsSync(MOCK_MAT_FILE_PATH)) {
-      return JSON.parse(fs.readFileSync(MOCK_MAT_FILE_PATH, "utf-8"));
-    }
-  } catch (error) { }
-  return [];
-}
-
-function writeMockMaterials(data: MockMaterial[]) {
-  try {
-    fs.writeFileSync(MOCK_MAT_FILE_PATH, JSON.stringify(data, null, 2));
-  } catch (error) {
-    console.error("Failed to write mock materials:", error);
-  }
 }
 
 export async function getMaterials() {
-  if (await checkDb()) {
-    try {
-      return await prisma.materialProfile.findMany({
-        include: { category: true },
-        orderBy: { createdAt: "desc" },
-      });
-    } catch { }
-  }
-
-  const materials = readMockMaterials();
-  const categories = await getCategories();
-
-  // populate relations
-  return materials.map(mat => ({
-    ...mat,
-    category: categories.find(c => c.id === mat.categoryId) || null
-  }));
+  return prisma.materialProfile.findMany({
+    include: { category: true },
+    orderBy: { createdAt: "desc" },
+  });
 }
 
 export async function createMaterial(data: {
@@ -147,91 +34,41 @@ export async function createMaterial(data: {
   categoryId: string;
   remark?: string;
 }) {
-  if (await checkDb()) {
-    try {
-      return await prisma.materialProfile.create({
-        data: {
-          partNo: data.partNo || null,
-          description: data.description,
-          shape: data.shape,
-          size: data.size || null,
-          categoryId: data.categoryId,
-          remark: data.remark || null,
-        },
-      });
-    } catch (e: any) {
-      throw new Error("Failed to create material in database");
-    }
-  }
-
-  const materials = readMockMaterials();
-  if (materials.some(m => m.description === data.description)) {
-    throw new Error("Description already exists");
-  }
-  if (data.partNo && materials.some(m => m.partNo === data.partNo)) {
-    throw new Error("Part No already exists");
-  }
-
-  const newMaterial: MockMaterial = {
-    id: "mat-" + Date.now().toString(),
-    partNo: data.partNo || null,
-    description: data.description,
-    shape: data.shape,
-    size: data.size || null,
-    categoryId: data.categoryId,
-    remark: data.remark || null,
-    status: "Active",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
-  materials.push(newMaterial);
-  writeMockMaterials(materials);
-  return newMaterial;
+  return prisma.materialProfile.create({
+    data: {
+      partNo: data.partNo || null,
+      description: data.description,
+      shape: data.shape,
+      size: data.size || null,
+      categoryId: data.categoryId,
+      remark: data.remark || null,
+    },
+  });
 }
 
-export async function updateMaterial(id: string, data: Partial<MockMaterial>) {
-  if (await checkDb()) {
-    try {
-      return await prisma.materialProfile.update({
-        where: { id },
-        data: {
-          shape: data.shape,
-          size: data.size || null,
-          categoryId: data.categoryId,
-          remark: data.remark || null,
-          status: data.status,
-        },
-      });
-    } catch (e: any) {
-      throw new Error("Failed to update material in database");
-    }
+export async function updateMaterial(
+  id: string,
+  data: {
+    shape?: string;
+    size?: string | null;
+    categoryId?: string;
+    remark?: string | null;
+    status?: string;
   }
-
-  const materials = readMockMaterials();
-  const index = materials.findIndex(m => m.id === id);
-  if (index === -1) throw new Error("Material not found");
-
-  materials[index] = { ...materials[index], ...data, updatedAt: new Date().toISOString() };
-  writeMockMaterials(materials);
-  return materials[index];
+) {
+  return prisma.materialProfile.update({
+    where: { id },
+    data: {
+      shape: data.shape,
+      size: data.size !== undefined ? data.size : undefined,
+      categoryId: data.categoryId,
+      remark: data.remark !== undefined ? data.remark : undefined,
+      status: data.status,
+    },
+  });
 }
 
 export async function deleteMaterial(id: string) {
-  if (await checkDb()) {
-    try {
-      await prisma.materialProfile.delete({ where: { id } });
-      return true;
-    } catch (e: any) {
-      throw new Error("Failed to delete material in database");
-    }
-  }
-
-  let materials = readMockMaterials();
-  const index = materials.findIndex(m => m.id === id);
-  if (index === -1) throw new Error("Material not found");
-
-  materials = materials.filter(m => m.id !== id);
-  writeMockMaterials(materials);
+  await prisma.materialProfile.delete({ where: { id } });
   return true;
 }
