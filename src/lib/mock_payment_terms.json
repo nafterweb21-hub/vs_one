@@ -16,5 +16,14 @@
     "status": "Active",
     "createdAt": "2024-05-23T00:00:00.000Z",
     "updatedAt": "2024-05-23T00:00:00.000Z"
+  },
+  {
+    "id": "pt-1779513000990",
+    "name": "net 40",
+    "days": 30,
+    "remark": null,
+    "status": "Active",
+    "createdAt": "2026-05-23T05:10:00.991Z",
+    "updatedAt": "2026-05-23T05:10:00.991Z"
   }
 ]
