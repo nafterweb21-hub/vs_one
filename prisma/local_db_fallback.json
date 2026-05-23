@@ -79,6 +79,22 @@
           "status": "Active"
         }
       ]
+    },
+    {
+      "id": "prof-new-1779514843931",
+      "module": "Purchase Order - Material",
+      "actionButton": "First Level",
+      "minRange": 0,
+      "maxRange": 499.99,
+      "status": "Active",
+      "approvers": [
+        {
+          "id": "ap-create-prof-new-1779514843931-0-1779514843931",
+          "approvalLevelProfileId": "prof-new-1779514843931",
+          "userId": "user-sy",
+          "status": "Active"
+        }
+      ]
     }
   ],
   "materialCategories": [
@@ -104,6 +120,12 @@
       "id": "cat-new-1779513669692",
       "category": "raw",
       "remark": "iuyt",
+      "status": "Void"
+    },
+    {
+      "id": "cat-new-1779514892863",
+      "category": "RAWPLATES",
+      "remark": null,
       "status": "Active"
     }
   ],
