@@ -1,7 +1,8 @@
 import "dotenv/config";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { PrismaClient, UserRole } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import bcrypt from "bcryptjs";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -11,17 +12,23 @@ async function main() {
   console.log("Seeding database...");
 
   // ---------- Users ----------
-  const users = [
-    { id: "user-sy", name: "Shyue Yin", email: "sy@visionone.com" },
-    { id: "user-danny", name: "Danny", email: "danny@visionone.com" },
-    { id: "user-simeon", name: "Simeon", email: "simeon@visionone.com" },
-    { id: "user-admin", name: "Admin", email: "admin@visionone.com" },
+  const defaultPasswordHash = await bcrypt.hash("password123", 10);
+  const users: Array<{
+    id: string;
+    name: string;
+    email: string;
+    role: UserRole;
+  }> = [
+    { id: "user-sy", name: "Shyue Yin", email: "sy@visionone.com", role: UserRole.PURCHASING },
+    { id: "user-danny", name: "Danny", email: "danny@visionone.com", role: UserRole.PURCHASING },
+    { id: "user-simeon", name: "Simeon", email: "simeon@visionone.com", role: UserRole.SALES },
+    { id: "user-admin", name: "Admin", email: "admin@visionone.com", role: UserRole.ADMIN },
   ];
   for (const u of users) {
     await prisma.user.upsert({
       where: { id: u.id },
-      create: u,
-      update: { name: u.name, email: u.email },
+      create: { ...u, passwordHash: defaultPasswordHash, isActive: true },
+      update: { name: u.name, email: u.email, role: u.role, passwordHash: defaultPasswordHash, isActive: true },
     });
   }
   console.log(`  Users: ${users.length}`);
