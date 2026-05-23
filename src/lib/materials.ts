@@ -63,47 +63,39 @@ function writeMockCategories(data: MockCategory[]) {
   }
 }
 
+import { getMaterialCategories as getFallbackCategories, saveMaterialCategory as saveFallbackCategory } from "./db-fallback";
+
 export async function getCategories() {
-  if (await checkDb()) {
-    try {
-      return await prisma.materialCategory.findMany({
-        orderBy: { name: "asc" },
-      });
-    } catch { }
-  }
-  return readMockCategories();
+  const fallbackCats = await getFallbackCategories();
+  
+  // Map back to expected structure, filtering out voided ones
+  return fallbackCats
+    .filter(c => c.status !== "Void")
+    .map(c => ({
+      id: c.id,
+      name: c.category,
+      description: c.remark,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      status: c.status,
+    }));
 }
 
 export async function createCategory(data: { name: string; description?: string | null }) {
-  if (await checkDb()) {
-    try {
-      return await prisma.materialCategory.create({
-        data: {
-          name: data.name,
-          description: data.description || null,
-        },
-      });
-    } catch (e: any) {
-      throw new Error("Category already exists or failed to create");
-    }
-  }
+  await saveFallbackCategory({
+    category: data.name,
+    remark: data.description || null,
+    status: "Active"
+  });
 
-  const categories = readMockCategories();
-  if (categories.some((c) => c.name.toLowerCase() === data.name.toLowerCase())) {
-    throw new Error("Category already exists");
-  }
-
-  const newCategory: MockCategory = {
-    id: "cat-" + Date.now().toString(),
+  // We return a mock-like structure as createCategory historically did
+  return {
+    id: "new-cat-" + Date.now().toString(),
     name: data.name,
     description: data.description || null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
-
-  categories.push(newCategory);
-  writeMockCategories(categories);
-  return newCategory;
 }
 
 // ========================
@@ -138,7 +130,7 @@ export async function getMaterials() {
   }
 
   const materials = readMockMaterials();
-  const categories = readMockCategories();
+  const categories = await getCategories();
 
   // populate relations
   return materials.map(mat => ({
