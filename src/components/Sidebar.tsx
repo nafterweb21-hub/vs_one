@@ -23,6 +23,7 @@ import {
   Box,
   Flame,
   ShoppingCart,
+  FileText,
   CreditCard,
   Paintbrush,
   ClipboardList,
@@ -105,6 +106,14 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
               <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
                 Sales
               </p>
+              <Link
+                href="/dashboard/sales/quotation"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/sales/quotation")}
+              >
+                <FileText size={16} />
+                <span>Costing & Quotation</span>
+              </Link>
               <Link
                 href="/dashboard/sales/sales-order"
                 onClick={() => setIsOpen(false)}
