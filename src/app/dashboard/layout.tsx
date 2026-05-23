@@ -1,14 +1,23 @@
 import Sidebar from "@/components/Sidebar";
+import { auth } from "@/lib/auth";
+import { UserRole } from "@/generated/prisma/client";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+  const isAdmin = session?.user?.role === UserRole.ADMIN;
+
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-100 font-sans antialiased text-blue-900 ">
       {/* Sidebar navigation panel */}
-      <Sidebar />
+      <Sidebar
+        userEmail={session?.user?.email}
+        userRole={session?.user?.role}
+        isAdmin={isAdmin}
+      />
 
       {/* Main viewport area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
