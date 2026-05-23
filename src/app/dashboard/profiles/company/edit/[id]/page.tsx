@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import CompanyProfileForm from "../components/CompanyProfileForm";
+import CompanyProfileForm from "../../components/CompanyProfileForm";
 
 export default function EditCompanyProfilePage() {
   const params = useParams();
