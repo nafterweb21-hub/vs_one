@@ -734,3 +734,27 @@ model MachiningToolList {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// ==========================================
+// Company Profile
+// ==========================================
+model CompanyProfile {
+  id                      String   @id @default(cuid())
+  companyName             String   @unique
+  address                 String
+  phoneNo                 String
+  faxNo                   String
+  email                   String?
+  website                 String?
+  rocNo                   String?
+  gstRegistrationNo       String
+  uploadUrl               String
+  logoName                String
+  footerName              String
+  allowPoForWo            Boolean  @default(false)
+  as9100RequirementNote   Boolean  @default(false)
+  status                  String   @default("Active") // "Active" or "Inactive"
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+

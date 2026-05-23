@@ -129,6 +129,14 @@ export default function Sidebar() {
               <span>Currency Master</span>
             </Link>
             <Link
+              href="/dashboard/profiles/company"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/profiles/company")}
+            >
+              <Users size={16} />
+              <span>Company Profile</span>
+            </Link>
+            <Link
               href="/dashboard/profiles/uom"
               onClick={() => setIsOpen(false)}
               className={linkClass("/dashboard/profiles/uom")}

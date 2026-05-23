@@ -458,7 +458,8 @@ const MASTER_CATEGORIES = [
       {
         id: "company",
         name: "Company Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/company",
         desc: "Maintains legal tenant identities, logos, and AS9100 flags.",
         rules: [
           "Single shared DB — companies are rows, not separate databases.",

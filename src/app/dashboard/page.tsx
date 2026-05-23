@@ -168,8 +168,11 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 rounded-xl border border-blue-100 bg-blue-50 p-4 opacity-70 cursor-not-allowed ">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-200 text-blue-500 ">
+            <a
+              href="/dashboard/profiles/company"
+              className="flex items-center gap-4 rounded-xl border border-blue-100 bg-blue-50 p-4 transition hover:border-indigo-500/30 hover:bg-indigo-500/[0.02] :border-indigo-500/30"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
@@ -178,7 +181,7 @@ export default function DashboardPage() {
                 <h5 className="text-sm font-semibold text-blue-900 ">Company Profile</h5>
                 <p className="mt-0.5 text-xs text-blue-500 ">AS9100 requirement logs &amp; legal identifiers</p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
 
