@@ -29,8 +29,8 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const linkClass = (path: string) => {
-    // Exact match for dashboard or check if it starts with the path for nested routes
-    const active = path === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(path);
+    // Exact match for dashboard or check if it is exactly the path or starts with the path + "/" for nested routes
+    const active = path === "/dashboard" ? pathname === "/dashboard" : pathname === path || pathname.startsWith(path + "/");
     return `flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
       active
         ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 translate-x-1"
@@ -183,6 +183,14 @@ export default function Sidebar() {
             >
               <Box size={16} />
               <span>Material Category Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/material-type"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/material-type")}
+            >
+              <Box size={16} />
+              <span>Material Type Profile</span>
             </Link>
             <Link
               href="/dashboard/master-profile/welding-type"
