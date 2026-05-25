@@ -475,6 +475,21 @@ const MASTER_CATEGORIES = [
         ]
       },
       {
+        id: "department",
+        name: "Department Profile",
+        active: true,
+        href: "/dashboard/master-profile/department",
+        desc: "Maintains department records within the company.",
+        rules: [
+          "Department name is immutable once saved."
+        ],
+        fields: [
+          { name: "Department", type: "Text (Immutable)", mand: "Yes" },
+          { name: "Remark", type: "Multi-text", mand: "No" },
+          { name: "Status", type: "Read-only (Active/Inactive)", mand: "N/A" }
+        ]
+      },
+      {
         id: "employee",
         name: "Employee Profile",
         active: false,
