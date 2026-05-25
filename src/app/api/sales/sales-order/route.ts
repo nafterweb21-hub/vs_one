@@ -48,20 +48,26 @@ export async function POST(request: Request) {
 
     if (items && items.length > 0) {
       for (let i = 0; i < items.length; i++) {
-        if (!items[i].finishedGoodId) return NextResponse.json({ error: `Item ${i + 1}: Part No / Description is required` }, { status: 400 });
+        if (!items[i].partId) return NextResponse.json({ error: `Item ${i + 1}: Part No / Description is required` }, { status: 400 });
         if (!items[i].uomId) return NextResponse.json({ error: `Item ${i + 1}: UOM is required` }, { status: 400 });
       }
     }
 
-    // Generate Order No
-    const currentYear = new Date().getFullYear();
-    const count = await prisma.salesOrder.count({
-      where: {
-        orderNo: { startsWith: `SO-${currentYear}-` },
-      },
+    // Generate Order No (Format: 8XXXXX-R0)
+    const latestOrder = await prisma.salesOrder.findFirst({
+      where: { orderNo: { startsWith: '8' } },
+      orderBy: { orderNo: 'desc' },
     });
-    const nextNumber = String(count + 1).padStart(4, "0");
-    const orderNo = `SO-${currentYear}-${nextNumber}`;
+
+    let nextNumber = 800001;
+    if (latestOrder) {
+      const basePart = latestOrder.orderNo.split('-')[0];
+      const currentNumber = parseInt(basePart, 10);
+      if (!isNaN(currentNumber)) {
+        nextNumber = currentNumber + 1;
+      }
+    }
+    const orderNo = `${nextNumber}-R0`;
 
     // Clean up empty string IDs to null where applicable for relations
     const cleanId = (id: any) => (id === "" ? null : id);

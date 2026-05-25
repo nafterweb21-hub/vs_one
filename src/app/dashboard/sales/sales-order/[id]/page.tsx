@@ -47,6 +47,8 @@ export default function SalesOrderFormPage({ params }: PageProps) {
 
   const [items, setItems] = useState<any[]>([]);
 
+  const isReadOnly = !isNew && ["Confirmed", "Void", "Old Version", "Closed"].includes(order?.status);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -92,6 +94,7 @@ export default function SalesOrderFormPage({ params }: PageProps) {
 
   // Handlers
   const handleOrderChange = (field: string, value: any) => {
+    if (isReadOnly) return;
     setOrder((prev: any) => {
       const next = { ...prev, [field]: value };
       
@@ -113,7 +116,13 @@ export default function SalesOrderFormPage({ params }: PageProps) {
         next.email = "";
       }
       if (field === "contactPersonId") {
-        const cp = selectedCustomer?.contactPersons.find((c: any) => c.id === value);
+        const cust = formDataCache?.customers?.find((c: any) => c.contactPersons?.some((cp: any) => cp.id === value));
+        if (cust && !next.customerId) {
+          next.customerId = cust.id;
+        }
+        
+        const selectedCust = cust || selectedCustomer;
+        const cp = selectedCust?.contactPersons?.find((c: any) => c.id === value);
         if (cp) {
           next.fax = cp.faxNo || "";
           next.tel = cp.mobileNo || cp.telNo || "";
@@ -125,14 +134,29 @@ export default function SalesOrderFormPage({ params }: PageProps) {
   };
 
   const handleItemChange = (index: number, field: string, value: any) => {
+    if (isReadOnly) return;
     setItems((prev) => {
       const newItems = [...prev];
       newItems[index] = { ...newItems[index], [field]: value };
+      
+      // Auto-populate UOM to PCS (or first available) when a part is selected
+      if (field === "partId" && value) {
+        const uoms = formDataCache?.uoms || [];
+        let defaultUom = uoms.find((u: any) => u.uomName.toUpperCase() === "PCS" || u.uomName.toUpperCase() === "PIECE");
+        if (!defaultUom && uoms.length > 0) {
+          defaultUom = uoms[0]; // Fallback to first available if PCS isn't found
+        }
+        if (defaultUom) {
+          newItems[index].uomId = defaultUom.id;
+        }
+      }
+
       return newItems;
     });
   };
 
   const handleBatchChange = (itemIndex: number, batchIndex: number, field: string, value: any) => {
+    if (isReadOnly) return;
     setItems((prev) => {
       const newItems = [...prev];
       const newBatches = [...newItems[itemIndex].batches];
@@ -149,6 +173,7 @@ export default function SalesOrderFormPage({ params }: PageProps) {
   };
 
   const addItem = () => {
+    if (isReadOnly) return;
     setItems((prev) => [
       ...prev,
       {
@@ -176,10 +201,12 @@ export default function SalesOrderFormPage({ params }: PageProps) {
   };
 
   const removeItem = (index: number) => {
+    if (isReadOnly) return;
     setItems((prev) => prev.filter((_, i) => i !== index));
   };
 
   const addBatch = (itemIndex: number) => {
+    if (isReadOnly) return;
     setItems((prev) => {
       const newItems = [...prev];
       newItems[itemIndex].batches.push({
@@ -195,6 +222,7 @@ export default function SalesOrderFormPage({ params }: PageProps) {
   };
 
   const removeBatch = (itemIndex: number, batchIndex: number) => {
+    if (isReadOnly) return;
     setItems((prev) => {
       const newItems = [...prev];
       newItems[itemIndex].batches = newItems[itemIndex].batches.filter((_: any, i: number) => i !== batchIndex);
@@ -216,13 +244,17 @@ export default function SalesOrderFormPage({ params }: PageProps) {
     return Number(amountBeforeTax) + taxAmount;
   }, [amountBeforeTax, taxAmount]);
 
-  const handleSave = async (status: string) => {
+  const handleSave = async (statusOrAction: string) => {
     setSaving(true);
     setErrorMsg("");
     try {
+      const isRevise = statusOrAction === "Revise";
+      const statusToSave = isRevise ? order.status : statusOrAction;
+
       const payload = {
         ...order,
-        status,
+        status: statusToSave,
+        action: isRevise ? "Revise" : undefined,
         amountBeforeTax: Number(amountBeforeTax),
         taxAmount: Number(taxAmount),
         amountAfterTax: Number(amountAfterTax),
@@ -309,7 +341,7 @@ export default function SalesOrderFormPage({ params }: PageProps) {
 
           {(!isNew && order.status === "Confirmed") && (
             <button
-              onClick={() => handleSave("Revised")}
+              onClick={() => handleSave("Revise")}
               disabled={saving}
               className="px-4 py-2 text-sm font-medium text-amber-700 bg-amber-100 rounded-lg hover:bg-amber-200 disabled:opacity-50 flex items-center gap-2"
             >
@@ -428,13 +460,15 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                 <FileText size={20} className="text-indigo-500" />
                 Order Items
               </h3>
-              <button
-                type="button"
-                onClick={addItem}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-500 flex items-center gap-1"
-              >
-                <Plus size={16} /> Add Item
-              </button>
+              {!isReadOnly && (
+                <button
+                  type="button"
+                  onClick={addItem}
+                  className="text-sm font-medium text-indigo-600 hover:text-indigo-500 flex items-center gap-1"
+                >
+                  <Plus size={16} /> Add Item
+                </button>
+              )}
             </div>
             
             {items.length === 0 ? (
@@ -459,13 +493,16 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                         <div className="sm:col-span-2">
                           <label className="block text-xs font-medium text-blue-500 mb-1">Part <span className="text-red-500">*</span></label>
                           <select
-                            value={item.partId}
+                            value={item.partId || ""}
                             onChange={(e) => handleItemChange(index, "partId", e.target.value)}
+                            disabled={isReadOnly}
                             className="w-full px-2 py-1.5 text-sm bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                           >
                             <option value="">Select Part</option>
                             {formDataCache?.finishedGoods?.map((fg: any) => (
-                              <option key={fg.id} value={fg.id}>{fg.partNo} - {fg.description}</option>
+                              <option key={fg.id} value={fg.id}>
+                                {fg.partNo ? `${fg.partNo} - ` : ""}{fg.description}
+                              </option>
                             ))}
                           </select>
                         </div>
@@ -557,13 +594,15 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs font-bold text-blue-900 uppercase">Batches</span>
-                          <button
-                            type="button"
-                            onClick={() => addBatch(index)}
-                            className="text-xs font-medium text-indigo-600 hover:text-indigo-500 flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded"
-                          >
-                            <Plus size={12} /> Add Batch
-                          </button>
+                          {!isReadOnly && (
+                            <button
+                              type="button"
+                              onClick={() => addBatch(index)}
+                              className="text-xs font-medium text-indigo-600 hover:text-indigo-500 flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded"
+                            >
+                              <Plus size={12} /> Add Batch
+                            </button>
+                          )}
                         </div>
                         <div className="space-y-2">
                           {item.batches?.map((batch: any, bIndex: number) => (
@@ -613,6 +652,13 @@ export default function SalesOrderFormPage({ params }: PageProps) {
                                   />
                                   No Routing
                                 </label>
+                                <button
+                                  type="button"
+                                  onClick={() => alert("Stop Purchase placeholder triggered.")}
+                                  className="ml-4 text-[10px] text-amber-600 hover:text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200"
+                                >
+                                  Stop Purchase
+                                </button>
                               </div>
                             </div>
                           ))}
@@ -741,11 +787,13 @@ export default function SalesOrderFormPage({ params }: PageProps) {
               <select
                 value={order.contactPersonId || ""}
                 onChange={(e) => handleOrderChange("contactPersonId", e.target.value)}
-                disabled={!selectedCustomer}
+                disabled={isReadOnly}
                 className="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-50"
               >
                 <option value="">Select Contact</option>
-                {selectedCustomer?.contactPersons?.map((cp: any) => (
+                {(!selectedCustomer 
+                  ? formDataCache?.customers?.flatMap((c: any) => c.contactPersons || []) 
+                  : selectedCustomer?.contactPersons)?.map((cp: any) => (
                   <option key={cp.id} value={cp.id}>{cp.contactPersonName}</option>
                 ))}
               </select>

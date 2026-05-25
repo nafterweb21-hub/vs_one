@@ -14,7 +14,7 @@ function createPrismaClient(): PrismaClient {
   }
   const pool = new Pool({ connectionString: url });
   const adapter = new PrismaPg(pool);
-  return new PrismaClient({ adapter });
+  return new PrismaClient({ adapter, log: ['error'] });
 }
 
 export const prisma: PrismaClient = globalForPrisma.prisma ?? createPrismaClient();

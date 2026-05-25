@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { UserRole } from "@/generated/prisma/client";
+import { UserRole } from "@/types/role";
 import UsersClient from "./users-client";
 
 export default async function UsersPage() {

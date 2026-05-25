@@ -128,7 +128,6 @@ export default function SalesOrderListPage() {
                     <td className="px-6 py-4 font-bold text-blue-900 ">
                       <Link href={`/dashboard/sales/sales-order/${order.id}`} className="hover:text-indigo-600 :text-indigo-400 transition-colors">
                         {order.orderNo}
-                        {order.revision > 0 && <span className="ml-1 text-xs text-blue-500 font-normal">v{order.revision}</span>}
                       </Link>
                     </td>
                     <td className="px-6 py-4 text-blue-700 ">
@@ -149,22 +148,31 @@ export default function SalesOrderListPage() {
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200/60 "
                           : order.status === "Closed"
                           ? "bg-blue-100 text-blue-600 border-blue-200 "
+                          : order.status === "Void"
+                          ? "bg-rose-50 text-rose-700 border-rose-200/60 "
+                          : order.status === "Old Version"
+                          ? "bg-gray-100 text-gray-600 border-gray-200/60 "
                           : "bg-amber-50 text-amber-700 border-amber-200/60 "
                       }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${
-                          order.status === "Confirmed" ? "bg-emerald-500" : order.status === "Closed" ? "bg-blue-400" : "bg-amber-500"
+                          order.status === "Confirmed" ? "bg-emerald-500" : 
+                          order.status === "Closed" ? "bg-blue-400" : 
+                          order.status === "Void" ? "bg-rose-500" : 
+                          order.status === "Old Version" ? "bg-gray-400" : 
+                          "bg-amber-500"
                         }`} />
                         {order.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <Link
-                        href={`/dashboard/sales/sales-order/${order.id}`}
-                        className="inline-flex items-center justify-center p-1.5 rounded-lg border border-blue-200 hover:bg-blue-100 :bg-blue-800 text-blue-600 transition-colors active:scale-95"
-                        title="Edit"
-                      >
-                        <Edit2 size={14} />
-                      </Link>
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          href={`/dashboard/sales/sales-order/${order.id}`}
+                          className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-100 text-blue-600 transition-colors text-xs font-medium"
+                        >
+                          View / Edit
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}

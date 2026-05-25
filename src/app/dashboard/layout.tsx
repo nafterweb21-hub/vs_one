@@ -1,6 +1,6 @@
 import Sidebar from "@/components/Sidebar";
 import { auth } from "@/lib/auth";
-import { UserRole } from "@/generated/prisma/client";
+import { UserRole } from "@/types/role";
 
 export default async function DashboardLayout({
   children,

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/authz";
-import { UserRole } from "@/generated/prisma/client";
+import { UserRole } from "@/types/role";
 
 const VALID_ROLES = Object.values(UserRole);
 
