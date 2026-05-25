@@ -141,7 +141,9 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             </div>
           )}
 
-          {(allow("/dashboard/purchasing/purchase-requisition") || allow("/dashboard/purchasing/purchase-order")) && (
+          {(allow("/dashboard/purchasing/purchase-requisition") || 
+             allow("/dashboard/purchasing/purchase-order") ||
+             allow("/dashboard/purchasing/purchase-order-approval")) && (
             <div className="pt-4">
               <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
                 Purchasing
@@ -166,6 +168,16 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
                   <span>Purchase Orders</span>
                 </Link>
               )}
+              {allow("/dashboard/purchasing/purchase-order-approval") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-order-approval"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-order-approval")}
+                >
+                  <ClipboardList size={16} />
+                  <span>Purchase Order Approval</span>
+                </Link>
+              )}
             </div>
           )}
 
@@ -181,22 +193,6 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
               >
                 <ClipboardList size={16} />
                 <span>Non-Conformance Report (NCR)</span>
-              </Link>
-              <Link
-                href="/dashboard/purchasing/purchase-order"
-                onClick={() => setIsOpen(false)}
-                className={linkClass("/dashboard/purchasing/purchase-order")}
-              >
-                <FileText size={16} />
-                <span>Purchase Orders</span>
-              </Link>
-              <Link
-                href="/dashboard/purchasing/purchase-order-approval"
-                onClick={() => setIsOpen(false)}
-                className={linkClass("/dashboard/purchasing/purchase-order-approval")}
-              >
-                <ClipboardList size={16} />
-                <span>Purchase Order Approval</span>
               </Link>
             </div>
           )}
