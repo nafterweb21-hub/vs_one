@@ -7,15 +7,15 @@ export const metadata: Metadata = {
 
 export default function TerminalLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
-      <header className="flex items-center justify-between bg-slate-950 border-b border-slate-800 px-6 py-3">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 text-slate-900">
+      <header className="flex items-center justify-between bg-white/70 backdrop-blur-lg border-b border-white/50 shadow-sm px-6 py-3 sticky top-0 z-10">
         <div>
-          <h1 className="text-lg font-bold tracking-wide">Production Terminal</h1>
-          <p className="text-xs text-slate-400">Scan IN / OUT</p>
+          <h1 className="text-xl font-extrabold tracking-tight text-blue-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500">Production Terminal</h1>
+          <p className="text-xs font-medium text-blue-500 uppercase tracking-wider">Scan IN / OUT</p>
         </div>
         <LogoutButton />
       </header>
-      <main className="p-6">{children}</main>
+      <main className="p-6 relative z-0">{children}</main>
     </div>
   );
 }

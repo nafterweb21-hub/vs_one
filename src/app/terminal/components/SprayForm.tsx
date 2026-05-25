@@ -94,7 +94,7 @@ export default function SprayForm({ value, onChange }: Props) {
       </Block>
 
       <div>
-        <label className="text-xs font-medium text-slate-400">Remark</label>
+        <label className="text-xs font-medium text-slate-500">Remark</label>
         <textarea
           value={value.remark || ""}
           onChange={(e) => set("remark", e.target.value)}
@@ -103,7 +103,7 @@ export default function SprayForm({ value, onChange }: Props) {
         />
       </div>
       <div>
-        <label className="text-xs font-medium text-slate-400">Additional Remark</label>
+        <label className="text-xs font-medium text-slate-500">Additional Remark</label>
         <textarea
           value={value.additionalRemark || ""}
           onChange={(e) => set("additionalRemark", e.target.value)}
@@ -116,7 +116,7 @@ export default function SprayForm({ value, onChange }: Props) {
 }
 
 const inputCls =
-  "w-full px-3 py-2 border border-slate-700 rounded-lg text-sm bg-slate-800 text-slate-100 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500";
+  "w-full px-3 py-2 border border-slate-700 rounded-lg text-sm bg-slate-800 text-slate-800 focus:ring-2 focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all";
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -129,7 +129,7 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
 function Group({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <h5 className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-2 pb-1 border-b border-slate-700">{label}</h5>
+      <h5 className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2 pb-1 border-b border-slate-700">{label}</h5>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">{children}</div>
     </div>
   );
@@ -137,7 +137,7 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="text-xs font-medium text-slate-400">{label}</label>
+      <label className="text-xs font-medium text-slate-500">{label}</label>
       <div className="mt-1">{children}</div>
     </div>
   );
