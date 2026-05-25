@@ -141,19 +141,31 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             </div>
           )}
 
-          {allow("/dashboard/purchasing/purchase-requisition") && (
+          {(allow("/dashboard/purchasing/purchase-requisition") || allow("/dashboard/purchasing/purchase-order")) && (
             <div className="pt-4">
               <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
                 Purchasing
               </p>
-              <Link
-                href="/dashboard/purchasing/purchase-requisition"
-                onClick={() => setIsOpen(false)}
-                className={linkClass("/dashboard/purchasing/purchase-requisition")}
-              >
-                <ShoppingCart size={16} />
-                <span>Purchase Requisitions</span>
-              </Link>
+              {allow("/dashboard/purchasing/purchase-requisition") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-requisition"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-requisition")}
+                >
+                  <ShoppingCart size={16} />
+                  <span>Purchase Requisitions</span>
+                </Link>
+              )}
+              {allow("/dashboard/purchasing/purchase-order") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-order"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-order")}
+                >
+                  <FileText size={16} />
+                  <span>Purchase Orders</span>
+                </Link>
+              )}
             </div>
           )}
 
