@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-
+import Link from "next/link";
 type Role =
   | "ADMIN"
   | "SALES"
@@ -31,25 +31,6 @@ interface EmployeeOption {
   name: string;
 }
 
-type FormState = {
-  id?: string;
-  name: string;
-  email: string;
-  password: string;
-  role: Role;
-  isActive: boolean;
-  employeeId: string;
-};
-
-const emptyForm = (): FormState => ({
-  name: "",
-  email: "",
-  password: "",
-  role: "VIEWER",
-  isActive: true,
-  employeeId: "",
-});
-
 export default function UsersClient({ currentUserId }: { currentUserId: string }) {
   const [users, setUsers] = useState<User[]>([]);
   const [employees, setEmployees] = useState<EmployeeOption[]>([]);
@@ -57,11 +38,6 @@ export default function UsersClient({ currentUserId }: { currentUserId: string }
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<"ALL" | Role>("ALL");
   const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "INACTIVE">("ALL");
-
-  const [modal, setModal] = useState<null | "create" | "edit">(null);
-  const [form, setForm] = useState<FormState>(emptyForm());
-  const [submitting, setSubmitting] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
 
   const [toDelete, setToDelete] = useState<User | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -97,61 +73,6 @@ export default function UsersClient({ currentUserId }: { currentUserId: string }
     fetchUsers();
     fetchEmployees();
   }, [fetchUsers, fetchEmployees]);
-
-  const openCreate = () => {
-    setForm(emptyForm());
-    setFormError(null);
-    setModal("create");
-  };
-
-  const openEdit = (u: User) => {
-    setForm({
-      id: u.id,
-      name: u.name ?? "",
-      email: u.email,
-      password: "",
-      role: u.role,
-      isActive: u.isActive,
-      employeeId: u.employeeId ?? "",
-    });
-    setFormError(null);
-    setModal("edit");
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(null);
-    setSubmitting(true);
-
-    const isEdit = modal === "edit";
-    const url = isEdit ? `/api/admin/users/${form.id}` : "/api/admin/users";
-    const method = isEdit ? "PUT" : "POST";
-    const payload: Record<string, unknown> = {
-      name: form.name,
-      email: form.email,
-      role: form.role,
-      isActive: form.isActive,
-      employeeId: form.employeeId || null,
-    };
-    if (!isEdit || form.password) payload.password = form.password;
-
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    setSubmitting(false);
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      setFormError(data.error || "Request failed.");
-      return;
-    }
-
-    setModal(null);
-    showToast("success", isEdit ? "User updated." : "User created.");
-    fetchUsers();
-  };
 
   const handleDelete = async () => {
     if (!toDelete) return;
@@ -205,12 +126,12 @@ export default function UsersClient({ currentUserId }: { currentUserId: string }
             Create system users, assign roles, and link them to employees.
           </p>
         </div>
-        <button
-          onClick={openCreate}
+        <Link
+          href="/dashboard/admin/users/create"
           className="rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:from-cyan-600 hover:to-blue-700"
         >
           + Add User
-        </button>
+        </Link>
       </div>
 
       {/* Filters */}
@@ -307,12 +228,12 @@ export default function UsersClient({ currentUserId }: { currentUserId: string }
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
-                      <button
-                        onClick={() => openEdit(u)}
-                        className="rounded-lg border border-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-50"
+                      <Link
+                        href={`/dashboard/admin/users/${u.id}/edit`}
+                        className="inline-block rounded-lg border border-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-50"
                       >
                         Edit
-                      </button>
+                      </Link>
                       <button
                         onClick={() => setToDelete(u)}
                         disabled={u.id === currentUserId}
@@ -328,135 +249,6 @@ export default function UsersClient({ currentUserId }: { currentUserId: string }
           </table>
         )}
       </div>
-
-      {/* Create/Edit Modal */}
-      {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-blue-950/60 backdrop-blur-md"
-            onClick={() => !submitting && setModal(null)}
-          />
-          <form
-            onSubmit={handleSubmit}
-            className="relative w-full max-w-lg rounded-2xl border border-blue-200 bg-white p-6 shadow-2xl"
-          >
-            <h2 className="text-lg font-bold text-blue-900">
-              {modal === "create" ? "Add User" : "Edit User"}
-            </h2>
-            <div className="mt-4 space-y-4">
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-blue-700">Name</label>
-                <input
-                  type="text"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full rounded-md border border-blue-200 px-3 py-2 text-sm"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-blue-700">
-                  Email <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full rounded-md border border-blue-200 px-3 py-2 text-sm"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-blue-700">
-                  Password{" "}
-                  {modal === "create" ? (
-                    <span className="text-rose-500">*</span>
-                  ) : (
-                    <span className="font-normal text-blue-400">(leave blank to keep current)</span>
-                  )}
-                </label>
-                <input
-                  type="password"
-                  required={modal === "create"}
-                  minLength={modal === "create" ? 8 : undefined}
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="w-full rounded-md border border-blue-200 px-3 py-2 text-sm"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-blue-700">
-                    Role <span className="text-rose-500">*</span>
-                  </label>
-                  <select
-                    value={form.role}
-                    onChange={(e) => setForm({ ...form, role: e.target.value as Role })}
-                    disabled={modal === "edit" && form.id === currentUserId}
-                    className="w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm disabled:bg-blue-50"
-                  >
-                    {ROLES.map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-blue-700">Status</label>
-                  <select
-                    value={form.isActive ? "ACTIVE" : "INACTIVE"}
-                    onChange={(e) => setForm({ ...form, isActive: e.target.value === "ACTIVE" })}
-                    disabled={modal === "edit" && form.id === currentUserId}
-                    className="w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm disabled:bg-blue-50"
-                  >
-                    <option value="ACTIVE">Active</option>
-                    <option value="INACTIVE">Inactive</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-blue-700">
-                  Linked Employee
-                </label>
-                <select
-                  value={form.employeeId}
-                  onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
-                  className="w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-                >
-                  <option value="">— Not linked —</option>
-                  {employees.map((emp) => (
-                    <option key={emp.id} value={emp.id}>
-                      {emp.code} — {emp.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            {formError && (
-              <p className="mt-4 rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">
-                {formError}
-              </p>
-            )}
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setModal(null)}
-                disabled={submitting}
-                className="rounded-xl border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 px-5 py-2 text-sm font-semibold text-white hover:from-cyan-600 hover:to-blue-700 disabled:opacity-60"
-              >
-                {submitting ? "Saving..." : modal === "create" ? "Create" : "Save"}
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
 
       {/* Delete confirmation */}
       {toDelete && (

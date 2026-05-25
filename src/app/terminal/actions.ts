@@ -1,0 +1,471 @@
+"use server";
+
+import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Lookup work order + active employees + machine lists
+// ──────────────────────────────────────────────────────────────────────────────
+export async function lookupWorkOrder(woNo: string) {
+  const wo = await prisma.workOrder.findUnique({
+    where: { workOrderNo: woNo },
+    include: {
+      customer: true,
+      inProcesses: {
+        orderBy: { sn: "asc" },
+        include: {
+          routingProcesses: {
+            orderBy: { sn: "asc" },
+            include: {
+              mainProcess: true,
+              routingProcess: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!wo) return { ok: false as const, error: `Work Order ${woNo} not found` };
+  return { ok: true as const, wo: JSON.parse(JSON.stringify(wo)) };
+}
+
+export async function getTerminalSupportData() {
+  const [employees, weldingMachines, machiningMachines, materialTypes, weldingTypes, joints, elcometers] =
+    await Promise.all([
+      prisma.employee.findMany({
+        where: { status: "ACTIVE" },
+        select: { id: true, name: true, code: true },
+        orderBy: { name: "asc" },
+      }),
+      prisma.machineProfile.findMany({
+        where: { status: "Active", machineCategory: "Welding Machine" },
+        select: {
+          id: true,
+          machineCode: true,
+          machineNo: true,
+          brand: true,
+          model: true,
+          current: true,
+          serialNo: true,
+        },
+        orderBy: { machineCode: "asc" },
+      }),
+      prisma.machineProfile.findMany({
+        where: { status: "Active", machineCategory: "Machine" },
+        select: {
+          id: true,
+          machineCode: true,
+          machineNo: true,
+          brand: true,
+          model: true,
+          machineType: true,
+          operationType: true,
+          serialNo: true,
+        },
+        orderBy: { serialNo: "asc" },
+      }),
+      prisma.materialType.findMany({
+        where: { status: "Active" },
+        select: { id: true, type: true },
+        orderBy: { type: "asc" },
+      }),
+      prisma.weldingTypeProfile.findMany({
+        where: { status: "Active" },
+        select: { id: true, type: true },
+        orderBy: { type: "asc" },
+      }),
+      prisma.jointProfile.findMany({
+        where: { status: "Active" },
+        select: { id: true, joint: true },
+        orderBy: { joint: "asc" },
+      }),
+      prisma.elcometerProfile.findMany({
+        where: { status: "Active" },
+        select: { id: true, serialNo: true },
+        orderBy: { serialNo: "asc" },
+      }),
+    ]);
+
+  return { employees, weldingMachines, machiningMachines, materialTypes, weldingTypes, joints, elcometers };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// SCAN IN
+// ──────────────────────────────────────────────────────────────────────────────
+export async function scanIn(input: {
+  workOrderNo: string;
+  inProcessId: string;
+  mainProcessId: string;
+  routingProcessProfileId: string;
+  employeeId: string;
+}) {
+  try {
+    const wo = await prisma.workOrder.findUnique({
+      where: { workOrderNo: input.workOrderNo },
+    });
+    if (!wo) return { success: false, error: "Work order not found" };
+    if (wo.status !== "Proceed" && wo.status !== "WIP") {
+      return { success: false, error: `Work order must be Proceed/WIP (currently ${wo.status})` };
+    }
+
+    // Find all matching routing rows for this in-process + main + routing combo,
+    // ordered by SN ascending. Spec: pick the earliest non-completed.
+    const candidates = await prisma.routingProcess.findMany({
+      where: {
+        inProcessId: input.inProcessId,
+        mainProcessId: input.mainProcessId,
+        routingProcessId: input.routingProcessProfileId,
+      },
+      orderBy: { sn: "asc" },
+    });
+    if (candidates.length === 0) {
+      return { success: false, error: "No matching routing row found" };
+    }
+    const target = candidates.find((c: any) => c.status !== "Completed");
+    if (!target) {
+      return { success: false, error: "All matching routing rows are already Completed" };
+    }
+    if (target.status === "Completed") {
+      return { success: false, error: "Routing process is already Completed" };
+    }
+
+    // Subcon gate
+    if (!target.fullyReceived) {
+      // Heuristic: only block when explicitly tagged subcon; for now allow.
+      // Subcon module will set fullyReceived when SRT completes.
+    }
+
+    // Prevent duplicate open scan by the same employee on the same row
+    const existingOpen = await prisma.productionTimesheet.findFirst({
+      where: {
+        routingProcessId: target.id,
+        employeeId: input.employeeId,
+        timeOut: null,
+      },
+    });
+    if (existingOpen) {
+      return { success: false, error: "Employee already has an open scan on this routing process" };
+    }
+
+    const ts = await prisma.productionTimesheet.create({
+      data: {
+        routingProcessId: target.id,
+        employeeId: input.employeeId,
+        timeIn: new Date(),
+        completed: false,
+      },
+    });
+
+    // Roll routing → WIP if currently New
+    if (target.status === "New") {
+      await prisma.routingProcess.update({
+        where: { id: target.id },
+        data: { status: "WIP" },
+      });
+    }
+    // Roll WO → WIP if currently Proceed
+    if (wo.status === "Proceed") {
+      await prisma.workOrder.update({
+        where: { workOrderNo: wo.workOrderNo },
+        data: { status: "WIP" },
+      });
+    }
+
+    revalidatePath("/terminal");
+    revalidatePath(`/dashboard/production/work-order/${wo.workOrderNo}`);
+    return { success: true, timesheetId: ts.id, routingProcessId: target.id, routingSn: target.sn };
+  } catch (err: any) {
+    console.error("scanIn:", err);
+    return { success: false, error: err.message || "Scan IN failed" };
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Find open scans for OUT (worker selects which to close)
+// ──────────────────────────────────────────────────────────────────────────────
+export async function getOpenScans(workOrderNo: string, employeeId?: string) {
+  const rows = await prisma.productionTimesheet.findMany({
+    where: {
+      timeOut: null,
+      ...(employeeId ? { employeeId } : {}),
+      routingProcess: {
+        inProcess: { workOrderNo },
+      },
+    },
+    include: {
+      employee: { select: { id: true, name: true, code: true } },
+      routingProcess: {
+        include: {
+          mainProcess: true,
+          routingProcess: true,
+          inProcess: { select: { id: true, sn: true, description: true } },
+        },
+      },
+    },
+    orderBy: { timeIn: "asc" },
+  });
+  return JSON.parse(JSON.stringify(rows));
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// SCAN OUT
+// ──────────────────────────────────────────────────────────────────────────────
+export type ScanOutPayload = {
+  timesheetId: string;
+  completedQty: number;
+  machineCodes?: string;
+  // Parameter forms — exactly one of welding/spray/machining (or none) per ProcessProfile flag
+  welding?: {
+    materialTypeIds?: string[];
+    weldingTypeIds?: string[];
+    weldingMachineId?: string;
+    typeOfJointId?: string;
+    electrodeType?: string;
+    weldingPosition?: string;
+    weldingJoint?: number;
+    weldingSizeMm?: number;
+    voltageVolts?: number;
+    currentAmp?: number;
+    coolingTimeMins?: number;
+    preHeatingC?: number;
+    postHeatingC?: number;
+    heatTreatmentHrc?: number;
+    remark?: string;
+  };
+  spray?: {
+    paintTankPressurePsi?: number;
+    sprayNozzleSize?: number;
+    typeOfPaint?: string;
+    remark?: string;
+    surfaceStartDatetime?: string;
+    surfaceEndDatetime?: string;
+    surfaceGeneralWeather?: string;
+    surfaceEnvTemperature?: string;
+    surfaceRelativeHumidity?: string;
+    surfaceAbrasiveType?: string;
+    surfaceSandpaperGrit?: string;
+    primerStartDatetime?: string;
+    primerEndDatetime?: string;
+    primerGeneralWeather?: string;
+    primerEnvTemperature?: string;
+    primerRelativeHumidity?: string;
+    primerPaintBatchNo?: string;
+    primerExpiryDate?: string;
+    primerDftMeasurement?: string;
+    topcoatStartDatetime2?: string;
+    topcoatEndDatetime2?: string;
+    topcoatGeneralWeather2?: string;
+    topcoatEnvTemperature2?: string;
+    topcoatRelativeHumidity2?: string;
+    topcoatAbrasiveType?: string;
+    topcoatSandpaperGrit?: string;
+    topcoatPaintBatchNo?: string;
+    topcoatExpiryDate?: string;
+    topcoatDftMeasurement?: string;
+    topcoatAdhesiveTestResult?: string;
+    additionalRemark?: string;
+  };
+  machining?: {
+    machineSerialNoId: string;
+    cncProgramNo?: string;
+    testRun?: string;
+    specialTooling?: string;
+    partRuntimeHr?: number;
+    partRuntimeMins?: number;
+    remark?: string;
+    toolList?: number[];
+  };
+};
+
+export async function scanOut(payload: ScanOutPayload) {
+  try {
+    const ts = await prisma.productionTimesheet.findUnique({
+      where: { id: payload.timesheetId },
+      include: {
+        routingProcess: {
+          include: {
+            inProcess: { include: { workOrder: true, routingProcesses: true } },
+            routingProcess: { select: { welding: true, sprayPainting: true, machining: true } },
+          },
+        },
+      },
+    });
+    if (!ts) return { success: false, error: "Open scan not found" };
+    if (ts.timeOut) return { success: false, error: "Already scanned out" };
+
+    const wo = ts.routingProcess.inProcess.workOrder;
+
+    // Quantity guard — total completed across all timesheets for this WO ≤ WO qty
+    if (wo.quantity != null) {
+      const allTs = await prisma.productionTimesheet.findMany({
+        where: { routingProcess: { inProcess: { workOrderNo: wo.workOrderNo } } },
+        select: { id: true, completedQty: true },
+      });
+      const previouslyCompleted = allTs
+        .filter((t: any) => t.id !== payload.timesheetId)
+        .reduce((acc: number, t: any) => acc + (t.completedQty ? Number(t.completedQty) : 0), 0);
+      if (previouslyCompleted + payload.completedQty > Number(wo.quantity)) {
+        return {
+          success: false,
+          error: `Completed qty exceeds WO qty (${previouslyCompleted}+${payload.completedQty} > ${wo.quantity})`,
+        };
+      }
+    }
+
+    const timeOut = new Date();
+    const totalMinutes =
+      ts.timeIn ? Number(((timeOut.getTime() - ts.timeIn.getTime()) / 60000).toFixed(2)) : null;
+
+    // Close the timesheet
+    await prisma.productionTimesheet.update({
+      where: { id: ts.id },
+      data: {
+        timeOut,
+        totalMinutes,
+        completedQty: payload.completedQty,
+        completed: true,
+        machineCodes: payload.machineCodes || null,
+      },
+    });
+
+    // Create parameter row matching ProcessProfile flag
+    const flags = ts.routingProcess.routingProcess;
+    if (payload.welding && flags?.welding) {
+      const wParam = await prisma.processParameterWelding.create({
+        data: {
+          timesheetId: ts.id,
+          weldingMachineId: payload.welding.weldingMachineId || null,
+          typeOfJointId: payload.welding.typeOfJointId || null,
+          electrodeType: payload.welding.electrodeType || null,
+          weldingPosition: payload.welding.weldingPosition || null,
+          weldingJoint: payload.welding.weldingJoint ?? null,
+          weldingSizeMm: payload.welding.weldingSizeMm ?? null,
+          voltageVolts: payload.welding.voltageVolts ?? null,
+          currentAmp: payload.welding.currentAmp ?? null,
+          coolingTimeMins: payload.welding.coolingTimeMins ?? null,
+          preHeatingC: payload.welding.preHeatingC ?? null,
+          postHeatingC: payload.welding.postHeatingC ?? null,
+          heatTreatmentHrc: payload.welding.heatTreatmentHrc ?? null,
+          remark: payload.welding.remark || null,
+          status: "Pending",
+        },
+      });
+      // NOTE: MaterialType / WeldingTypeProfile relations are 1:N (FK on the
+      // master tables). Linking a master row to this parameter steals it from
+      // any previous parameter — known schema limitation, see schema.prisma.
+      if (payload.welding.materialTypeIds?.length) {
+        await prisma.materialType.updateMany({
+          where: { id: { in: payload.welding.materialTypeIds } },
+          data: { processParameterWeldingId: wParam.id },
+        });
+      }
+      if (payload.welding.weldingTypeIds?.length) {
+        await prisma.weldingTypeProfile.updateMany({
+          where: { id: { in: payload.welding.weldingTypeIds } },
+          data: { processParameterWeldingId: wParam.id },
+        });
+      }
+    } else if (payload.spray && flags?.sprayPainting) {
+      const s = payload.spray;
+      await prisma.processParameterSprayPainting.create({
+        data: {
+          timesheetId: ts.id,
+          paintTankPressurePsi: s.paintTankPressurePsi ?? 0,
+          sprayNozzleSize: s.sprayNozzleSize ?? 0,
+          typeOfPaint: s.typeOfPaint ?? "",
+          remark: s.remark || null,
+          surfaceStartDatetime: s.surfaceStartDatetime ? new Date(s.surfaceStartDatetime) : null,
+          surfaceEndDatetime: s.surfaceEndDatetime ? new Date(s.surfaceEndDatetime) : null,
+          surfaceGeneralWeather: s.surfaceGeneralWeather || null,
+          surfaceEnvTemperature: s.surfaceEnvTemperature || null,
+          surfaceRelativeHumidity: s.surfaceRelativeHumidity || null,
+          surfaceAbrasiveType: s.surfaceAbrasiveType || null,
+          surfaceSandpaperGrit: s.surfaceSandpaperGrit || null,
+          primerStartDatetime: s.primerStartDatetime ? new Date(s.primerStartDatetime) : null,
+          primerEndDatetime: s.primerEndDatetime ? new Date(s.primerEndDatetime) : null,
+          primerGeneralWeather: s.primerGeneralWeather || null,
+          primerEnvTemperature: s.primerEnvTemperature || null,
+          primerRelativeHumidity: s.primerRelativeHumidity || null,
+          primerPaintBatchNo: s.primerPaintBatchNo || null,
+          primerExpiryDate: s.primerExpiryDate ? new Date(s.primerExpiryDate) : null,
+          primerDftMeasurement: s.primerDftMeasurement || null,
+          topcoatStartDatetime2: s.topcoatStartDatetime2 ? new Date(s.topcoatStartDatetime2) : null,
+          topcoatEndDatetime2: s.topcoatEndDatetime2 ? new Date(s.topcoatEndDatetime2) : null,
+          topcoatGeneralWeather2: s.topcoatGeneralWeather2 || null,
+          topcoatEnvTemperature2: s.topcoatEnvTemperature2 || null,
+          topcoatRelativeHumidity2: s.topcoatRelativeHumidity2 || null,
+          topcoatAbrasiveType: s.topcoatAbrasiveType || null,
+          topcoatSandpaperGrit: s.topcoatSandpaperGrit || null,
+          topcoatPaintBatchNo: s.topcoatPaintBatchNo || null,
+          topcoatExpiryDate: s.topcoatExpiryDate ? new Date(s.topcoatExpiryDate) : null,
+          topcoatDftMeasurement: s.topcoatDftMeasurement || null,
+          topcoatAdhesiveTestResult: s.topcoatAdhesiveTestResult || null,
+          additionalRemark: s.additionalRemark || null,
+          status: "Pending",
+        },
+      });
+    } else if (payload.machining && flags?.machining) {
+      const m = payload.machining;
+      await prisma.processParameterMachining.create({
+        data: {
+          timesheetId: ts.id,
+          machineSerialNoId: m.machineSerialNoId,
+          cncProgramNo: m.cncProgramNo || null,
+          testRun: m.testRun || null,
+          specialTooling: m.specialTooling || null,
+          partRuntimeHr: m.partRuntimeHr ?? null,
+          partRuntimeMins: m.partRuntimeMins ?? null,
+          remark: m.remark || null,
+          status: "Pending",
+          toolLists: m.toolList?.length
+            ? { create: m.toolList.map((v) => ({ toolValue: v })) }
+            : undefined,
+        },
+      });
+    }
+
+    // Roll routing → Completed if total completed qty meets WO qty
+    if (wo.quantity != null) {
+      const allTsForRouting = await prisma.productionTimesheet.findMany({
+        where: { routingProcessId: ts.routingProcessId },
+        select: { completedQty: true },
+      });
+      const totalForRouting = allTsForRouting.reduce(
+        (acc: number, t: any) => acc + (t.completedQty ? Number(t.completedQty) : 0),
+        0,
+      );
+      if (totalForRouting >= Number(wo.quantity)) {
+        await prisma.routingProcess.update({
+          where: { id: ts.routingProcessId },
+          data: { status: "Completed" },
+        });
+
+        // If all routing rows for the WO are Completed → WO Pending for QC
+        const inProcessesFull = await prisma.workOrderInProcess.findMany({
+          where: { workOrderNo: wo.workOrderNo },
+          include: { routingProcesses: true },
+        });
+        const allDone = inProcessesFull.every(
+          (ip: any) =>
+            ip.routingProcesses.length > 0 &&
+            ip.routingProcesses.every((r: any) => r.status === "Completed"),
+        );
+        if (allDone) {
+          await prisma.workOrder.update({
+            where: { workOrderNo: wo.workOrderNo },
+            data: { status: "Pending for QC" },
+          });
+        }
+      }
+    }
+
+    revalidatePath("/terminal");
+    revalidatePath(`/dashboard/production/work-order/${wo.workOrderNo}`);
+    revalidatePath(`/dashboard/production/work-order/${wo.workOrderNo}/routing`);
+    revalidatePath(`/dashboard/production/work-order/${wo.workOrderNo}/timesheets`);
+    return { success: true };
+  } catch (err: any) {
+    console.error("scanOut:", err);
+    return { success: false, error: err.message || "Scan OUT failed" };
+  }
+}

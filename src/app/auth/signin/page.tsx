@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -30,7 +30,14 @@ function SignInForm() {
       setError("Invalid email or password.");
       return;
     }
-    router.push(res.url ?? callbackUrl);
+    
+    const session = await getSession();
+    if (session?.user?.role === "PRODUCTION") {
+      router.push("/terminal");
+    } else {
+      router.push(res.url ?? callbackUrl);
+    }
+    
     router.refresh();
   }
 
