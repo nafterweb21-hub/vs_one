@@ -145,6 +145,7 @@ model Employee {
   sprayConfirmations     ProcessParameterSprayPainting[] @relation("SprayConfirmedBy")
   machiningConfirmations ProcessParameterMachining[]     @relation("MachiningConfirmedBy")
   user                   User?                           @relation("EmployeeUser")
+  purchaseRequisitions   PurchaseRequisition[]
 }
 
 model TaxProfile {
@@ -224,8 +225,9 @@ model MaterialProfile {
   category    MaterialCategory @relation(fields: [categoryId], references: [id])
   remark      String?
   status      String           @default("Active") // Default Active
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  purchaseRequisitionItems PurchaseRequisitionItem[]
 }
 
 model WeldingTypeProfile {
@@ -338,7 +340,8 @@ model UomProfile {
   updatedAt       DateTime         @updatedAt
   salesOrderItems SalesOrderItem[]
   workOrders      WorkOrder[]
-  quotationItems  QuotationItem[]
+  quotationItems           QuotationItem[]
+  purchaseRequisitionItems PurchaseRequisitionItem[]
 }
 
 // ==========================================
@@ -565,7 +568,8 @@ model WorkOrder {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  inProcesses WorkOrderInProcess[]
+  inProcesses          WorkOrderInProcess[]
+  purchaseRequisitions PurchaseRequisition[]
 }
 
 model WorkOrderInProcess {
@@ -795,8 +799,9 @@ model CompanyProfile {
   allowPoForWo          Boolean  @default(false)
   as9100RequirementNote Boolean  @default(false)
   status                String   @default("Active") // "Active" or "Inactive"
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  purchaseRequisitions  PurchaseRequisition[]
 }
 
 // ==========================================
@@ -878,4 +883,63 @@ model QuotationItem {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// Purchase Requisition Module
+// ==========================================
+model PurchaseRequisition {
+  id              String   @id @default(cuid())
+  prNo            String   // PRYYXXXXX (e.g. PR1700003) - shared across revisions
+  revision        Int      @default(0) // Revision count (starts at 0)
+  date            DateTime // Entry Date (default today, forward allowed, no backdate)
+  status          String   @default("Draft") // Draft / Void / Submitted
+  poStatus        String   @default("N/A") // N/A / Partially Issued / Fully Issued / Cancelled
+  remark          String?
+
+  companyId       String
+  company         CompanyProfile @relation(fields: [companyId], references: [id])
+
+  workOrderNo     String?
+  workOrder       WorkOrder? @relation(fields: [workOrderNo], references: [workOrderNo])
+
+  requestedById   String
+  requestedBy     Employee @relation(fields: [requestedById], references: [id])
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  items           PurchaseRequisitionItem[]
+
+  @@unique([prNo, revision])
+}
+
+model PurchaseRequisitionItem {
+  id                      String              @id @default(cuid())
+  purchaseRequisitionId   String
+  purchaseRequisition     PurchaseRequisition @relation(fields: [purchaseRequisitionId], references: [id], onDelete: Cascade)
+
+  fromMaterialProfile     Boolean             @default(false)
+  material                String?             // Input material text or code
+  description             String              // Description (from profile or user input)
+  shape                   String?
+  size                    String?
+  uomId                   String
+  uom                     UomProfile          @relation(fields: [uomId], references: [id])
+
+  quantity                Decimal             // Decimal (2 decimals)
+  cancelQuantity          Decimal             @default(0) // Decimal (2 decimals)
+  prQuantity              Decimal             // System calculated: quantity - cancelQuantity
+  deliveryDate            DateTime            // Required
+  remark                  String?
+
+  poQuantityIssued        Decimal             @default(0) // System calculated based on issued POs
+  balanceRequirePurchase  Decimal             // System calculated: prQuantity - poQuantityIssued
+
+  materialProfileId       String?
+  materialProfile         MaterialProfile?    @relation(fields: [materialProfileId], references: [id])
+
+  sortOrder               Int                 @default(0)
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
 }
