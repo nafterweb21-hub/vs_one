@@ -16,7 +16,51 @@ const STATUS_STYLES: Record<string, string> = {
 export default async function WorkOrdersPage() {
   const workOrders = await prisma.workOrder.findMany({
     orderBy: { createdAt: "desc" },
-    include: { customer: true },
+    include: { 
+      customer: true,
+      inProcesses: {
+        include: {
+          routingProcesses: {
+            include: {
+              productionTimesheets: true
+            }
+          }
+        }
+      }
+    },
+  });
+
+  const enrichedWorkOrders = workOrders.map((wo: any) => {
+    let producedQty = 0;
+    const totalQty = Number(wo.quantity) || 0;
+    
+    if (wo.status === "Completed") {
+      producedQty = totalQty;
+    } else if (wo.inProcesses && wo.inProcesses.length > 0) {
+      let lastProcess = null;
+      let maxSn = -1;
+      wo.inProcesses.forEach((ip: any) => {
+        ip.routingProcesses?.forEach((rp: any) => {
+          if (rp.sn > maxSn) {
+            maxSn = rp.sn;
+            lastProcess = rp;
+          }
+        });
+      });
+      
+      if (lastProcess) {
+        producedQty = (lastProcess as any).productionTimesheets?.reduce((sum: number, ts: any) => sum + (Number(ts.completedQty) || 0), 0) || 0;
+      }
+    }
+    
+    // Cap at total
+    producedQty = Math.min(producedQty, totalQty);
+    
+    return {
+      ...wo,
+      producedQty,
+      totalQty
+    };
   });
 
   return (
@@ -48,20 +92,31 @@ export default async function WorkOrdersPage() {
                   <th className="px-6 py-4 font-semibold">Date</th>
                   <th className="px-6 py-4 font-semibold">Customer</th>
                   <th className="px-6 py-4 font-semibold">Job Description</th>
-                  <th className="px-6 py-4 font-semibold text-right">Qty</th>
+                  <th className="px-6 py-4 font-semibold w-[160px]">Qty Progress</th>
                   <th className="px-6 py-4 font-semibold">Status</th>
                   <th className="px-6 py-4 font-semibold text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {workOrders.map((wo: any) => (
+                {enrichedWorkOrders.map((wo: any) => (
                   <tr key={wo.workOrderNo} className="hover:bg-slate-50/50">
                     <td className="px-6 py-4 font-medium text-blue-600">{wo.workOrderNo}</td>
                     <td className="px-6 py-4">{new Date(wo.date).toLocaleDateString()}</td>
                     <td className="px-6 py-4">{wo.customer.customerName}</td>
                     <td className="px-6 py-4 max-w-xs truncate">{wo.jobDescription || "-"}</td>
-                    <td className="px-6 py-4 text-right">
-                      {wo.quantity != null ? Number(wo.quantity).toString() : "-"} {wo.uom ?? ""}
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1.5 min-w-[120px]">
+                        <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                          <span>{wo.producedQty} <span className="text-[9px] text-slate-400 font-medium uppercase">{wo.uom}</span></span>
+                          <span className="text-slate-400">/ {wo.totalQty}</span>
+                        </div>
+                        <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                          <div 
+                            className="bg-emerald-500 h-full rounded-full transition-all duration-500" 
+                            style={{ width: `${wo.totalQty > 0 ? (wo.producedQty / wo.totalQty) * 100 : 0}%` }}
+                          />
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <span

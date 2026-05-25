@@ -1,17 +1,15 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
-import { ScanLine, LogIn, LogOut, X } from "lucide-react";
+import { useMemo, useState, useTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Monitor, Plus, ChevronRight, CheckCircle2, Info, AlertCircle, Minus, ChevronDown, Check, Zap, Clock, Box, LogOut } from "lucide-react";
+import ProductionIntake from "./ProductionIntake";
 import {
   lookupWorkOrder,
-  scanIn,
-  scanOut,
   getOpenScans,
+  scanOut,
   type ScanOutPayload,
 } from "../actions";
-import WeldingForm from "./WeldingForm";
-import SprayForm from "./SprayForm";
-import MachiningForm from "./MachiningForm";
 
 type Support = {
   employees: { id: string; name: string; code: string }[];
@@ -23,448 +21,456 @@ type Support = {
   elcometers: any[];
 };
 
-type Mode = "IN" | "OUT";
+export default function TerminalClient({ support, loggedInEmployee, initialSessions = [], initialRecentCompletes = [] }: { support: Support, loggedInEmployee?: any | null, initialSessions?: any[], initialRecentCompletes?: any[] }) {
+  const router = useRouter();
+  const [isScanInOpen, setIsScanInOpen] = useState(false);
+  const [activeSessions, setActiveSessions] = useState<any[]>(initialSessions);
+  const [recentCompletes, setRecentCompletes] = useState<any[]>(initialRecentCompletes);
+  
+  const displayEmployee = loggedInEmployee || null;
+  
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      // If the back button is pressed and the modal is open, close it
+      if (isScanInOpen) {
+        setIsScanInOpen(false);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [isScanInOpen]);
 
-export default function TerminalClient({ support }: { support: Support }) {
-  const [woNo, setWoNo] = useState("");
-  const [wo, setWo] = useState<any>(null);
-  const [error, setError] = useState("");
-  const [info, setInfo] = useState("");
-  const [mode, setMode] = useState<Mode>("IN");
+  const openScanInModal = () => {
+    // Push a dummy state to history so the back button just pops this state instead of navigating away
+    window.history.pushState({ modal: "scan-in" }, "");
+    setIsScanInOpen(true);
+  };
+
+  const closeScanInModal = () => {
+    if (window.history.state?.modal === "scan-in") {
+      window.history.back(); // This triggers popstate, which closes the modal
+    } else {
+      setIsScanInOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    setActiveSessions(initialSessions);
+    setRecentCompletes(initialRecentCompletes);
+  }, [initialSessions, initialRecentCompletes]);
+  const [selectedSessionId, setSelectedSessionId] = useState<string>("");
+
+  const [producedCount, setProducedCount] = useState<number | "">(0);
+  const [defectCount, setDefectCount] = useState<number | "">(0);
+  const [defectReason, setDefectReason] = useState("");
+  const [sessionNote, setSessionNote] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  // IN form state
-  const [inForm, setInForm] = useState({
-    inProcessId: "",
-    mainProcessId: "",
-    routingProcessProfileId: "",
-    employeeId: "",
-  });
+  // loggedInEmployee is now provided directly by the server page
 
-  // OUT state
-  const [openScans, setOpenScans] = useState<any[]>([]);
-  const [selectedScanId, setSelectedScanId] = useState<string>("");
-  const [completedQty, setCompletedQty] = useState<string>("");
-  const [machineCodes, setMachineCodes] = useState<string>("");
-  const [welding, setWelding] = useState<any>({});
-  const [spray, setSpray] = useState<any>({});
-  const [machining, setMachining] = useState<any>({});
-
-  const selectedScan = useMemo(
-    () => openScans.find((s) => s.id === selectedScanId),
-    [openScans, selectedScanId],
+  const selectedSession = useMemo(
+    () => activeSessions.find((s) => s.id === selectedSessionId),
+    [activeSessions, selectedSessionId]
   );
-  const flags = selectedScan?.routingProcess?.routingProcess
-    ? {
-        welding: !!selectedScan.routingProcess.routingProcess.welding,
-        spray: !!selectedScan.routingProcess.routingProcess.sprayPainting,
-        machining: !!selectedScan.routingProcess.routingProcess.machining,
-      }
-    : null;
 
-  // In-process options derived from the WO
-  const inProcessOptions = wo?.inProcesses ?? [];
-  const selectedInProcess = inProcessOptions.find((ip: any) => ip.id === inForm.inProcessId);
-  const mainProcessOptions = useMemo(() => {
-    const seen = new Map<string, { id: string; label: string }>();
-    selectedInProcess?.routingProcesses.forEach((rp: any) => {
-      if (rp.mainProcess && !seen.has(rp.mainProcess.id)) {
-        seen.set(rp.mainProcess.id, { id: rp.mainProcess.id, label: rp.mainProcess.process });
-      }
-    });
-    return Array.from(seen.values());
-  }, [selectedInProcess]);
-  const routingProcessOptions = useMemo(() => {
-    const seen = new Map<string, { id: string; label: string }>();
-    selectedInProcess?.routingProcesses
-      .filter((rp: any) => rp.mainProcessId === inForm.mainProcessId)
-      .forEach((rp: any) => {
-        if (rp.routingProcess && !seen.has(rp.routingProcess.id)) {
-          seen.set(rp.routingProcess.id, {
-            id: rp.routingProcess.id,
-            label: rp.routingProcess.routingProcess,
-          });
-        }
-      });
-    return Array.from(seen.values());
-  }, [selectedInProcess, inForm.mainProcessId]);
+  const targetQty = selectedSession ? Number(selectedSession.routingProcess?.inProcess?.workOrder?.quantity || 0) : 0;
+  const previouslyCompleted = selectedSession 
+    ? (selectedSession.routingProcess?.productionTimesheets?.reduce((acc: number, ts: any) => acc + (Number(ts.completedQty) || 0), 0) || 0)
+    : 0;
+  const remainingQty = Math.max(0, targetQty - previouslyCompleted - (Number(producedCount) || 0));
 
-  function clearMessages() {
-    setError("");
-    setInfo("");
+  function handleScanInSuccess() {
+    router.refresh();
   }
 
-  function reset() {
-    setWoNo("");
-    setWo(null);
-    setMode("IN");
-    setInForm({ inProcessId: "", mainProcessId: "", routingProcessProfileId: "", employeeId: "" });
-    setOpenScans([]);
-    setSelectedScanId("");
-    setCompletedQty("");
-    setMachineCodes("");
-    setWelding({});
-    setSpray({});
-    setMachining({});
-    clearMessages();
+  function handleSelectSession(session: any) {
+    setSelectedSessionId(session.id);
+    setProducedCount(0);
+    setDefectCount(0);
+    setDefectReason("");
+    setSessionNote("");
   }
 
-  function lookup() {
-    clearMessages();
-    if (!woNo.trim()) return;
-    startTransition(async () => {
-      const res = await lookupWorkOrder(woNo.trim());
-      if (!res.ok) {
-        setError(res.error);
-        setWo(null);
-        return;
-      }
-      setWo(res.wo);
-      const open = await getOpenScans(res.wo.workOrderNo);
-      setOpenScans(open);
-    });
-  }
-
-  function doScanIn() {
-    clearMessages();
-    if (!inForm.inProcessId || !inForm.mainProcessId || !inForm.routingProcessProfileId || !inForm.employeeId) {
-      setError("Select in-process, main process, routing process, and employee");
-      return;
-    }
-    startTransition(async () => {
-      const res = await scanIn({ workOrderNo: wo.workOrderNo, ...inForm });
-      if (!res.success) {
-        setError(res.error || "Scan IN failed");
-        return;
-      }
-      setInfo(`Scanned IN on routing SN ${res.routingSn}`);
-      // Refresh open scans + WO state
-      const refreshed = await lookupWorkOrder(wo.workOrderNo);
-      if (refreshed.ok) setWo(refreshed.wo);
-      const open = await getOpenScans(wo.workOrderNo);
-      setOpenScans(open);
-      setInForm({ inProcessId: "", mainProcessId: "", routingProcessProfileId: "", employeeId: "" });
-    });
-  }
-
-  function doScanOut() {
-    clearMessages();
-    if (!selectedScanId) {
-      setError("Select an open scan to close");
-      return;
-    }
-    if (!completedQty || Number(completedQty) <= 0) {
-      setError("Enter completed quantity");
-      return;
-    }
+  function handleCompleteSession() {
+    if (!selectedSession) return;
+    
+    const pCount = Number(producedCount) || 0;
+    const dCount = Number(defectCount) || 0;
+    
+    if (pCount <= 0 && dCount <= 0) return; // Prevent empty completion
 
     const payload: ScanOutPayload = {
-      timesheetId: selectedScanId,
-      completedQty: Number(completedQty),
-      machineCodes: machineCodes || undefined,
+      timesheetId: selectedSession.id,
+      completedQty: pCount, // Assuming producedCount is the valid completedQty for now
     };
-    if (flags?.welding) payload.welding = welding;
-    if (flags?.spray) payload.spray = spray;
-    if (flags?.machining) payload.machining = machining;
 
     startTransition(async () => {
       const res = await scanOut(payload);
-      if (!res.success) {
-        setError(res.error || "Scan OUT failed");
-        return;
+      if (res.success) {
+        // Move to recent completes
+        setRecentCompletes((prev) => [selectedSession, ...prev]);
+        setActiveSessions((prev) => prev.filter((s) => s.id !== selectedSession.id));
+        setSelectedSessionId("");
+        setProducedCount(0);
+      } else {
+        alert("Failed to complete session: " + res.error);
       }
-      setInfo("Scanned OUT successfully");
-      setSelectedScanId("");
-      setCompletedQty("");
-      setMachineCodes("");
-      setWelding({});
-      setSpray({});
-      setMachining({});
-      const refreshed = await lookupWorkOrder(wo.workOrderNo);
-      if (refreshed.ok) setWo(refreshed.wo);
-      const open = await getOpenScans(wo.workOrderNo);
-      setOpenScans(open);
     });
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
-      {/* LEFT: scan flow */}
-      <div className="bg-white/80 border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl rounded-2xl p-6 space-y-4">
-        <div className="flex items-center gap-2">
-          <ScanLine size={20} className="text-blue-400" />
-          <input
-            value={woNo}
-            onChange={(e) => setWoNo(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && lookup()}
-            placeholder="Scan or type Work Order No (e.g. 800003-1-1)"
-            className="flex-1 px-3 py-2 border border-blue-200 rounded-xl text-sm bg-white text-slate-800 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 shadow-inner placeholder:text-slate-500 transition-all"
-            autoFocus
-          />
-          <button
-            onClick={lookup}
-            disabled={isPending}
-            className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 disabled:opacity-50 text-white text-sm font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-all"
-          >
-            Lookup
-          </button>
-          {wo && (
-            <button onClick={reset} className="px-3 py-2 text-slate-500 hover:text-rose-500 bg-slate-50 hover:bg-rose-50 rounded-full transition-all" title="Clear">
-              <X size={18} />
-            </button>
-          )}
-        </div>
-
-        {error && <div className="bg-rose-50 border border-rose-200 text-rose-700 shadow-sm p-3 rounded-lg text-sm">{error}</div>}
-        {info && <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 shadow-sm p-3 rounded-lg text-sm">{info}</div>}
-
-        {wo && (
-          <>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setMode("IN")}
-                className={`flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 ${
-                  mode === "IN" ? "bg-blue-600 text-white shadow-md shadow-blue-500/20" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                }`}
-              >
-                <LogIn size={16} /> Scan IN
-              </button>
-              <button
-                onClick={() => setMode("OUT")}
-                className={`flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 ${
-                  mode === "OUT" ? "bg-amber-500 text-white shadow-md shadow-amber-500/20" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                }`}
-              >
-                <LogOut size={16} /> Scan OUT
-              </button>
+    <div className="bg-white min-h-[calc(100vh-80px)] rounded-3xl p-6 font-sans text-slate-900 relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200">
+      
+      {/* TOP HEADER */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between bg-white border border-slate-200 shadow-sm rounded-3xl p-4 mb-8">
+        <div className="flex items-center gap-4">
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+            <Monitor className="text-cyan-600" size={28} />
+          </div>
+          <div>
+            <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-0.5">Operator Node</div>
+            <div className="text-2xl font-bold text-slate-900 tracking-tight leading-none mb-1">
+              {displayEmployee ? displayEmployee.name : "Unassigned"}
             </div>
-
-            {mode === "IN" ? (
-              <div className="space-y-3">
-                <Select
-                  label="In-Process"
-                  value={inForm.inProcessId}
-                  onChange={(v) =>
-                    setInForm({ inProcessId: v, mainProcessId: "", routingProcessProfileId: "", employeeId: inForm.employeeId })
-                  }
-                  options={inProcessOptions.map((ip: any) => ({ id: ip.id, label: `${ip.sn}. ${ip.description}` }))}
-                />
-                <Select
-                  label="Main Process"
-                  value={inForm.mainProcessId}
-                  onChange={(v) => setInForm({ ...inForm, mainProcessId: v, routingProcessProfileId: "" })}
-                  options={mainProcessOptions}
-                  disabled={!inForm.inProcessId}
-                />
-                <Select
-                  label="Routing Process"
-                  value={inForm.routingProcessProfileId}
-                  onChange={(v) => setInForm({ ...inForm, routingProcessProfileId: v })}
-                  options={routingProcessOptions}
-                  disabled={!inForm.mainProcessId}
-                />
-                <Select
-                  label="Employee"
-                  value={inForm.employeeId}
-                  onChange={(v) => setInForm({ ...inForm, employeeId: v })}
-                  options={support.employees.map((e) => ({ id: e.id, label: `${e.name} (${e.code})` }))}
-                />
-                <button
-                  onClick={doScanIn}
-                  disabled={isPending}
-                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all"
-                >
-                  {isPending ? "Scanning..." : "SCAN IN"}
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs font-medium text-slate-500">Open Scans</label>
-                  {openScans.length === 0 ? (
-                    <div className="mt-1 p-3 border border-dashed border-slate-200 rounded-xl text-xs text-slate-500 bg-slate-50">
-                      No open scans for this WO.
-                    </div>
-                  ) : (
-                    <div className="mt-1 space-y-1.5">
-                      {openScans.map((s) => (
-                        <label
-                          key={s.id}
-                          className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer ${
-                            selectedScanId === s.id ? "border-amber-400 bg-amber-50 shadow-inner ring-1 ring-amber-400" : "border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 shadow-sm"
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            checked={selectedScanId === s.id}
-                            onChange={() => setSelectedScanId(s.id)}
-                          />
-                          <div className="text-xs">
-                            <div className="font-medium text-slate-800">
-                              {s.employee.name} — {s.routingProcess.routingProcess?.routingProcess ?? "?"}
-                            </div>
-                            <div className="text-slate-500">
-                              {s.routingProcess.inProcess.sn}. {s.routingProcess.inProcess.description}
-                              {" · "}
-                              IN: {new Date(s.timeIn).toLocaleTimeString()}
-                            </div>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {selectedScan && (
-                  <>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-xs font-medium text-slate-500">Completed Qty *</label>
-                        <input
-                          type="number"
-                          step="1"
-                          value={completedQty}
-                          onChange={(e) => setCompletedQty(e.target.value)}
-                          className="mt-1 w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-800"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-medium text-slate-500">Machine Code(s)</label>
-                        <input
-                          value={machineCodes}
-                          onChange={(e) => setMachineCodes(e.target.value)}
-                          placeholder="comma-separated"
-                          className="mt-1 w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-800"
-                        />
-                      </div>
-                    </div>
-
-                    {flags?.welding && (
-                      <div className="border-t border-slate-200 pt-4">
-                        <h4 className="text-sm font-semibold text-blue-600 mb-3">Welding Parameters</h4>
-                        <WeldingForm
-                          value={welding}
-                          onChange={setWelding}
-                          weldingMachines={support.weldingMachines}
-                          materialTypes={support.materialTypes}
-                          weldingTypes={support.weldingTypes}
-                          joints={support.joints}
-                        />
-                      </div>
-                    )}
-                    {flags?.spray && (
-                      <div className="border-t border-slate-200 pt-4">
-                        <h4 className="text-sm font-semibold text-blue-600 mb-3">Spray Painting Parameters</h4>
-                        <SprayForm value={spray} onChange={setSpray} />
-                      </div>
-                    )}
-                    {flags?.machining && (
-                      <div className="border-t border-slate-200 pt-4">
-                        <h4 className="text-sm font-semibold text-blue-600 mb-3">Machining Parameters</h4>
-                        <MachiningForm
-                          value={machining}
-                          onChange={setMachining}
-                          machiningMachines={support.machiningMachines}
-                        />
-                      </div>
-                    )}
-
-                    <button
-                      onClick={doScanOut}
-                      disabled={isPending}
-                      className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 transition-all"
-                    >
-                      {isPending ? "Saving..." : "OK to SCAN OUT"}
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {/* RIGHT: WO summary */}
-      <aside className="bg-white/80 border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl rounded-2xl p-6 h-fit">
-        <h3 className="text-sm font-semibold text-blue-900 mb-3 uppercase tracking-wide">Work Order</h3>
-        {!wo ? (
-          <p className="text-xs text-slate-500">Scan a work order to begin.</p>
-        ) : (
-          <div className="space-y-2 text-sm">
-            <Pair label="WO No" value={wo.workOrderNo} mono />
-            <Pair label="Status" value={wo.status} />
-            <Pair label="Customer" value={wo.customer?.customerName} />
-            <Pair label="Job" value={wo.jobDescription} />
-            <Pair label="Quantity" value={`${wo.quantity ?? "-"} ${wo.uom ?? ""}`} />
-            <Pair
-              label="Delivery"
-              value={wo.deliveryDate ? wo.deliveryDate.slice(0, 10) : "-"}
-            />
-            <Pair label="Project" value={wo.projectCode} />
-
-            <div className="pt-3 border-t border-slate-200">
-              <h4 className="text-xs font-semibold text-slate-600 uppercase mb-2">In-Process</h4>
-              <ul className="space-y-1.5">
-                {wo.inProcesses.map((ip: any) => (
-                  <li key={ip.id} className="text-xs">
-                    <div className="font-medium text-slate-800">
-                      {ip.sn}. {ip.description}
-                    </div>
-                    <div className="text-slate-500">
-                      {ip.routingProcesses.length} routing • Target {ip.targetCompletionDate.slice(0, 10)}
-                    </div>
-                  </li>
-                ))}
-                {wo.inProcesses.length === 0 && (
-                  <li className="text-xs text-slate-500">No in-process steps planned.</li>
-                )}
-              </ul>
+            <div className="text-xs text-cyan-600 font-mono tracking-wider">
+              {displayEmployee ? displayEmployee.code : "N/A"}
             </div>
           </div>
-        )}
-      </aside>
-    </div>
-  );
-}
+        </div>
 
-function Pair({ label, value, mono }: { label: string; value?: any; mono?: boolean }) {
-  return (
-    <div className="flex justify-between gap-3">
-      <span className="text-xs text-slate-500">{label}</span>
-      <span className={`text-sm text-slate-800 text-right ${mono ? "font-mono" : ""}`}>
-        {value || "-"}
-      </span>
-    </div>
-  );
-}
+        <div className="flex items-center gap-4 mt-4 md:mt-0">
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-3 flex flex-col items-center justify-center">
+            <div className="text-[9px] font-bold tracking-widest text-slate-500 uppercase mb-1">Active Jobs</div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-slate-900 leading-none">{activeSessions.length}</span>
+              <span className="text-[9px] bg-cyan-100 text-cyan-800 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Running</span>
+            </div>
+          </div>
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-3 flex flex-col items-center justify-center">
+            <div className="text-[9px] font-bold tracking-widest text-slate-500 uppercase mb-1">Total Produced</div>
+            <div className="text-2xl font-bold text-emerald-600 leading-none">
+              {recentCompletes.length}
+            </div>
+          </div>
+          <button 
+            onClick={openScanInModal}
+            disabled={displayEmployee?.code === "UNLINKED_USER"}
+            className={`font-bold rounded-2xl px-6 py-3 flex items-center gap-2 transition-colors h-full shadow-lg ${displayEmployee?.code === "UNLINKED_USER" ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none' : 'bg-cyan-500 hover:bg-cyan-400 text-white shadow-cyan-500/20'}`}
+          >
+            <Plus size={20} strokeWidth={3} />
+            Scan In
+          </button>
+        </div>
+      </div>
 
-function Select({
-  label,
-  value,
-  onChange,
-  options,
-  disabled,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  options: { id: string; label: string }[];
-  disabled?: boolean;
-}) {
-  return (
-    <div>
-      <label className="text-xs font-medium text-slate-500">{label}</label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        className="mt-1 w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-800 disabled:opacity-50"
-      >
-        <option value="">Select</option>
-        {options.map((o) => (
-          <option key={o.id} value={o.id}>{o.label}</option>
-        ))}
-      </select>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* LEFT SIDEBAR */}
+        <div className="lg:col-span-4 space-y-8">
+          
+          <section>
+            <div className="flex items-center gap-2 mb-4 text-cyan-600">
+              <Zap size={16} fill="currentColor" />
+              <h3 className="text-xs font-bold tracking-widest uppercase text-slate-500">Active Sessions</h3>
+            </div>
+            
+            <div className="space-y-4 relative">
+              {/* Optional cyan border effect for the selected item container visually linking them */}
+              
+              {activeSessions.length === 0 ? (
+                <div className="bg-slate-50 border border-slate-200 shadow-sm rounded-3xl p-6 text-center text-slate-500 text-sm">
+                  No active sessions.
+                </div>
+              ) : (
+                activeSessions.map((session) => (
+                  <div 
+                    key={session.id}
+                    onClick={() => handleSelectSession(session)}
+                    className={`bg-white border-2 rounded-3xl p-5 cursor-pointer transition-all ${selectedSessionId === session.id ? 'border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.15)] ring-1 ring-cyan-500/50' : 'border-slate-100 hover:border-slate-200 shadow-sm'}`}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-cyan-50 p-2.5 rounded-xl text-cyan-500">
+                          <Box size={20} />
+                        </div>
+                        <div>
+                          <div className="font-bold text-sm text-slate-900">{session.routingProcess?.inProcess?.workOrderNo || "Unknown WO"}</div>
+                          <div className="text-[9px] text-slate-400 font-bold tracking-wider uppercase mt-0.5">
+                            {session.routingProcess?.routingProcess?.routingProcess || "Unknown Process"}
+                          </div>
+                        </div>
+                      </div>
+                      {selectedSessionId === session.id && <ChevronRight size={18} className="text-cyan-500" />}
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-slate-50 rounded-xl p-2.5">
+                        <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Done</div>
+                        <div className="font-bold text-sm text-slate-900">{session.id === selectedSessionId ? producedCount : 0}</div>
+                      </div>
+                      <div className="bg-slate-50 rounded-xl p-2.5">
+                        <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Defects</div>
+                        <div className="font-bold text-sm text-slate-900">{session.id === selectedSessionId ? defectCount : 0}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+
+          <section>
+            <div className="flex items-center gap-2 mb-4 text-slate-400">
+              <Clock size={16} />
+              <h3 className="text-xs font-bold tracking-widest uppercase">Recent Completes</h3>
+            </div>
+            
+            <div className="space-y-3">
+              {recentCompletes.length === 0 ? (
+                <div className="text-slate-400 text-xs italic ml-6">None recently</div>
+              ) : (
+                recentCompletes.map((rc, idx) => (
+                  <div key={rc.id || idx} className="bg-white border-2 border-slate-100 shadow-sm rounded-2xl p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-emerald-50 p-1.5 rounded-full text-emerald-500 border border-emerald-100">
+                        <Check size={14} strokeWidth={3} />
+                      </div>
+                      <div>
+                        <div className="font-bold text-sm text-slate-900">{rc.routingProcess?.inProcess?.workOrderNo}</div>
+                        <div className="text-[9px] text-slate-400 font-bold tracking-wider uppercase mt-0.5">{rc.routingProcess?.routingProcess?.routingProcess}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-emerald-500">+1</div>
+                      <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+                        {rc.timeIn ? new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false}) : "--:--"}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+
+        </div>
+
+        {/* MAIN AREA */}
+        <div className="lg:col-span-8">
+          <div className="bg-white border border-slate-200 shadow-sm rounded-3xl p-8 min-h-[600px] flex flex-col relative overflow-hidden">
+            
+            {/* Background decorative element */}
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 opacity-5 pointer-events-none">
+              <svg width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+            </div>
+
+            {!selectedSession ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
+                <Monitor size={48} className="mb-4 opacity-20" />
+                <p>Select an active session to view details</p>
+              </div>
+            ) : (
+              <>
+                {/* Session Header */}
+                <div className="flex items-start justify-between mb-10 relative z-10">
+                  <div>
+                    <div className="inline-block bg-cyan-50 text-cyan-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-3">
+                      Active Session
+                    </div>
+                    <h2 className="text-4xl font-bold tracking-tight mb-2 text-slate-900">
+                      {selectedSession.routingProcess?.routingProcess?.routingProcess || "Unknown Process"}
+                    </h2>
+                    <div className="text-slate-400 font-bold tracking-widest text-sm uppercase">
+                      {selectedSession.routingProcess?.inProcess?.workOrderNo}
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 flex flex-col items-center justify-center min-w-[100px]">
+                      <div className="text-[9px] font-bold text-slate-400 tracking-widest uppercase mb-1">Station</div>
+                      <div className="text-cyan-500 font-bold uppercase tracking-wider text-sm">DEFAULT</div>
+                    </div>
+                    <div className="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 flex flex-col items-center justify-center min-w-[100px]">
+                      <div className="text-[9px] font-bold text-slate-400 tracking-widest uppercase mb-1">Started</div>
+                      <div className="text-slate-900 font-bold tracking-wider text-sm">
+                        {selectedSession.timeIn ? new Date(selectedSession.timeIn).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false}) : "--:--"}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Counters Area */}
+                <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-6 mb-8 relative z-10">
+                  
+                  {/* TOTAL PRODUCED */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-[2rem] p-8 flex flex-col items-center justify-center shadow-inner">
+                    <div className="text-[10px] font-bold text-cyan-600 tracking-widest uppercase mb-8">Total Produced</div>
+                    <div className="flex items-center justify-center gap-8 w-full">
+                      <button 
+                        onClick={() => setProducedCount(Math.max(0, (Number(producedCount) || 0) - 1))}
+                        className="w-16 h-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center hover:bg-slate-200 transition-colors"
+                      >
+                        <Minus size={24} className="text-slate-500" />
+                      </button>
+                      <input 
+                        type="number"
+                        min="0"
+                        value={producedCount}
+                        onChange={(e) => {
+                          if (e.target.value === "") {
+                            setProducedCount("");
+                          } else {
+                            const val = parseInt(e.target.value, 10);
+                            setProducedCount(isNaN(val) ? "" : Math.max(0, val));
+                          }
+                        }}
+                        className="text-[100px] leading-none font-bold tracking-tighter w-48 text-center text-slate-900 bg-transparent border-none outline-none focus:ring-0 p-0 m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <button 
+                        onClick={() => setProducedCount((Number(producedCount) || 0) + 1)}
+                        className="w-16 h-16 rounded-full bg-cyan-500 flex items-center justify-center hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/30 text-white"
+                      >
+                        <Plus size={24} strokeWidth={3} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* QUALITY FAILURES */}
+                  <div className="bg-rose-50/50 border border-rose-100 rounded-[2rem] p-8 flex flex-col shadow-inner">
+                    <div className="flex items-center gap-2 mb-8">
+                      <AlertCircle size={16} className="text-rose-500" />
+                      <div className="text-[10px] font-bold text-rose-500 tracking-widest uppercase">Quality Failures</div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between mb-8">
+                      <button 
+                        onClick={() => setDefectCount(Math.max(0, (Number(defectCount) || 0) - 1))}
+                        className="w-14 h-14 rounded-2xl bg-white border border-rose-200 flex items-center justify-center hover:bg-rose-50 transition-colors"
+                      >
+                        <Minus size={20} className="text-rose-400" />
+                      </button>
+                      <input
+                        type="number"
+                        min="0"
+                        value={defectCount}
+                        onChange={(e) => {
+                          if (e.target.value === "") {
+                            setDefectCount("");
+                          } else {
+                            const val = parseInt(e.target.value, 10);
+                            setDefectCount(isNaN(val) ? "" : Math.max(0, val));
+                          }
+                        }}
+                        className="text-5xl font-bold tracking-tighter w-24 text-center text-slate-900 bg-transparent border-none outline-none focus:ring-0 p-0 m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <button 
+                        onClick={() => setDefectCount((Number(defectCount) || 0) + 1)}
+                        className="w-14 h-14 rounded-2xl bg-rose-500 flex items-center justify-center hover:bg-rose-400 transition-colors text-white shadow-md shadow-rose-500/20"
+                      >
+                        <Plus size={20} />
+                      </button>
+                    </div>
+                    
+                    <div className="relative mt-auto">
+                      <select 
+                        value={defectReason}
+                        onChange={(e) => setDefectReason(e.target.value)}
+                        className="w-full appearance-none bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-xl px-4 py-3.5 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-500/20 shadow-sm cursor-pointer"
+                      >
+                        <option value="">Reason for defect...</option>
+                        <option value="scratch">Surface Scratch</option>
+                        <option value="dent">Dent / Damage</option>
+                        <option value="dimension">Out of Tolerance</option>
+                      </select>
+                      <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Stats & Action */}
+                <div className="grid grid-cols-1 md:grid-cols-[auto_auto_1fr] gap-6 mt-auto relative z-10">
+                  <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 min-w-[140px] flex flex-col justify-center">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-3 h-3 rounded-full border-2 border-slate-400 flex items-center justify-center">
+                        <div className="w-1 h-1 rounded-full bg-slate-400"></div>
+                      </div>
+                      <div className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">Target</div>
+                    </div>
+                    <div className="text-3xl font-bold text-slate-900 tracking-tight">
+                      {targetQty}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 min-w-[140px] flex flex-col justify-center">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                      </svg>
+                      <div className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">Remaining</div>
+                    </div>
+                    <div className="text-3xl font-bold text-amber-500 tracking-tight">
+                      {remainingQty}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 flex flex-col justify-center">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Info size={14} className="text-cyan-500" />
+                      <div className="text-[9px] font-bold text-slate-900 tracking-widest uppercase">Session Notes</div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="text"
+                        placeholder="Add log entry..."
+                        value={sessionNote}
+                        onChange={(e) => setSessionNote(e.target.value)}
+                        className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20"
+                      />
+                      <button 
+                        className="bg-cyan-500 text-white p-3 rounded-xl hover:bg-cyan-400 transition-colors"
+                        onClick={() => {
+                          if (sessionNote.trim()) {
+                            alert("Log entry noted! (Saving will be implemented soon)");
+                            setSessionNote("");
+                          }
+                        }}
+                      >
+                        <Plus size={20} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-8 flex justify-end relative z-10 border-t border-slate-100 pt-8">
+                  <button 
+                    onClick={handleCompleteSession}
+                    disabled={isPending || ((Number(producedCount) || 0) === 0 && (Number(defectCount) || 0) === 0)}
+                    className="bg-slate-100 hover:bg-slate-200 disabled:opacity-50 disabled:hover:bg-slate-100 border border-slate-200 text-slate-900 text-sm font-bold px-8 py-4 rounded-2xl flex items-center gap-3 transition-colors shadow-sm"
+                  >
+                    <LogOut size={18} className="text-slate-500" />
+                    SCAN OUT JOB
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+      </div>
+      
+      {/* Scan In Full Page Overlay */}
+      <ProductionIntake 
+        isOpen={isScanInOpen} 
+        onClose={closeScanInModal} 
+        support={support}
+        onSuccess={() => {
+          closeScanInModal();
+          handleScanInSuccess();
+        }}
+        loggedInEmployeeId={loggedInEmployee?.id}
+      />
     </div>
   );
 }

@@ -30,10 +30,15 @@ export async function lookupWorkOrder(woNo: string) {
 }
 
 export async function getTerminalSupportData() {
-  const [employees, weldingMachines, machiningMachines, materialTypes, weldingTypes, joints, elcometers] =
+  const [employees, weldingMachines, machiningMachines, materialTypes, weldingTypes, joints, elcometers, activeWorkOrders] =
     await Promise.all([
       prisma.employee.findMany({
-        where: { status: "ACTIVE" },
+        where: { 
+          status: "ACTIVE",
+          user: {
+            role: "PRODUCTION"
+          }
+        },
         select: { id: true, name: true, code: true },
         orderBy: { name: "asc" },
       }),
@@ -84,9 +89,24 @@ export async function getTerminalSupportData() {
         select: { id: true, serialNo: true },
         orderBy: { serialNo: "asc" },
       }),
+      prisma.workOrder.findMany({
+        where: { status: { in: ["Proceed", "WIP"] } },
+        select: { workOrderNo: true },
+        orderBy: { date: "desc" },
+        take: 50,
+      }),
     ]);
 
-  return { employees, weldingMachines, machiningMachines, materialTypes, weldingTypes, joints, elcometers };
+  return {
+    employees,
+    weldingMachines,
+    machiningMachines,
+    materialTypes,
+    weldingTypes,
+    joints,
+    elcometers,
+    activeWorkOrders,
+  };
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -203,6 +223,58 @@ export async function getOpenScans(workOrderNo: string, employeeId?: string) {
       },
     },
     orderBy: { timeIn: "asc" },
+  });
+  return JSON.parse(JSON.stringify(rows));
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Find open scans for a specific operator across ALL work orders (Terminal view)
+// ──────────────────────────────────────────────────────────────────────────────
+export async function getTerminalActiveSessions(employeeId?: string) {
+  const rows = await prisma.productionTimesheet.findMany({
+    where: {
+      timeOut: null,
+      ...(employeeId ? { employeeId } : {}),
+    },
+    include: {
+      employee: { select: { id: true, name: true, code: true } },
+      routingProcess: {
+        include: {
+          mainProcess: true,
+          routingProcess: true,
+          inProcess: { include: { workOrder: true } },
+          productionTimesheets: {
+            select: { completedQty: true }
+          }
+        },
+      },
+    },
+    orderBy: { timeIn: "desc" },
+  });
+  return JSON.parse(JSON.stringify(rows));
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Find recently completed scans (Terminal view)
+// ──────────────────────────────────────────────────────────────────────────────
+export async function getTerminalRecentCompletes(limit = 10, employeeId?: string) {
+  const rows = await prisma.productionTimesheet.findMany({
+    where: {
+      timeOut: { not: null },
+      ...(employeeId ? { employeeId } : {}),
+    },
+    include: {
+      employee: { select: { id: true, name: true, code: true } },
+      routingProcess: {
+        include: {
+          mainProcess: true,
+          routingProcess: true,
+          inProcess: { include: { workOrder: true } },
+        },
+      },
+    },
+    orderBy: { timeOut: "desc" },
+    take: limit,
   });
   return JSON.parse(JSON.stringify(rows));
 }
@@ -451,13 +523,16 @@ export async function scanOut(payload: ScanOutPayload) {
             ip.routingProcesses.every((r: any) => r.status === "Completed"),
         );
         if (allDone) {
-          await prisma.workOrder.update({
-            where: { workOrderNo: wo.workOrderNo },
-            data: { status: "Pending for QC" },
-          });
+          // You could do other final completion logic here if needed
         }
       }
     }
+
+    // Unconditionally send Work Order to QC on Scan Out as requested
+    await prisma.workOrder.update({
+      where: { workOrderNo: wo.workOrderNo },
+      data: { status: "Pending for QC" },
+    });
 
     revalidatePath("/terminal");
     revalidatePath(`/dashboard/production/work-order/${wo.workOrderNo}`);

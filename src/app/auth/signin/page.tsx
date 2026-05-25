@@ -34,6 +34,8 @@ function SignInForm() {
     const session = await getSession();
     if (session?.user?.role === "PRODUCTION") {
       router.push("/terminal");
+    } else if (session?.user?.role === "QC") {
+      router.push("/qc");
     } else {
       router.push(res.url ?? callbackUrl);
     }
