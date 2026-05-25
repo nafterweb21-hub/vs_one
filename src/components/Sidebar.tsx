@@ -182,6 +182,22 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
                 <ClipboardList size={16} />
                 <span>Non-Conformance Report (NCR)</span>
               </Link>
+              <Link
+                href="/dashboard/purchasing/purchase-order"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/purchasing/purchase-order")}
+              >
+                <FileText size={16} />
+                <span>Purchase Orders</span>
+              </Link>
+              <Link
+                href="/dashboard/purchasing/purchase-order-approval"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/purchasing/purchase-order-approval")}
+              >
+                <ClipboardList size={16} />
+                <span>Purchase Order Approval</span>
+              </Link>
             </div>
           )}
 
