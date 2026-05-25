@@ -48,7 +48,7 @@ export async function POST(request: Request) {
 
     if (items && items.length > 0) {
       for (let i = 0; i < items.length; i++) {
-        if (!items[i].finishedGoodId) return NextResponse.json({ error: `Item ${i + 1}: Part No / Description is required` }, { status: 400 });
+        if (!items[i].partId) return NextResponse.json({ error: `Item ${i + 1}: Part No / Description is required` }, { status: 400 });
         if (!items[i].uomId) return NextResponse.json({ error: `Item ${i + 1}: UOM is required` }, { status: 400 });
       }
     }
@@ -99,7 +99,7 @@ export async function POST(request: Request) {
             remark: item.remark || null,
             uploadUrl: item.uploadUrl || null,
             batches: {
-              create: (item.batches || [{
+              create: (item.batches && item.batches.length > 0 ? item.batches : [{
                 quantity: item.quantity,
                 deliveryDate: item.deliveryDate || new Date(),
                 noRoutingProcess: item.noRoutingProcess || false,

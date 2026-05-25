@@ -20,7 +20,6 @@ type FormValues = {
   conditionalSnId: string;
   allFlag: boolean;
   remark: string;
-  uploadUrl: string;
 };
 
 export default function AddInProcessModal({ workOrderNo, existingSteps, disabled }: Props) {
@@ -36,7 +35,6 @@ export default function AddInProcessModal({ workOrderNo, existingSteps, disabled
       conditionalSnId: "",
       allFlag: false,
       remark: "",
-      uploadUrl: "",
     },
   });
 
@@ -50,7 +48,6 @@ export default function AddInProcessModal({ workOrderNo, existingSteps, disabled
         conditionalSnId: data.conditionalSnId || undefined,
         allFlag: data.allFlag,
         remark: data.remark,
-        uploadUrl: data.uploadUrl,
       });
       if (!res.success) {
         setError(res.error || "An error occurred");
@@ -93,14 +90,14 @@ export default function AddInProcessModal({ workOrderNo, existingSteps, disabled
               <form id="in-process-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium text-slate-700">
-                    Description <span className="text-red-500">*</span>
+                    Inprocess Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register("description", { required: true })}
                     className={inputCls}
                     placeholder="e.g. Body Frame Assembly"
                   />
-                  {errors.description && <p className="text-xs text-red-500">Description is required</p>}
+                  {errors.description && <p className="text-xs text-red-500">Inprocess Name is required</p>}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -133,11 +130,6 @@ export default function AddInProcessModal({ workOrderNo, existingSteps, disabled
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium text-slate-700">Remark</label>
                   <textarea {...register("remark")} rows={2} className={inputCls} />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-slate-700">Upload File (URL)</label>
-                  <input {...register("uploadUrl")} placeholder="https://..." className={inputCls} />
                 </div>
               </form>
             </div>

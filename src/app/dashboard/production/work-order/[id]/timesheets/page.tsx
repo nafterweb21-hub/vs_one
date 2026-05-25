@@ -67,14 +67,22 @@ export default async function WorkOrderTimesheetsPage({
   });
 
   const rows = workOrder.inProcesses.flatMap((ip: any) =>
-    ip.routingProcesses.flatMap((rp: any) =>
-      rp.productionTimesheets.map((ts: any) => ({
-        ...ts,
-        inProcessDescription: `${ip.sn}. ${ip.description}`,
-        processName: rp.routingProcess?.routingProcess || rp.mainProcess?.process || "Unknown",
-      })),
-    ),
+    ip.routingProcesses.flatMap((rp: any) => {
+      let runningSum = 0;
+      return rp.productionTimesheets.map((ts: any) => {
+        const qty = Number(ts.completedQty) || 0;
+        runningSum += qty;
+        return {
+          ...ts,
+          inProcessDescription: `${ip.sn}. ${ip.description}`,
+          processName: rp.routingProcess?.routingProcess || rp.mainProcess?.process || "Unknown",
+          runningSum,
+        };
+      });
+    }),
   );
+
+  const totalOrderQty = Number(workOrder.quantity) || 0;
 
   const routingProcesses = workOrder.inProcesses.flatMap((ip: any) =>
     ip.routingProcesses.map((rp: any) => ({
@@ -158,6 +166,7 @@ export default async function WorkOrderTimesheetsPage({
                   <th className="px-4 py-3 font-semibold text-right">Qty</th>
                   <th className="px-4 py-3 font-semibold">Machine</th>
                   <th className="px-4 py-3 font-semibold text-center">Parameters</th>
+                  <th className="px-4 py-3 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
@@ -186,8 +195,26 @@ export default async function WorkOrderTimesheetsPage({
                         {ts.completed ? "Yes" : "No"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      {ts.completedQty ? Number(ts.completedQty).toString() : "-"}
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="font-medium">
+                          {ts.completedQty ? Number(ts.completedQty).toString() : "-"}
+                        </span>
+                        {ts.completedQty != null && totalOrderQty > 0 && (
+                          <div className="w-24 text-[10px]">
+                            <div className="flex justify-between text-slate-500 mb-0.5">
+                              <span>Rem: {Math.max(0, totalOrderQty - ts.runningSum)}</span>
+                              <span>{Math.min(100, Math.round((ts.runningSum / totalOrderQty) * 100))}%</span>
+                            </div>
+                            <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-blue-500 rounded-full"
+                                style={{ width: `${Math.min(100, (ts.runningSum / totalOrderQty) * 100)}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-slate-600">{ts.machineCodes || "-"}</td>
                     <td className="px-4 py-3 text-center">
@@ -196,6 +223,25 @@ export default async function WorkOrderTimesheetsPage({
                         spray={ts.sprayParameter ? JSON.parse(JSON.stringify(ts.sprayParameter)) : null}
                         machining={ts.machiningParameter ? JSON.parse(JSON.stringify(ts.machiningParameter)) : null}
                       />
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {editable && (
+                        <AddTimesheetModal
+                          workOrderNo={id}
+                          employees={employees}
+                          routingProcesses={routingProcesses}
+                          timesheet={{
+                            id: ts.id,
+                            routingProcessId: ts.routingProcessId,
+                            employeeId: ts.employeeId,
+                            timeIn: ts.timeIn ? ts.timeIn.toISOString() : null,
+                            timeOut: ts.timeOut ? ts.timeOut.toISOString() : null,
+                            completed: ts.completed,
+                            completedQty: ts.completedQty ? Number(ts.completedQty) : "",
+                            machineCodes: ts.machineCodes || "",
+                          }}
+                        />
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Pencil } from "lucide-react";
 import { upsertTimesheet } from "../actions";
 import { useRouter } from "next/navigation";
 
@@ -10,9 +10,10 @@ type AddTimesheetModalProps = {
   workOrderNo: string;
   employees: { id: string; name: string; code: string }[];
   routingProcesses: { id: string; name: string; description: string }[];
+  timesheet?: any;
 };
 
-export default function AddTimesheetModal({ workOrderNo, employees, routingProcesses }: AddTimesheetModalProps) {
+export default function AddTimesheetModal({ workOrderNo, employees, routingProcesses, timesheet }: AddTimesheetModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -20,13 +21,13 @@ export default function AddTimesheetModal({ workOrderNo, employees, routingProce
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: {
-      routingProcessId: "",
-      employeeId: "",
-      timeIn: "",
-      timeOut: "",
-      completed: false,
-      completedQty: "",
-      machineCodes: ""
+      routingProcessId: timesheet?.routingProcessId || "",
+      employeeId: timesheet?.employeeId || "",
+      timeIn: timesheet?.timeIn ? new Date(timesheet.timeIn).toISOString().slice(0, 16) : "",
+      timeOut: timesheet?.timeOut ? new Date(timesheet.timeOut).toISOString().slice(0, 16) : "",
+      completed: timesheet?.completed || false,
+      completedQty: timesheet?.completedQty || "",
+      machineCodes: timesheet?.machineCodes || ""
     }
   });
 
@@ -36,6 +37,7 @@ export default function AddTimesheetModal({ workOrderNo, employees, routingProce
 
     try {
       const result = await upsertTimesheet({
+        id: timesheet?.id,
         workOrderNo,
         routingProcessId: data.routingProcessId,
         employeeId: data.employeeId,
@@ -62,19 +64,29 @@ export default function AddTimesheetModal({ workOrderNo, employees, routingProce
 
   return (
     <>
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-      >
-        <Plus size={16} />
-        Add Timesheet
-      </button>
+      {timesheet ? (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+          title="Edit Timesheet"
+        >
+          <Pencil size={16} />
+        </button>
+      ) : (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+        >
+          <Plus size={16} />
+          Add Timesheet
+        </button>
+      )}
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h3 className="text-lg font-semibold text-slate-800">Add Production Timesheet</h3>
+              <h3 className="text-lg font-semibold text-slate-800">{timesheet ? 'Edit Production Timesheet' : 'Add Production Timesheet'}</h3>
               <button 
                 onClick={() => setIsOpen(false)}
                 className="p-1 hover:bg-slate-200 rounded-md text-slate-500 transition-colors"
@@ -194,7 +206,7 @@ export default function AddTimesheetModal({ workOrderNo, employees, routingProce
                 disabled={isSubmitting}
                 className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm font-medium shadow-sm shadow-blue-500/20"
               >
-                {isSubmitting ? "Saving..." : "Add Timesheet"}
+                {isSubmitting ? "Saving..." : timesheet ? "Save Changes" : "Add Timesheet"}
               </button>
             </div>
           </div>

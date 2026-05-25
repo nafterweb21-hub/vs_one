@@ -102,7 +102,7 @@ export default async function WorkOrderRoutingPage({
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-slate-800">In-Process Description</h3>
+            <h3 className="text-lg font-semibold text-slate-800">Inprocess Name</h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Within an in-process, routing runs strictly in sequence. New items can only be appended after existing Completed / WIP rows.
             </p>

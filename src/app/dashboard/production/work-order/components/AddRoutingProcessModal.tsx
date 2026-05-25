@@ -28,7 +28,6 @@ type FormValues = {
   routingProcessId: string;
   targetCompletionDate: string;
   remark: string;
-  uploadUrl: string;
 };
 
 export default function AddRoutingProcessModal({
@@ -48,7 +47,6 @@ export default function AddRoutingProcessModal({
       routingProcessId: "",
       targetCompletionDate: "",
       remark: "",
-      uploadUrl: "",
     },
   });
 
@@ -67,7 +65,6 @@ export default function AddRoutingProcessModal({
         routingProcessId: data.routingProcessId,
         targetCompletionDate: data.targetCompletionDate,
         remark: data.remark,
-        uploadUrl: data.uploadUrl,
       });
       if (!res.success) {
         setError(res.error || "An error occurred");
@@ -156,11 +153,6 @@ export default function AddRoutingProcessModal({
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium text-slate-700">Remark</label>
                   <textarea {...register("remark")} rows={2} className={inputCls} />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-slate-700">Upload File (URL)</label>
-                  <input {...register("uploadUrl")} placeholder="https://..." className={inputCls} />
                 </div>
               </form>
             </div>
