@@ -130,8 +130,8 @@ export default function PurchaseOrderEditPage() {
           );
         } else {
           // Defaults
-          if (fd.companies.length > 0) setCompanyId(fd.companies[0].id);
-          if (fd.employees.length > 0) setPurchaserId(fd.employees[0].id);
+          if (fd.companies?.length > 0) setCompanyId(fd.companies[0].id);
+          if (fd.employees?.length > 0) setPurchaserId(fd.employees[0].id);
           // Add default empty item
           setItems([{
             fromMaterialProfile: true,
@@ -161,7 +161,7 @@ export default function PurchaseOrderEditPage() {
   }, [id, isNew]);
 
   const selectedSupplier = useMemo(
-    () => data?.suppliers.find((s) => s.id === supplierId) || null,
+    () => data?.suppliers?.find((s) => s.id === supplierId) || null,
     [data, supplierId],
   );
 
@@ -199,7 +199,7 @@ export default function PurchaseOrderEditPage() {
 
   const handleCurrencyChange = (cid: string) => {
     setCurrencyId(cid);
-    const curr = data?.currencies.find(c => c.id === cid);
+    const curr = data?.currencies?.find(c => c.id === cid);
     if (curr) {
       setExchangeRate(Number(curr.exchangeRate).toFixed(4));
     }
@@ -207,7 +207,7 @@ export default function PurchaseOrderEditPage() {
 
   const handleTaxTypeChange = (tid: string) => {
     setTaxTypeId(tid);
-    const tax = data?.taxes.find(t => t.id === tid);
+    const tax = data?.taxes?.find(t => t.id === tid);
     if (tax) {
       setTaxRate(Number(tax.taxRate).toFixed(2));
     }
@@ -216,7 +216,7 @@ export default function PurchaseOrderEditPage() {
   const handlePrChange = (prId: string) => {
     setPurchaseRequisitionId(prId);
     if (prId) {
-      const pr = data?.purchaseRequisitions.find(p => p.id === prId);
+      const pr = data?.purchaseRequisitions?.find(p => p.id === prId);
       if (pr) {
         const newItems: Item[] = pr.items.map(it => ({
           fromMaterialProfile: it.fromMaterialProfile,
@@ -258,7 +258,7 @@ export default function PurchaseOrderEditPage() {
           updated.shape = "";
           updated.size = "";
         } else if (updated.fromMaterialProfile && patch.materialProfileId) {
-          const profile = data?.materials.find((m) => m.id === patch.materialProfileId);
+          const profile = data?.materials?.find((m) => m.id === patch.materialProfileId);
           if (profile) {
             updated.material = profile.partNo || "";
             updated.description = profile.description;
@@ -484,7 +484,7 @@ export default function PurchaseOrderEditPage() {
             className={inputCls}
           >
             <option value="">— Select —</option>
-            {data?.companies.map((c) => (
+            {data?.companies?.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.companyName}
               </option>
@@ -510,7 +510,7 @@ export default function PurchaseOrderEditPage() {
             className={inputCls}
           >
             <option value="">— Select —</option>
-            {data?.employees.map((e) => (
+            {data?.employees?.map((e) => (
               <option key={e.id} value={e.id}>
                 {e.name} ({e.code})
               </option>
@@ -527,7 +527,7 @@ export default function PurchaseOrderEditPage() {
           >
             <option value="">— Independent PO —</option>
             {data?.purchaseRequisitions
-              .filter(pr => !workOrderNo || pr.workOrderNo === workOrderNo)
+              ?.filter(pr => !workOrderNo || pr.workOrderNo === workOrderNo)
               .map((pr) => (
                 <option key={pr.id} value={pr.id}>
                   {pr.prNo}
@@ -544,7 +544,7 @@ export default function PurchaseOrderEditPage() {
             className={inputCls}
           >
             <option value="">— Select Supplier —</option>
-            {data?.suppliers.map((s) => (
+            {data?.suppliers?.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.supplierName}
               </option>
@@ -616,7 +616,7 @@ export default function PurchaseOrderEditPage() {
             className={inputCls}
           >
             <option value="">— None (Non Work Order) —</option>
-            {data?.workOrders.map((w) => (
+            {data?.workOrders?.map((w) => (
               <option key={w.workOrderNo} value={w.workOrderNo}>
                 {w.workOrderNo} - {w.jobDescription?.substring(0,20)}...
               </option>
@@ -632,7 +632,7 @@ export default function PurchaseOrderEditPage() {
             className={inputCls}
           >
             <option value="">— Select —</option>
-            {data?.currencies.map((c) => (
+            {data?.currencies?.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.code}
               </option>
@@ -658,7 +658,7 @@ export default function PurchaseOrderEditPage() {
             className={inputCls}
           >
             <option value="">— Select —</option>
-            {data?.taxes.map((t) => (
+            {data?.taxes?.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.taxType}
               </option>
@@ -738,7 +738,7 @@ export default function PurchaseOrderEditPage() {
                           className={inputCls}
                         >
                           <option value="">— Select —</option>
-                          {data?.materials.map((m) => (
+                          {data?.materials?.map((m) => (
                             <option key={m.id} value={m.id}>
                               {m.partNo ? `${m.partNo} — ` : ""}{m.description.slice(0, 30)}
                             </option>
@@ -808,7 +808,7 @@ export default function PurchaseOrderEditPage() {
                         className={inputCls}
                       >
                         <option value="">—</option>
-                        {data?.uoms.map((u) => (
+                        {data?.uoms?.map((u) => (
                           <option key={u.id} value={u.id}>
                             {u.uomName}
                           </option>
@@ -864,7 +864,7 @@ export default function PurchaseOrderEditPage() {
                         className={inputCls}
                       >
                         <option value="">—</option>
-                        {data?.uoms.map((u) => (
+                        {data?.uoms?.map((u) => (
                           <option key={u.id} value={u.id}>
                             {u.uomName}
                           </option>

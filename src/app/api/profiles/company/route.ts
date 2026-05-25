@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
 
     const created = await prisma.companyProfile.create({
       data: {
+        id: crypto.randomUUID(),
         companyName: body.companyName,
         address: body.address,
         phoneNo: body.phoneNo,
@@ -55,7 +56,8 @@ export async function POST(req: NextRequest) {
         footerName: body.footerName,
         allowPoForWo: body.allowPoForWo || false,
         as9100RequirementNote: body.as9100RequirementNote || false,
-        status: body.status || "Active"
+        status: body.status || "Active",
+        updatedAt: new Date()
       }
     });
 
