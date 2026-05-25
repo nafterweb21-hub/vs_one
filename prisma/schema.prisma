@@ -111,52 +111,57 @@ model MaterialType {
 // Currency Profile
 // ==========================================
 model Currency {
-  id           String       @id @default(cuid())
-  code         String       @unique // Immutable
-  name         String       @unique // Immutable
-  exchangeRate Decimal
-  isDefault    Boolean      @default(false)
-  status       String       @default("Active")
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  salesOrders  SalesOrder[]
-  quotations   Quotation[]
+  id             String          @id @default(cuid())
+  code           String          @unique // Immutable
+  name           String          @unique // Immutable
+  exchangeRate   Decimal
+  isDefault      Boolean         @default(false)
+  status         String          @default("Active")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  salesOrders    SalesOrder[]
+  quotations     Quotation[]
+  purchaseOrders PurchaseOrder[]
 }
 
 model Employee {
-  id                     String                          @id @default(cuid())
-  code                   String                          @unique
-  name                   String
-  nricFin                String                          @unique
-  designation            String?
-  email                  String
-  mobileNo               String?
-  gender                 String? // Male / Female
-  contactNo              String?
-  employmentType         String? // Citizen / PR / Employment Pass / S Pass / Work Permit
-  status                 String                          @default("ACTIVE") // ACTIVE / INACTIVE
-  createdAt              DateTime                        @default(now())
-  updatedAt              DateTime                        @updatedAt
-  salesOrders            SalesOrder[]
-  quotations             Quotation[]
-  qcWorkOrders           WorkOrder[]                     @relation("WorkOrderQc")
-  productionTimesheets   ProductionTimesheet[]           @relation("TimesheetEmployee")
-  weldingConfirmations   ProcessParameterWelding[]       @relation("WeldingConfirmedBy")
-  sprayConfirmations     ProcessParameterSprayPainting[] @relation("SprayConfirmedBy")
-  machiningConfirmations ProcessParameterMachining[]     @relation("MachiningConfirmedBy")
-  user                   User?                           @relation("EmployeeUser")
-  purchaseRequisitions   PurchaseRequisition[]
+  id                      String                          @id @default(cuid())
+  code                    String                          @unique
+  name                    String
+  nricFin                 String                          @unique
+  designation             String?
+  email                   String
+  mobileNo                String?
+  gender                  String? // Male / Female
+  contactNo               String?
+  employmentType          String? // Citizen / PR / Employment Pass / S Pass / Work Permit
+  status                  String                          @default("ACTIVE") // ACTIVE / INACTIVE
+  createdAt               DateTime                        @default(now())
+  updatedAt               DateTime                        @updatedAt
+  salesOrders             SalesOrder[]
+  quotations              Quotation[]
+  qcWorkOrders            WorkOrder[]                     @relation("WorkOrderQc")
+  productionTimesheets    ProductionTimesheet[]           @relation("TimesheetEmployee")
+  weldingConfirmations    ProcessParameterWelding[]       @relation("WeldingConfirmedBy")
+  sprayConfirmations      ProcessParameterSprayPainting[] @relation("SprayConfirmedBy")
+  machiningConfirmations  ProcessParameterMachining[]     @relation("MachiningConfirmedBy")
+  user                    User?                           @relation("EmployeeUser")
+  purchaseRequisitions    PurchaseRequisition[]
+  purchaseOrdersPurchaser PurchaseOrder[]                 @relation("PoPurchaser")
+  purchaseOrdersApprove1  PurchaseOrder[]                 @relation("PoApproval1")
+  purchaseOrdersApprove2  PurchaseOrder[]                 @relation("PoApproval2")
 }
 
 model TaxProfile {
-  id          String       @id @default(cuid())
-  taxType     String       @unique
-  taxRate     Float
-  status      String       @default("Active") // "Active" or "Inactive"
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  salesOrders SalesOrder[]
-  quotations  Quotation[]
+  id             String          @id @default(cuid())
+  taxType        String          @unique
+  taxRate        Float
+  status         String          @default("Active") // "Active" or "Inactive"
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  salesOrders    SalesOrder[]
+  quotations     Quotation[]
+  purchaseOrders PurchaseOrder[]
 }
 
 model CustomerProfile {
@@ -216,18 +221,19 @@ model MaterialCategory {
 }
 
 model MaterialProfile {
-  id          String           @id @default(cuid())
-  partNo      String?          @unique // Not mandatory, unique
-  description String           @unique // Mandatory, unique
-  shape       String // Mandatory
-  size        String? // Not mandatory
-  categoryId  String // Dropdown from Material Category profile
-  category    MaterialCategory @relation(fields: [categoryId], references: [id])
-  remark      String?
-  status      String           @default("Active") // Default Active
+  id                       String                    @id @default(cuid())
+  partNo                   String?                   @unique // Not mandatory, unique
+  description              String                    @unique // Mandatory, unique
+  shape                    String // Mandatory
+  size                     String? // Not mandatory
+  categoryId               String // Dropdown from Material Category profile
+  category                 MaterialCategory          @relation(fields: [categoryId], references: [id])
+  remark                   String?
+  status                   String                    @default("Active") // Default Active
   createdAt                DateTime                  @default(now())
   updatedAt                DateTime                  @updatedAt
   purchaseRequisitionItems PurchaseRequisitionItem[]
+  purchaseOrderItems       PurchaseOrderItem[]
 }
 
 model WeldingTypeProfile {
@@ -287,6 +293,7 @@ model SupplierProfile {
   addresses      SupplierAddress[]
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
+  purchaseOrders PurchaseOrder[]
 }
 
 model SupplierContactPerson {
@@ -303,6 +310,7 @@ model SupplierContactPerson {
   isDefault         Boolean         @default(false)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+  purchaseOrders    PurchaseOrder[]
 }
 
 model SupplierAddress {
@@ -332,16 +340,18 @@ model FinishedGoodProfile {
 // UOM Profile
 // ==========================================
 model UomProfile {
-  id              String           @id @default(cuid())
-  uomName         String           @unique // Immutable after save
-  remarks         String?
-  status          String           @default("Active") // "Active" or "Inactive"
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  salesOrderItems SalesOrderItem[]
-  workOrders      WorkOrder[]
+  id                       String                    @id @default(cuid())
+  uomName                  String                    @unique // Immutable after save
+  remarks                  String?
+  status                   String                    @default("Active") // "Active" or "Inactive"
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  salesOrderItems          SalesOrderItem[]
+  workOrders               WorkOrder[]
   quotationItems           QuotationItem[]
   purchaseRequisitionItems PurchaseRequisitionItem[]
+  purchaseOrderItemsPoUom  PurchaseOrderItem[]       @relation("PoUom")
+  purchaseOrderItemsIntUom PurchaseOrderItem[]       @relation("InternalUom")
 }
 
 // ==========================================
@@ -570,6 +580,7 @@ model WorkOrder {
 
   inProcesses          WorkOrderInProcess[]
   purchaseRequisitions PurchaseRequisition[]
+  purchaseOrders       PurchaseOrder[]
 }
 
 model WorkOrderInProcess {
@@ -784,8 +795,8 @@ model MachiningToolList {
 // Company Profile
 // ==========================================
 model CompanyProfile {
-  id                    String   @id @default(cuid())
-  companyName           String   @unique
+  id                    String                @id @default(cuid())
+  companyName           String                @unique
   address               String
   phoneNo               String
   faxNo                 String
@@ -796,12 +807,13 @@ model CompanyProfile {
   uploadUrl             String
   logoName              String
   footerName            String
-  allowPoForWo          Boolean  @default(false)
-  as9100RequirementNote Boolean  @default(false)
-  status                String   @default("Active") // "Active" or "Inactive"
+  allowPoForWo          Boolean               @default(false)
+  as9100RequirementNote Boolean               @default(false)
+  status                String                @default("Active") // "Active" or "Inactive"
   createdAt             DateTime              @default(now())
   updatedAt             DateTime              @updatedAt
   purchaseRequisitions  PurchaseRequisition[]
+  purchaseOrders        PurchaseOrder[]
 }
 
 // ==========================================
@@ -874,12 +886,12 @@ model QuotationItem {
   partId String?
   part   FinishedGoodProfile? @relation(fields: [partId], references: [id])
   uomId  String?
-  uom    UomProfile? @relation(fields: [uomId], references: [id])
+  uom    UomProfile?          @relation(fields: [uomId], references: [id])
 
-  unitPrice   Decimal @default(0)
-  quantity    Int     @default(1)
-  amount      Decimal @default(0) // qty * unitPrice
-  sortOrder   Int     @default(0)
+  unitPrice Decimal @default(0)
+  quantity  Int     @default(1)
+  amount    Decimal @default(0) // qty * unitPrice
+  sortOrder Int     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -889,57 +901,172 @@ model QuotationItem {
 // Purchase Requisition Module
 // ==========================================
 model PurchaseRequisition {
-  id              String   @id @default(cuid())
-  prNo            String   // PRYYXXXXX (e.g. PR1700003) - shared across revisions
-  revision        Int      @default(0) // Revision count (starts at 0)
-  date            DateTime // Entry Date (default today, forward allowed, no backdate)
-  status          String   @default("Draft") // Draft / Void / Submitted
-  poStatus        String   @default("N/A") // N/A / Partially Issued / Fully Issued / Cancelled
-  remark          String?
+  id       String   @id @default(cuid())
+  prNo     String // PRYYXXXXX (e.g. PR1700003) - shared across revisions
+  revision Int      @default(0) // Revision count (starts at 0)
+  date     DateTime // Entry Date (default today, forward allowed, no backdate)
+  status   String   @default("Draft") // Draft / Void / Submitted
+  poStatus String   @default("N/A") // N/A / Partially Issued / Fully Issued / Cancelled
+  remark   String?
 
-  companyId       String
-  company         CompanyProfile @relation(fields: [companyId], references: [id])
+  companyId String
+  company   CompanyProfile @relation(fields: [companyId], references: [id])
 
-  workOrderNo     String?
-  workOrder       WorkOrder? @relation(fields: [workOrderNo], references: [workOrderNo])
+  workOrderNo String?
+  workOrder   WorkOrder? @relation(fields: [workOrderNo], references: [workOrderNo])
 
-  requestedById   String
-  requestedBy     Employee @relation(fields: [requestedById], references: [id])
+  requestedById String
+  requestedBy   Employee @relation(fields: [requestedById], references: [id])
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  items           PurchaseRequisitionItem[]
+  items          PurchaseRequisitionItem[]
+  purchaseOrders PurchaseOrder[]
 
   @@unique([prNo, revision])
 }
 
 model PurchaseRequisitionItem {
-  id                      String              @id @default(cuid())
-  purchaseRequisitionId   String
-  purchaseRequisition     PurchaseRequisition @relation(fields: [purchaseRequisitionId], references: [id], onDelete: Cascade)
+  id                    String              @id @default(cuid())
+  purchaseRequisitionId String
+  purchaseRequisition   PurchaseRequisition @relation(fields: [purchaseRequisitionId], references: [id], onDelete: Cascade)
 
-  fromMaterialProfile     Boolean             @default(false)
-  material                String?             // Input material text or code
-  description             String              // Description (from profile or user input)
-  shape                   String?
-  size                    String?
-  uomId                   String
-  uom                     UomProfile          @relation(fields: [uomId], references: [id])
+  fromMaterialProfile Boolean    @default(false)
+  material            String? // Input material text or code
+  description         String // Description (from profile or user input)
+  shape               String?
+  size                String?
+  uomId               String
+  uom                 UomProfile @relation(fields: [uomId], references: [id])
 
-  quantity                Decimal             // Decimal (2 decimals)
-  cancelQuantity          Decimal             @default(0) // Decimal (2 decimals)
-  prQuantity              Decimal             // System calculated: quantity - cancelQuantity
-  deliveryDate            DateTime            // Required
-  remark                  String?
+  quantity       Decimal // Decimal (2 decimals)
+  cancelQuantity Decimal  @default(0) // Decimal (2 decimals)
+  prQuantity     Decimal // System calculated: quantity - cancelQuantity
+  deliveryDate   DateTime // Required
+  remark         String?
 
-  poQuantityIssued        Decimal             @default(0) // System calculated based on issued POs
-  balanceRequirePurchase  Decimal             // System calculated: prQuantity - poQuantityIssued
+  poQuantityIssued       Decimal @default(0) // System calculated based on issued POs
+  balanceRequirePurchase Decimal // System calculated: prQuantity - poQuantityIssued
 
-  materialProfileId       String?
-  materialProfile         MaterialProfile?    @relation(fields: [materialProfileId], references: [id])
+  materialProfileId String?
+  materialProfile   MaterialProfile? @relation(fields: [materialProfileId], references: [id])
 
-  sortOrder               Int                 @default(0)
-  createdAt               DateTime            @default(now())
-  updatedAt               DateTime            @updatedAt
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchaseOrderItems PurchaseOrderItem[]
+}
+
+// ==========================================
+// Purchase Order Module
+// ==========================================
+model PurchaseOrder {
+  id       String   @id @default(cuid())
+  poNo     String // POYYXXXXX (e.g. PO1700003) - shared across revisions
+  revision Int      @default(0)
+  date     DateTime
+
+  companyId String
+  company   CompanyProfile @relation(fields: [companyId], references: [id])
+
+  supplierId String
+  supplier   SupplierProfile @relation(fields: [supplierId], references: [id])
+
+  workOrderNo String?
+  workOrder   WorkOrder? @relation(fields: [workOrderNo], references: [workOrderNo])
+
+  purchaseRequisitionId String?
+  purchaseRequisition   PurchaseRequisition? @relation(fields: [purchaseRequisitionId], references: [id])
+
+  currencyId   String
+  currency     Currency @relation(fields: [currencyId], references: [id])
+  exchangeRate Decimal
+
+  taxTypeId String
+  taxType   TaxProfile @relation(fields: [taxTypeId], references: [id])
+  taxRate   Float
+
+  amountBeforeTax Decimal
+  taxAmount       Decimal
+  amountAfterTax  Decimal
+
+  millCertificate   Boolean @default(false)
+  certOfConformance Boolean @default(false)
+
+  contactPersonId String
+  contactPerson   SupplierContactPerson @relation(fields: [contactPersonId], references: [id])
+  telNo           String?
+  faxNo           String?
+  mobileNo        String?
+  email           String
+
+  approval1ById String?
+  approval1By   Employee? @relation("PoApproval1", fields: [approval1ById], references: [id])
+  approval1Date DateTime?
+
+  approval2ById String?
+  approval2By   Employee? @relation("PoApproval2", fields: [approval2ById], references: [id])
+  approval2Date DateTime?
+
+  receiveStatus String @default("NA")
+
+  purchaserId String
+  purchaser   Employee @relation("PoPurchaser", fields: [purchaserId], references: [id])
+
+  remark String?
+  status String  @default("Draft")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items PurchaseOrderItem[]
+
+  @@unique([poNo, revision])
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+
+  fromMaterialProfile Boolean @default(false)
+  material            String?
+  description         String
+  supplierMaterialNo  String?
+  shape               String?
+  size                String?
+
+  quantity Decimal
+
+  poUomId String
+  poUom   UomProfile @relation("PoUom", fields: [poUomId], references: [id])
+
+  unitPrice Decimal
+  amount    Decimal
+
+  conversion Decimal @default(1)
+
+  internalUomId String?
+  internalUom   UomProfile? @relation("InternalUom", fields: [internalUomId], references: [id])
+
+  internalQuantity Decimal
+
+  totalReceived Decimal @default(0)
+  totalReturned Decimal @default(0)
+  nettReceived  Decimal @default(0)
+
+  deliveryDate DateTime
+  remark       String?
+
+  materialProfileId String?
+  materialProfile   MaterialProfile? @relation(fields: [materialProfileId], references: [id])
+
+  purchaseRequisitionItemId String?
+  purchaseRequisitionItem   PurchaseRequisitionItem? @relation(fields: [purchaseRequisitionItemId], references: [id])
+
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
