@@ -157,6 +157,22 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             </div>
           )}
 
+          {allow("/dashboard/qc/ncr") && (
+            <div className="pt-4">
+              <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                Quality Control
+              </p>
+              <Link
+                href="/dashboard/qc/ncr"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/qc/ncr")}
+              >
+                <ClipboardList size={16} />
+                <span>Non-Conformance Report (NCR)</span>
+              </Link>
+            </div>
+          )}
+
           {allow("/dashboard/profiles/currency") && (
           <div className="pt-4">
             <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
