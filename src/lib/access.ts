@@ -26,6 +26,7 @@ export const ACCESS_RULES: Array<{ prefix: string; roles: Role[] }> = [
   { prefix: "/dashboard/admin", roles: ["ADMIN"] },
   { prefix: "/dashboard/sales", roles: ["ADMIN", "SALES"] },
   { prefix: "/dashboard/production", roles: ["ADMIN", "PRODUCTION", "PLANNER", "QC"] },
+  { prefix: "/dashboard/purchasing", roles: ["ADMIN", "PURCHASING"] },
   { prefix: "/dashboard/profiles", roles: ["ADMIN"] },
   { prefix: "/dashboard/master-profile", roles: ["ADMIN"] },
   // Root /dashboard is reachable by any authenticated role.
