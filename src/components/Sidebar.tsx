@@ -141,6 +141,22 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             </div>
           )}
 
+          {allow("/dashboard/purchase/subcon") && (
+            <div className="pt-4">
+              <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                Purchase
+              </p>
+              <Link
+                href="/dashboard/purchase/subcon"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/purchase/subcon")}
+              >
+                <ShoppingCart size={16} />
+                <span>PO - Subcon</span>
+              </Link>
+            </div>
+          )}
+
           {allow("/dashboard/profiles/currency") && (
           <div className="pt-4">
             <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">

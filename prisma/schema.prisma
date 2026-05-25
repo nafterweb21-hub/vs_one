@@ -34,6 +34,8 @@ model User {
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   approvals     ApprovalPerson[]
+  poSubconApprovals1 PurchaseOrderSubcon[] @relation("PoApproval1")
+  poSubconApprovals2 PurchaseOrderSubcon[] @relation("PoApproval2")
 }
 
 model Account {
@@ -121,6 +123,7 @@ model Currency {
   updatedAt    DateTime     @updatedAt
   salesOrders  SalesOrder[]
   quotations   Quotation[]
+  poSubcons    PurchaseOrderSubcon[]
 }
 
 model Employee {
@@ -145,6 +148,7 @@ model Employee {
   sprayConfirmations     ProcessParameterSprayPainting[] @relation("SprayConfirmedBy")
   machiningConfirmations ProcessParameterMachining[]     @relation("MachiningConfirmedBy")
   user                   User?                           @relation("EmployeeUser")
+  poSubcons    PurchaseOrderSubcon[]
 }
 
 model TaxProfile {
@@ -156,6 +160,7 @@ model TaxProfile {
   updatedAt   DateTime     @updatedAt
   salesOrders SalesOrder[]
   quotations  Quotation[]
+  poSubcons    PurchaseOrderSubcon[]
 }
 
 model CustomerProfile {
@@ -257,6 +262,7 @@ model MainProcess {
   updatedAt        DateTime         @updatedAt
   processProfiles  ProcessProfile[]
   routingProcesses RoutingProcess[]
+  poSubconItems PurchaseOrderSubconItem[]
 }
 
 model ProcessProfile {
@@ -273,6 +279,7 @@ model ProcessProfile {
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
   routingProcesses RoutingProcess[]
+  poSubconItems PurchaseOrderSubconItem[]
 }
 
 model SupplierProfile {
@@ -285,6 +292,7 @@ model SupplierProfile {
   addresses      SupplierAddress[]
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
+  poSubcons    PurchaseOrderSubcon[]
 }
 
 model SupplierContactPerson {
@@ -301,6 +309,7 @@ model SupplierContactPerson {
   isDefault         Boolean         @default(false)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+  poSubcons    PurchaseOrderSubcon[]
 }
 
 model SupplierAddress {
@@ -339,6 +348,7 @@ model UomProfile {
   salesOrderItems SalesOrderItem[]
   workOrders      WorkOrder[]
   quotationItems  QuotationItem[]
+  poSubconItems PurchaseOrderSubconItem[]
 }
 
 // ==========================================
@@ -566,6 +576,7 @@ model WorkOrder {
   updatedAt DateTime @updatedAt
 
   inProcesses WorkOrderInProcess[]
+  poSubcons    PurchaseOrderSubcon[]
 }
 
 model WorkOrderInProcess {
@@ -592,6 +603,7 @@ model WorkOrderInProcess {
   routingProcesses RoutingProcess[]
 
   @@unique([workOrderNo, description])
+  poSubconItems PurchaseOrderSubconItem[]
 }
 
 model RoutingProcess {
@@ -797,6 +809,8 @@ model CompanyProfile {
   status                String   @default("Active") // "Active" or "Inactive"
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+  allowPoSubconWithoutWo Boolean @default(false)
+  poSubcons    PurchaseOrderSubcon[]
 }
 
 // ==========================================
@@ -878,4 +892,102 @@ model QuotationItem {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+
+// ==========================================
+// Purchase Order Subcon
+// ==========================================
+model PurchaseOrderSubcon {
+  id              String   @id @default(cuid())
+  poNo            String
+  revision        Int      @default(0)
+  poDate          DateTime
+
+  companyId       String?
+  company         CompanyProfile? @relation(fields: [companyId], references: [id])
+
+  purchaserId     String
+  purchaser       Employee @relation(fields: [purchaserId], references: [id])
+
+  supplierId      String
+  supplier        SupplierProfile @relation(fields: [supplierId], references: [id])
+
+  workOrderNo     String?
+  workOrder       WorkOrder? @relation(fields: [workOrderNo], references: [workOrderNo])
+
+  currencyId      String
+  currency        Currency @relation(fields: [currencyId], references: [id])
+  exchangeRate    Decimal
+
+  amountBeforeTax Decimal
+  taxTypeId       String?
+  taxType         TaxProfile? @relation(fields: [taxTypeId], references: [id])
+  taxRate         Float?
+  taxAmount       Decimal?
+  amountAfterTax  Decimal
+
+  millCert          Boolean @default(false)
+  certOfConformance Boolean @default(false)
+
+  contactPersonId String?
+  contactPerson   SupplierContactPerson? @relation(fields: [contactPersonId], references: [id])
+  
+  tel             String?
+  fax             String?
+  mobile          String?
+  email           String?
+
+  approval1ById   String?
+  approval1By     User? @relation("PoApproval1", fields: [approval1ById], references: [id])
+  approval1Date   DateTime?
+
+  approval2ById   String?
+  approval2By     User? @relation("PoApproval2", fields: [approval2ById], references: [id])
+  approval2Date   DateTime?
+
+  status          String @default("Draft") // Draft, Void, Old Version, Revised, Pending For Approval, Rejected, Approved, Issued
+  receiveStatus   String @default("NA") // NA, Not Received, Partially Received, Fully Received
+  poRemark        String?
+  
+  items           PurchaseOrderSubconItem[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([poNo, revision])
+}
+
+model PurchaseOrderSubconItem {
+  id                    String @id @default(cuid())
+  purchaseOrderSubconId String
+  purchaseOrderSubcon   PurchaseOrderSubcon @relation(fields: [purchaseOrderSubconId], references: [id], onDelete: Cascade)
+
+  description           String
+  quantity              Int
+  uomId                 String
+  uom                   UomProfile @relation(fields: [uomId], references: [id])
+  
+  unitPrice             Decimal
+  amount                Decimal
+
+  inProcessId           String?
+  inProcess             WorkOrderInProcess? @relation(fields: [inProcessId], references: [id])
+
+  mainProcessId         String?
+  mainProcess           MainProcess? @relation(fields: [mainProcessId], references: [id])
+
+  routingProcessId      String?
+  routingProcess        ProcessProfile? @relation(fields: [routingProcessId], references: [id])
+
+  hardness              String?
+  thickness             String?
+  deliveryDate          DateTime
+
+  remark                String?
+  qtyAcknowledged       Int @default(0)
+  qtyReturned           Int @default(0)
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }

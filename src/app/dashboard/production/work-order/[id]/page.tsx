@@ -15,13 +15,21 @@ export default async function WorkOrderDetailPage({
   
   let workOrder = null;
   if (!isNew) {
-    workOrder = await prisma.workOrder.findUnique({
+    const dbWorkOrder = await prisma.workOrder.findUnique({
       where: { workOrderNo: id },
     });
 
-    if (!workOrder) {
+    if (!dbWorkOrder) {
       notFound();
     }
+
+    // Convert Prisma Decimal objects to numbers to pass to Client Component safely
+    workOrder = {
+      ...dbWorkOrder,
+      quantity: dbWorkOrder.quantity ? dbWorkOrder.quantity.toNumber() : null,
+      amount: dbWorkOrder.amount ? dbWorkOrder.amount.toNumber() : null,
+      labelQty: dbWorkOrder.labelQty ? dbWorkOrder.labelQty.toNumber() : null,
+    };
   }
 
   const dependencies = await fetchWorkOrderFormDependencies();
