@@ -329,6 +329,29 @@ async function main() {
   }
   console.log(`  Welding types: ${weldingTypes.length}`);
 
+  // ---------- Production User ----------
+  await prisma.user.upsert({
+    where: { id: "user-prod" },
+    create: {
+      id: "user-prod",
+      name: "Production Emp",
+      email: "prod@visionone.com",
+      role: UserRole.PRODUCTION,
+      passwordHash: defaultPasswordHash,
+      isActive: true,
+      employeeId: "emp-1",
+    },
+    update: {
+      name: "Production Emp",
+      email: "prod@visionone.com",
+      role: UserRole.PRODUCTION,
+      passwordHash: defaultPasswordHash,
+      isActive: true,
+      employeeId: "emp-1",
+    },
+  });
+  console.log(`  Production User Added`);
+
   console.log("Seed complete.");
 }
 

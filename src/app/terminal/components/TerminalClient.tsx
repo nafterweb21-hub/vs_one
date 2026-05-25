@@ -190,7 +190,7 @@ export default function TerminalClient({ support }: { support: Support }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
       {/* LEFT: scan flow */}
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-5 space-y-4">
+      <div className="bg-white/80 border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl rounded-2xl p-6 space-y-4">
         <div className="flex items-center gap-2">
           <ScanLine size={20} className="text-blue-400" />
           <input
@@ -198,25 +198,25 @@ export default function TerminalClient({ support }: { support: Support }) {
             onChange={(e) => setWoNo(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && lookup()}
             placeholder="Scan or type Work Order No (e.g. 800003-1-1)"
-            className="flex-1 px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-100 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
+            className="flex-1 px-3 py-2 border border-blue-200 rounded-xl text-sm bg-white text-slate-800 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 shadow-inner placeholder:text-slate-500 transition-all"
             autoFocus
           />
           <button
             onClick={lookup}
             disabled={isPending}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg"
+            className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 disabled:opacity-50 text-white text-sm font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-all"
           >
             Lookup
           </button>
           {wo && (
-            <button onClick={reset} className="px-3 py-2 text-slate-300 hover:text-white" title="Clear">
+            <button onClick={reset} className="px-3 py-2 text-slate-500 hover:text-rose-500 bg-slate-50 hover:bg-rose-50 rounded-full transition-all" title="Clear">
               <X size={18} />
             </button>
           )}
         </div>
 
-        {error && <div className="bg-rose-900/40 border border-rose-700 text-rose-200 p-3 rounded-lg text-sm">{error}</div>}
-        {info && <div className="bg-emerald-900/30 border border-emerald-700 text-emerald-200 p-3 rounded-lg text-sm">{info}</div>}
+        {error && <div className="bg-rose-50 border border-rose-200 text-rose-700 shadow-sm p-3 rounded-lg text-sm">{error}</div>}
+        {info && <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 shadow-sm p-3 rounded-lg text-sm">{info}</div>}
 
         {wo && (
           <>
@@ -224,7 +224,7 @@ export default function TerminalClient({ support }: { support: Support }) {
               <button
                 onClick={() => setMode("IN")}
                 className={`flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 ${
-                  mode === "IN" ? "bg-blue-600 text-white" : "bg-slate-700 text-slate-300"
+                  mode === "IN" ? "bg-blue-600 text-white shadow-md shadow-blue-500/20" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
                 }`}
               >
                 <LogIn size={16} /> Scan IN
@@ -232,7 +232,7 @@ export default function TerminalClient({ support }: { support: Support }) {
               <button
                 onClick={() => setMode("OUT")}
                 className={`flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 ${
-                  mode === "OUT" ? "bg-amber-600 text-white" : "bg-slate-700 text-slate-300"
+                  mode === "OUT" ? "bg-amber-500 text-white shadow-md shadow-amber-500/20" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
                 }`}
               >
                 <LogOut size={16} /> Scan OUT
@@ -272,7 +272,7 @@ export default function TerminalClient({ support }: { support: Support }) {
                 <button
                   onClick={doScanIn}
                   disabled={isPending}
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold rounded-lg"
+                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all"
                 >
                   {isPending ? "Scanning..." : "SCAN IN"}
                 </button>
@@ -280,9 +280,9 @@ export default function TerminalClient({ support }: { support: Support }) {
             ) : (
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs font-medium text-slate-400">Open Scans</label>
+                  <label className="text-xs font-medium text-slate-500">Open Scans</label>
                   {openScans.length === 0 ? (
-                    <div className="mt-1 p-3 border border-dashed border-slate-700 rounded-lg text-xs text-slate-500">
+                    <div className="mt-1 p-3 border border-dashed border-slate-200 rounded-xl text-xs text-slate-500 bg-slate-50">
                       No open scans for this WO.
                     </div>
                   ) : (
@@ -291,7 +291,7 @@ export default function TerminalClient({ support }: { support: Support }) {
                         <label
                           key={s.id}
                           className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer ${
-                            selectedScanId === s.id ? "border-amber-500 bg-amber-900/20" : "border-slate-700 hover:bg-slate-700/40"
+                            selectedScanId === s.id ? "border-amber-400 bg-amber-50 shadow-inner ring-1 ring-amber-400" : "border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 shadow-sm"
                           }`}
                         >
                           <input
@@ -300,10 +300,10 @@ export default function TerminalClient({ support }: { support: Support }) {
                             onChange={() => setSelectedScanId(s.id)}
                           />
                           <div className="text-xs">
-                            <div className="font-medium text-slate-100">
+                            <div className="font-medium text-slate-800">
                               {s.employee.name} — {s.routingProcess.routingProcess?.routingProcess ?? "?"}
                             </div>
-                            <div className="text-slate-400">
+                            <div className="text-slate-500">
                               {s.routingProcess.inProcess.sn}. {s.routingProcess.inProcess.description}
                               {" · "}
                               IN: {new Date(s.timeIn).toLocaleTimeString()}
@@ -319,29 +319,29 @@ export default function TerminalClient({ support }: { support: Support }) {
                   <>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-xs font-medium text-slate-400">Completed Qty *</label>
+                        <label className="text-xs font-medium text-slate-500">Completed Qty *</label>
                         <input
                           type="number"
                           step="1"
                           value={completedQty}
                           onChange={(e) => setCompletedQty(e.target.value)}
-                          className="mt-1 w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-100"
+                          className="mt-1 w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-800"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-slate-400">Machine Code(s)</label>
+                        <label className="text-xs font-medium text-slate-500">Machine Code(s)</label>
                         <input
                           value={machineCodes}
                           onChange={(e) => setMachineCodes(e.target.value)}
                           placeholder="comma-separated"
-                          className="mt-1 w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-100"
+                          className="mt-1 w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-800"
                         />
                       </div>
                     </div>
 
                     {flags?.welding && (
-                      <div className="border-t border-slate-700 pt-4">
-                        <h4 className="text-sm font-semibold text-blue-300 mb-3">Welding Parameters</h4>
+                      <div className="border-t border-slate-200 pt-4">
+                        <h4 className="text-sm font-semibold text-blue-600 mb-3">Welding Parameters</h4>
                         <WeldingForm
                           value={welding}
                           onChange={setWelding}
@@ -353,14 +353,14 @@ export default function TerminalClient({ support }: { support: Support }) {
                       </div>
                     )}
                     {flags?.spray && (
-                      <div className="border-t border-slate-700 pt-4">
-                        <h4 className="text-sm font-semibold text-blue-300 mb-3">Spray Painting Parameters</h4>
+                      <div className="border-t border-slate-200 pt-4">
+                        <h4 className="text-sm font-semibold text-blue-600 mb-3">Spray Painting Parameters</h4>
                         <SprayForm value={spray} onChange={setSpray} />
                       </div>
                     )}
                     {flags?.machining && (
-                      <div className="border-t border-slate-700 pt-4">
-                        <h4 className="text-sm font-semibold text-blue-300 mb-3">Machining Parameters</h4>
+                      <div className="border-t border-slate-200 pt-4">
+                        <h4 className="text-sm font-semibold text-blue-600 mb-3">Machining Parameters</h4>
                         <MachiningForm
                           value={machining}
                           onChange={setMachining}
@@ -372,7 +372,7 @@ export default function TerminalClient({ support }: { support: Support }) {
                     <button
                       onClick={doScanOut}
                       disabled={isPending}
-                      className="w-full py-3 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white font-semibold rounded-lg"
+                      className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 transition-all"
                     >
                       {isPending ? "Saving..." : "OK to SCAN OUT"}
                     </button>
@@ -385,8 +385,8 @@ export default function TerminalClient({ support }: { support: Support }) {
       </div>
 
       {/* RIGHT: WO summary */}
-      <aside className="bg-slate-800 border border-slate-700 rounded-xl p-5 h-fit">
-        <h3 className="text-sm font-semibold text-slate-200 mb-3 uppercase tracking-wide">Work Order</h3>
+      <aside className="bg-white/80 border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl rounded-2xl p-6 h-fit">
+        <h3 className="text-sm font-semibold text-blue-900 mb-3 uppercase tracking-wide">Work Order</h3>
         {!wo ? (
           <p className="text-xs text-slate-500">Scan a work order to begin.</p>
         ) : (
@@ -402,12 +402,12 @@ export default function TerminalClient({ support }: { support: Support }) {
             />
             <Pair label="Project" value={wo.projectCode} />
 
-            <div className="pt-3 border-t border-slate-700">
-              <h4 className="text-xs font-semibold text-slate-300 uppercase mb-2">In-Process</h4>
+            <div className="pt-3 border-t border-slate-200">
+              <h4 className="text-xs font-semibold text-slate-600 uppercase mb-2">In-Process</h4>
               <ul className="space-y-1.5">
                 {wo.inProcesses.map((ip: any) => (
                   <li key={ip.id} className="text-xs">
-                    <div className="font-medium text-slate-100">
+                    <div className="font-medium text-slate-800">
                       {ip.sn}. {ip.description}
                     </div>
                     <div className="text-slate-500">
@@ -430,8 +430,8 @@ export default function TerminalClient({ support }: { support: Support }) {
 function Pair({ label, value, mono }: { label: string; value?: any; mono?: boolean }) {
   return (
     <div className="flex justify-between gap-3">
-      <span className="text-xs text-slate-400">{label}</span>
-      <span className={`text-sm text-slate-100 text-right ${mono ? "font-mono" : ""}`}>
+      <span className="text-xs text-slate-500">{label}</span>
+      <span className={`text-sm text-slate-800 text-right ${mono ? "font-mono" : ""}`}>
         {value || "-"}
       </span>
     </div>
@@ -453,12 +453,12 @@ function Select({
 }) {
   return (
     <div>
-      <label className="text-xs font-medium text-slate-400">{label}</label>
+      <label className="text-xs font-medium text-slate-500">{label}</label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="mt-1 w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-100 disabled:opacity-50"
+        className="mt-1 w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-900 text-slate-800 disabled:opacity-50"
       >
         <option value="">Select</option>
         {options.map((o) => (
