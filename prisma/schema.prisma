@@ -969,3 +969,11 @@ model NcrFailureMode {
 
   @@unique([ncrId, failureModeId])
 }
+
+model DepartmentProfile {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  status    String   @default("Active") // "Active" or "Inactive"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

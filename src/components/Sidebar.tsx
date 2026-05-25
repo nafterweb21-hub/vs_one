@@ -204,6 +204,14 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
               <span>Machine Profile</span>
             </Link>
             <Link
+              href="/dashboard/master-profile/department"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/department")}
+            >
+              <Users size={16} />
+              <span>Department Master</span>
+            </Link>
+            <Link
               href="/dashboard/master-profile/employee"
               onClick={() => setIsOpen(false)}
               className={linkClass("/dashboard/master-profile/employee")}

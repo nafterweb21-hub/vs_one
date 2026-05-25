@@ -16,6 +16,7 @@ export default function NcrForm({ ncrId }: { ncrId?: string }) {
   const [workOrders, setWorkOrders] = useState<any[]>([]);
   const [employees, setEmployees] = useState<any[]>([]);
   const [failureModeProfiles, setFailureModeProfiles] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<any[]>([]);
 
   const [formData, setFormData] = useState({
     ncrDate: new Date().toISOString().split("T")[0],
@@ -51,10 +52,6 @@ export default function NcrForm({ ncrId }: { ncrId?: string }) {
     status: "Draft",
   });
 
-  const departments = [
-    "Laser Cutting", "Bending", "Machining", "Welding", "Painting", "Assembly", "Others"
-  ];
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -63,6 +60,14 @@ export default function NcrForm({ ncrId }: { ncrId?: string }) {
         setWorkOrders(dropDownData.workOrders);
         setEmployees(dropDownData.employees);
         setFailureModeProfiles(dropDownData.failureModeProfiles);
+        setDepartments(dropDownData.departmentProfiles || []);
+
+        if (!ncrId) {
+          setFormData(prev => ({ 
+            ...prev, 
+            requestorId: dropDownData.loggedInEmployeeId || (dropDownData.employees[0]?.id || "") 
+          }));
+        }
 
         if (ncrId) {
           const res = await fetch(`/api/qc/ncr/${ncrId}`);
@@ -102,6 +107,8 @@ export default function NcrForm({ ncrId }: { ncrId?: string }) {
       finalValue = (e.target as HTMLInputElement).checked;
     } else if (type === "number") {
       finalValue = parseFloat(value) || 0;
+    } else if (name === "correctiveAction") {
+      finalValue = value === "true";
     }
 
     setFormData((prev) => {
@@ -131,13 +138,19 @@ export default function NcrForm({ ncrId }: { ncrId?: string }) {
     setErrorMsg("");
 
     try {
-      const payload = {
+      const payload: any = {
         ...formData,
         ncrDate: formData.ncrDate ? new Date(formData.ncrDate).toISOString() : null,
         rootCauseDate: formData.rootCauseDate ? new Date(formData.rootCauseDate).toISOString() : null,
         cpaDate: formData.cpaDate ? new Date(formData.cpaDate).toISOString() : null,
         verifiedConfirmedDate: formData.verifiedConfirmedDate ? new Date(formData.verifiedConfirmedDate).toISOString() : null,
       };
+
+      Object.keys(payload).forEach((key) => {
+        if (payload[key] === "") {
+          payload[key] = null;
+        }
+      });
 
       const res = await fetch(`/api/qc/ncr${ncrId ? `/${ncrId}` : ""}`, {
         method: ncrId ? "PUT" : "POST",
@@ -328,7 +341,7 @@ export default function NcrForm({ ncrId }: { ncrId?: string }) {
               <select name="department" value={formData.department} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:ring-2 focus:ring-rose-500/20">
                 <option value="">Select Department</option>
                 {departments.map(d => (
-                  <option key={d} value={d}>{d}</option>
+                  <option key={d.id} value={d.name}>{d.name}</option>
                 ))}
               </select>
             </div>
@@ -351,16 +364,17 @@ export default function NcrForm({ ncrId }: { ncrId?: string }) {
           </div>
 
           <div className="grid grid-cols-1 gap-4 mt-4">
-             <div className="flex items-center gap-2">
-                <input type="checkbox" name="correctiveAction" id="correctiveAction" checked={formData.correctiveAction} onChange={handleChange} className="rounded border-blue-300 text-rose-600 focus:ring-rose-500" />
-                <label htmlFor="correctiveAction" className="text-sm font-semibold text-blue-900">Requires Corrective Action?</label>
+             <div className="flex flex-col gap-2">
+                <label className="text-xs font-semibold text-blue-500 mb-1">Requires Corrective Action?</label>
+                <select name="correctiveAction" value={formData.correctiveAction ? "true" : "false"} onChange={handleChange} className="w-full md:w-1/2 px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:ring-2 focus:ring-rose-500/20">
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
             </div>
-            {!formData.correctiveAction && (
-              <div>
-                <label className="block text-xs font-semibold text-blue-500 mb-1">Reason to Justify (If No Corrective Action)</label>
-                <textarea name="reasonToJustify" rows={2} value={formData.reasonToJustify} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:ring-2 focus:ring-rose-500/20"></textarea>
-              </div>
-            )}
+            <div>
+              <label className="block text-xs font-semibold text-blue-500 mb-1">Reason to Justify (If No Corrective Action)</label>
+              <textarea name="reasonToJustify" rows={2} disabled={formData.correctiveAction === true} value={formData.reasonToJustify} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:ring-2 focus:ring-rose-500/20 disabled:bg-gray-100 disabled:opacity-60"></textarea>
+            </div>
             <div>
               <label className="block text-xs font-semibold text-blue-500 mb-1">Root Cause</label>
               <textarea name="rootCause" rows={2} value={formData.rootCause} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:ring-2 focus:ring-rose-500/20"></textarea>
@@ -421,8 +435,8 @@ export default function NcrForm({ ncrId }: { ncrId?: string }) {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-blue-500 mb-1">Verified / Confirmed By</label>
-                <select name="verifiedConfirmedById" value={formData.verifiedConfirmedById} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:ring-2 focus:ring-rose-500/20">
+                <label className="block text-xs font-semibold text-blue-500 mb-1">Verified / Confirmed By {formData.status !== "Draft" && "*"}</label>
+                <select name="verifiedConfirmedById" required={formData.status !== "Draft"} value={formData.verifiedConfirmedById} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:ring-2 focus:ring-rose-500/20">
                   <option value="">Select Employee</option>
                   {employees.map(e => (
                     <option key={e.id} value={e.id}>{e.name}</option>

@@ -50,5 +50,13 @@ export const PROFILE_REGISTRY: Record<
     uniqueFields: ["name"],
     searchFields: ["name"],
   },
+  department: {
+    modelName: "departmentProfile",
+    displayName: "Department Profile",
+    immutableFields: ["name"],
+    mandatoryFields: ["name"],
+    uniqueFields: ["name"],
+    searchFields: ["name"],
+  },
 };
 
