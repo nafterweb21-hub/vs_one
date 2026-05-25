@@ -145,6 +145,11 @@ model Employee {
   sprayConfirmations     ProcessParameterSprayPainting[] @relation("SprayConfirmedBy")
   machiningConfirmations ProcessParameterMachining[]     @relation("MachiningConfirmedBy")
   user                   User?                           @relation("EmployeeUser")
+  ncrsRequested          Ncr[]                           @relation("NcrRequestor")
+  ncrsResponsibleParty   Ncr[]                           @relation("NcrResponsibleParty")
+  ncrsRootCauseStaff     Ncr[]                           @relation("NcrRootCauseStaff")
+  ncrsCpaStaff           Ncr[]                           @relation("NcrCpaStaff")
+  ncrsVerifiedBy         Ncr[]                           @relation("NcrVerifiedBy")
 }
 
 model TaxProfile {
@@ -171,6 +176,7 @@ model CustomerProfile {
   salesOrders    SalesOrder[]
   workOrders     WorkOrder[]
   quotations     Quotation[]
+  ncrs           Ncr[]
 }
 
 model CustomerContactPerson {
@@ -257,6 +263,7 @@ model MainProcess {
   updatedAt        DateTime         @updatedAt
   processProfiles  ProcessProfile[]
   routingProcesses RoutingProcess[]
+  ncrs             Ncr[]
 }
 
 model ProcessProfile {
@@ -526,6 +533,7 @@ model FailureModeProfile {
   isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  ncrFailureModes NcrFailureMode[]
 }
 
 // ==========================================
@@ -566,6 +574,7 @@ model WorkOrder {
   updatedAt DateTime @updatedAt
 
   inProcesses WorkOrderInProcess[]
+  ncrs        Ncr[]
 }
 
 model WorkOrderInProcess {
@@ -590,6 +599,7 @@ model WorkOrderInProcess {
   updatedAt DateTime @updatedAt
 
   routingProcesses RoutingProcess[]
+  ncrs             Ncr[]
 
   @@unique([workOrderNo, description])
 }
@@ -617,6 +627,7 @@ model RoutingProcess {
   updatedAt DateTime @updatedAt
 
   productionTimesheets ProductionTimesheet[]
+  ncrs                 Ncr[]
 
   @@unique([inProcessId, sn])
 }
@@ -878,4 +889,83 @@ model QuotationItem {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// NCR Module
+// ==========================================
+model Ncr {
+  id          String   @id @default(cuid())
+  ncrNo       String   @unique // NCRYYYYMMXX
+  ncrDate     DateTime
+
+  customerId  String
+  customer    CustomerProfile @relation(fields: [customerId], references: [id])
+
+  workOrderNo String
+  workOrder   WorkOrder @relation(fields: [workOrderNo], references: [workOrderNo])
+
+  inProcessId String?
+  inProcess   WorkOrderInProcess? @relation(fields: [inProcessId], references: [id])
+
+  mainProcessId String?
+  mainProcess   MainProcess? @relation(fields: [mainProcessId], references: [id])
+
+  routingProcessId String?
+  routingProcess   RoutingProcess? @relation(fields: [routingProcessId], references: [id])
+
+  requestorId String
+  requestor   Employee @relation("NcrRequestor", fields: [requestorId], references: [id])
+
+  responsiblePartyId String?
+  responsibleParty   Employee? @relation("NcrResponsibleParty", fields: [responsiblePartyId], references: [id])
+
+  descriptionOfNonConformance String @db.Text
+
+  ncrQuantity      Int
+  reworkQuantity   Int @default(0)
+  useAsIsQuantity  Int @default(0)
+  scrapQuantity    Int @default(0)
+  otherDecisions   String?
+  otherQuantity    Int @default(0)
+  customerAcceptanceForUseAsIs Boolean?
+
+  department       String? // Laser Cutting, Bending, Machining, Welding, Painting, Assembly, Others
+  failureModes     NcrFailureMode[]
+
+  correctiveAction Boolean?
+  reasonToJustify  String? @db.Text
+  rootCause        String? @db.Text
+  
+  rootCauseResponsibleStaffId String?
+  rootCauseResponsibleStaff   Employee? @relation("NcrRootCauseStaff", fields: [rootCauseResponsibleStaffId], references: [id])
+  rootCauseDate               DateTime?
+
+  correctivePreventiveAction String? @db.Text
+  
+  cpaResponsibleStaffId      String?
+  cpaResponsibleStaff        Employee? @relation("NcrCpaStaff", fields: [cpaResponsibleStaffId], references: [id])
+  cpaDate                    DateTime?
+
+  followUpVerification String? @db.Text
+  actionTaken          String? // Acceptable / Not Acceptable
+  
+  verifiedConfirmedById String?
+  verifiedConfirmedBy   Employee? @relation("NcrVerifiedBy", fields: [verifiedConfirmedById], references: [id])
+  verifiedConfirmedDate DateTime?
+
+  status String @default("Draft") // Draft, Submitted, Closed, Void
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NcrFailureMode {
+  id            String @id @default(cuid())
+  ncrId         String
+  ncr           Ncr @relation(fields: [ncrId], references: [id], onDelete: Cascade)
+  failureModeId String
+  failureMode   FailureModeProfile @relation(fields: [failureModeId], references: [id], onDelete: Cascade)
+
+  @@unique([ncrId, failureModeId])
 }
