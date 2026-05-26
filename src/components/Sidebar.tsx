@@ -3,14 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
+import { canAccess, type Role } from "@/lib/access";
 import {
   Coins,
   LayoutDashboard,
+  LogOut,
   Menu,
   X,
   Users,
   Percent,
   UserCircle,
+  UserCog,
   Ruler,
   Gauge,
   Cpu,
@@ -19,18 +23,27 @@ import {
   Box,
   Flame,
   ShoppingCart,
+  FileText,
   CreditCard,
   Paintbrush,
   ClipboardList,
 } from "lucide-react";
 
-export default function Sidebar() {
+interface SidebarProps {
+  userEmail?: string | null;
+  userRole?: string | null;
+  isAdmin?: boolean;
+}
+
+export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const role = (userRole ?? null) as Role | null;
+  const allow = (path: string) => canAccess(path, role);
 
   const linkClass = (path: string) => {
-    // Exact match for dashboard or check if it starts with the path for nested routes
-    const active = path === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(path);
+    // Exact match for dashboard or check if it is exactly the path or starts with the path + "/" for nested routes
+    const active = path === "/dashboard" ? pathname === "/dashboard" : pathname === path || pathname.startsWith(path + "/");
     return `flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
       active
         ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 translate-x-1"
@@ -88,42 +101,115 @@ export default function Sidebar() {
             <span>Dashboard Home</span>
           </Link>
 
-          <div className="pt-4">
-            <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
-              Sales
-            </p>
-            <Link
-              href="/dashboard/sales/sales-order"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/sales/sales-order")}
-            >
-              <ShoppingCart size={16} />
-              <span>Sales Orders</span>
-            </Link>
-          </div>
+          {allow("/dashboard/sales/sales-order") && (
+            <div className="pt-4">
+              <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                Sales
+              </p>
+              <Link
+                href="/dashboard/sales/quotation"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/sales/quotation")}
+              >
+                <FileText size={16} />
+                <span>Costing & Quotation</span>
+              </Link>
+              <Link
+                href="/dashboard/sales/sales-order"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/sales/sales-order")}
+              >
+                <ShoppingCart size={16} />
+                <span>Sales Orders</span>
+              </Link>
+            </div>
+          )}
 
-          <div className="pt-4">
-            <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
-              Production
-            </p>
-            <Link
-              href="/dashboard/production/work-order"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/production/work-order")}
-            >
-              <ClipboardList size={16} />
-              <span>Work Orders</span>
-            </Link>
-            <Link
-              href="/dashboard/production/process-parameter-confirmation"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/production/process-parameter-confirmation")}
-            >
-              <ClipboardList size={16} />
-              <span>Process Parameter Confirmation</span>
-            </Link>
-          </div>
+          {(allow("/dashboard/production/work-order") || allow("/dashboard/production/process-parameter-confirmation")) && (
+            <div className="pt-4">
+              <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                Production
+              </p>
+              {allow("/dashboard/production/work-order") && (
+                <Link
+                  href="/dashboard/production/work-order"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/production/work-order")}
+                >
+                  <ClipboardList size={16} />
+                  <span>Work Orders</span>
+                </Link>
+              )}
+              {allow("/dashboard/production/process-parameter-confirmation") && (
+                <Link
+                  href="/dashboard/production/process-parameter-confirmation"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/production/process-parameter-confirmation")}
+                >
+                  <ClipboardList size={16} />
+                  <span>Process Parameter Confirmation</span>
+                </Link>
+              )}
+            </div>
+          )}
 
+          {(allow("/dashboard/purchasing/purchase-requisition") || 
+             allow("/dashboard/purchasing/purchase-order") ||
+             allow("/dashboard/purchasing/purchase-order-approval")) && (
+            <div className="pt-4">
+              <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                Purchasing
+              </p>
+              {allow("/dashboard/purchasing/purchase-requisition") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-requisition"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-requisition")}
+                >
+                  <ShoppingCart size={16} />
+                  <span>Purchase Requisitions</span>
+                </Link>
+              )}
+              {allow("/dashboard/purchasing/purchase-order") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-order"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-order")}
+                >
+                  <FileText size={16} />
+                  <span>Purchase Orders</span>
+                </Link>
+              )}
+              {allow("/dashboard/purchasing/purchase-order-approval") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-order-approval"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-order-approval")}
+                >
+                  <ClipboardList size={16} />
+                  <span>Purchase Order Approval</span>
+                </Link>
+              )}
+            </div>
+          )}
+
+          {allow("/dashboard/qc/ncr") && (
+            <div className="pt-4">
+              <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                Quality Control
+              </p>
+              <Link
+                href="/dashboard/qc/ncr"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/qc/ncr")}
+              >
+                <ClipboardList size={16} />
+                <span>Non-Conformance Report (NCR)</span>
+              </Link>
+            </div>
+          )}
+
+          {allow("/dashboard/profiles/currency") && (
           <div className="pt-4">
             <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
               General Master
@@ -177,6 +263,14 @@ export default function Sidebar() {
               <span>Employee Profile</span>
             </Link>
             <Link
+              href="/dashboard/master-profile/department"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/department")}
+            >
+              <Users size={16} />
+              <span>Department Master</span>
+            </Link>
+            <Link
               href="/dashboard/master-profile/material"
               onClick={() => setIsOpen(false)}
               className={linkClass("/dashboard/master-profile/material")}
@@ -191,6 +285,14 @@ export default function Sidebar() {
             >
               <Box size={16} />
               <span>Material Category Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/material-type"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/material-type")}
+            >
+              <Box size={16} />
+              <span>Material Type Profile</span>
             </Link>
             <Link
               href="/dashboard/master-profile/welding-type"
@@ -225,6 +327,14 @@ export default function Sidebar() {
               <span>Painting Method Profile</span>
             </Link>
             <Link
+              href="/dashboard/master-profile/main-process"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/main-process")}
+            >
+              <ClipboardList size={16} />
+              <span>Main Process Profile</span>
+            </Link>
+            <Link
               href="/dashboard/master-profile/process-profile"
               onClick={() => setIsOpen(false)}
               className={linkClass("/dashboard/master-profile/process-profile")}
@@ -233,7 +343,9 @@ export default function Sidebar() {
               <span>Process Profile</span>
             </Link>
           </div>
+          )}
 
+          {allow("/dashboard/admin/master-profile/tax") && (
           <div className="pt-4">
             <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
               Admin Master
@@ -286,12 +398,40 @@ export default function Sidebar() {
               <ClipboardList size={16} />
               <span>Approval Level Profile</span>
             </Link>
+            {isAdmin && allow("/dashboard/admin/users") && (
+              <Link
+                href="/dashboard/admin/users"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/admin/users")}
+              >
+                <UserCog size={16} />
+                <span>User Management</span>
+              </Link>
+            )}
           </div>
+          )}
         </div>
 
-        {/* Footer Brand Info */}
-        <div className="p-4 border-t border-blue-100 bg-blue-50/50 text-center">
-          <p className="text-[10px] text-blue-400 font-medium">
+        {/* Footer: user + sign out */}
+        <div className="border-t border-blue-100 bg-blue-50/50 p-4">
+          {userEmail && (
+            <div className="mb-3 px-1">
+              <p className="truncate text-xs font-semibold text-blue-900">{userEmail}</p>
+              {userRole && (
+                <p className="text-[10px] font-bold uppercase tracking-wider text-blue-500">
+                  {userRole}
+                </p>
+              )}
+            </div>
+          )}
+          <button
+            onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-100"
+          >
+            <LogOut size={14} />
+            Sign out
+          </button>
+          <p className="mt-3 text-center text-[10px] font-medium text-blue-400">
             FITPRISE EMS v1.1
           </p>
         </div>

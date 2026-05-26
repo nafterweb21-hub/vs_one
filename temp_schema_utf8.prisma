@@ -1,0 +1,834 @@
+﻿generator client {
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String           @id @default(cuid())
+  name          String?
+  email         String           @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  role          UserRole         @default(VIEWER)
+  isActive      Boolean          @default(true)
+  employeeId    String?          @unique
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  accounts      Account[]
+  approvals     ApprovalPerson[]
+  sessions      Session[]
+  employee      Employee?        @relation("EmployeeUser", fields: [employeeId], references: [id])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model ApprovalLevelProfile {
+  id           String           @id @default(cuid())
+  module       String
+  actionButton String?
+  minRange     Decimal?
+  maxRange     Decimal?
+  status       String           @default("Active")
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  approvers    ApprovalPerson[]
+}
+
+model ApprovalPerson {
+  id                     String               @id @default(cuid())
+  approvalLevelProfileId String
+  userId                 String
+  status                 String               @default("Active")
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  approvalLevelProfile   ApprovalLevelProfile @relation(fields: [approvalLevelProfileId], references: [id], onDelete: Cascade)
+  user                   User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([approvalLevelProfileId, userId])
+}
+
+model MaterialType {
+  id                        String                   @id @default(cuid())
+  type                      String                   @unique
+  remark                    String?
+  status                    String                   @default("Active")
+  processParameterWeldingId String?
+  processParameterWelding   ProcessParameterWelding? @relation(fields: [processParameterWeldingId], references: [id])
+}
+
+model Currency {
+  id           String       @id @default(cuid())
+  code         String       @unique
+  name         String       @unique
+  exchangeRate Decimal
+  isDefault    Boolean      @default(false)
+  status       String       @default("Active")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  quotations   Quotation[]
+  salesOrders  SalesOrder[]
+}
+
+model Employee {
+  id                                            String                          @id @default(cuid())
+  code                                          String                          @unique
+  name                                          String
+  nricFin                                       String                          @unique
+  designation                                   String?
+  email                                         String
+  mobileNo                                      String?
+  gender                                        String?
+  contactNo                                     String?
+  employmentType                                String?
+  status                                        String                          @default("ACTIVE")
+  createdAt                                     DateTime                        @default(now())
+  updatedAt                                     DateTime                        @updatedAt
+  Ncr_Ncr_cpaResponsibleStaffIdToEmployee       Ncr[]                           @relation("Ncr_cpaResponsibleStaffIdToEmployee")
+  Ncr_Ncr_requestorIdToEmployee                 Ncr[]                           @relation("Ncr_requestorIdToEmployee")
+  Ncr_Ncr_responsiblePartyIdToEmployee          Ncr[]                           @relation("Ncr_responsiblePartyIdToEmployee")
+  Ncr_Ncr_rootCauseResponsibleStaffIdToEmployee Ncr[]                           @relation("Ncr_rootCauseResponsibleStaffIdToEmployee")
+  Ncr_Ncr_verifiedConfirmedByIdToEmployee       Ncr[]                           @relation("Ncr_verifiedConfirmedByIdToEmployee")
+  machiningConfirmations                        ProcessParameterMachining[]     @relation("MachiningConfirmedBy")
+  sprayConfirmations                            ProcessParameterSprayPainting[] @relation("SprayConfirmedBy")
+  weldingConfirmations                          ProcessParameterWelding[]       @relation("WeldingConfirmedBy")
+  productionTimesheets                          ProductionTimesheet[]           @relation("TimesheetEmployee")
+  quotations                                    Quotation[]
+  salesOrders                                   SalesOrder[]
+  user                                          User?                           @relation("EmployeeUser")
+  qcWorkOrders                                  WorkOrder[]                     @relation("WorkOrderQc")
+}
+
+model TaxProfile {
+  id          String       @id @default(cuid())
+  taxType     String       @unique
+  taxRate     Float
+  status      String       @default("Active")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  quotations  Quotation[]
+  salesOrders SalesOrder[]
+}
+
+model CustomerProfile {
+  id             String                  @id @default(cuid())
+  customerCode   String                  @unique
+  customerName   String                  @unique
+  remarks        String?
+  status         String                  @default("Active")
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  addresses      CustomerAddress[]
+  contactPersons CustomerContactPerson[]
+  Ncr            Ncr[]
+  quotations     Quotation[]
+  salesOrders    SalesOrder[]
+  workOrders     WorkOrder[]
+}
+
+model CustomerContactPerson {
+  id                String          @id @default(cuid())
+  customerId        String
+  contactPersonName String
+  telNo             String?
+  mobileNo          String?
+  faxNo             String?
+  email             String?
+  designation       String?
+  status            String          @default("Active")
+  isDefault         Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  customer          CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  quotations        Quotation[]
+  salesOrders       SalesOrder[]
+}
+
+model CustomerAddress {
+  id              String          @id @default(cuid())
+  customerId      String
+  address         String
+  status          String          @default("Active")
+  isDefault       Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  customer        CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  billToOrders    SalesOrder[]    @relation("BillTo")
+  deliverToOrders SalesOrder[]    @relation("DeliverTo")
+}
+
+model MaterialCategory {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  description String?
+  status      String            @default("Active")
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  materials   MaterialProfile[]
+}
+
+model MaterialProfile {
+  id          String           @id @default(cuid())
+  partNo      String?          @unique
+  description String           @unique
+  shape       String
+  size        String?
+  categoryId  String
+  remark      String?
+  status      String           @default("Active")
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  category    MaterialCategory @relation(fields: [categoryId], references: [id])
+}
+
+model WeldingTypeProfile {
+  id                        String                   @id @default(cuid())
+  type                      String                   @unique
+  remark                    String?
+  status                    String                   @default("Active")
+  createdAt                 DateTime                 @default(now())
+  updatedAt                 DateTime                 @updatedAt
+  processParameterWeldingId String?
+  processParameterWelding   ProcessParameterWelding? @relation(fields: [processParameterWeldingId], references: [id])
+}
+
+model PaintingMethodProfile {
+  id        String   @id @default(cuid())
+  method    String   @unique
+  remark    String?
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MainProcess {
+  id               String           @id @default(cuid())
+  process          String           @unique
+  remark           String?
+  status           String           @default("Active")
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  Ncr              Ncr[]
+  processProfiles  ProcessProfile[]
+  routingProcesses RoutingProcess[]
+}
+
+model ProcessProfile {
+  id               String           @id @default(cuid())
+  mainProcessId    String
+  routingProcess   String           @unique
+  welding          Boolean          @default(false)
+  sprayPainting    Boolean          @default(false)
+  machining        Boolean          @default(false)
+  costPerMinute    Decimal
+  remark           String?
+  status           String           @default("Active")
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  mainProcess      MainProcess      @relation(fields: [mainProcessId], references: [id])
+  routingProcesses RoutingProcess[]
+}
+
+model SupplierProfile {
+  id             String                  @id @default(cuid())
+  supplierCode   String                  @unique
+  supplierName   String                  @unique
+  remarks        String?
+  status         String                  @default("Active")
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  addresses      SupplierAddress[]
+  contactPersons SupplierContactPerson[]
+}
+
+model SupplierContactPerson {
+  id                String          @id @default(cuid())
+  supplierId        String
+  contactPersonName String
+  telNo             String?
+  mobileNo          String?
+  faxNo             String?
+  email             String?
+  designation       String?
+  status            String          @default("Active")
+  isDefault         Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  supplier          SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+}
+
+model SupplierAddress {
+  id         String          @id @default(cuid())
+  supplierId String
+  address    String
+  status     String          @default("Active")
+  isDefault  Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  supplier   SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+}
+
+model FinishedGoodProfile {
+  id              String           @id @default(cuid())
+  partNo          String?          @unique
+  description     String           @unique
+  remark          String?
+  status          String           @default("Active")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  quotationItems  QuotationItem[]
+  salesOrderItems SalesOrderItem[]
+}
+
+model UomProfile {
+  id              String           @id @default(cuid())
+  uomName         String           @unique
+  remarks         String?
+  status          String           @default("Active")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  quotationItems  QuotationItem[]
+  salesOrderItems SalesOrderItem[]
+  workOrders      WorkOrder[]
+}
+
+model ElcometerProfile {
+  id              String                          @id @default(cuid())
+  serialNo        String                          @unique
+  remark          String?
+  status          String                          @default("Active")
+  createdAt       DateTime                        @default(now())
+  updatedAt       DateTime                        @updatedAt
+  sprayParameters ProcessParameterSprayPainting[]
+}
+
+model MachineProfile {
+  id                  String                      @id @default(cuid())
+  machineCode         String                      @unique
+  machineNo           String
+  brand               String
+  model               String
+  current             String?
+  serialNo            String?
+  machineType         String?
+  operationType       String?
+  remark              String?
+  uploadUrl           String?
+  machineCategory     String
+  status              String                      @default("Active")
+  createdAt           DateTime                    @default(now())
+  updatedAt           DateTime                    @updatedAt
+  machiningParameters ProcessParameterMachining[]
+  weldingParameters   ProcessParameterWelding[]
+}
+
+model PaymentTermProfile {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  days        Int
+  remark      String?
+  status      String       @default("Active")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  quotations  Quotation[]
+  salesOrders SalesOrder[]
+}
+
+model SalesOrder {
+  id                 String                 @id @default(cuid())
+  orderNo            String                 @unique
+  revision           Int                    @default(0)
+  date               DateTime
+  salespersonId      String
+  customerId         String
+  customerPoRef      String?
+  projectCode        String?
+  paymentTermId      String
+  otherPaymentDetail String?
+  refContract        String?
+  currencyId         String
+  exchangeRate       Decimal
+  amountBeforeTax    Decimal
+  taxTypeId          String?
+  taxRate            Float?
+  taxAmount          Decimal?
+  amountAfterTax     Decimal
+  contactPersonId    String?
+  fax                String?
+  tel                String?
+  email              String?
+  deliverToId        String?
+  billToId           String?
+  remark             String?
+  status             String                 @default("Draft")
+  uploadUrl          String?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  quotation          Quotation?
+  billTo             CustomerAddress?       @relation("BillTo", fields: [billToId], references: [id])
+  contactPerson      CustomerContactPerson? @relation(fields: [contactPersonId], references: [id])
+  currency           Currency               @relation(fields: [currencyId], references: [id])
+  customer           CustomerProfile        @relation(fields: [customerId], references: [id])
+  deliverTo          CustomerAddress?       @relation("DeliverTo", fields: [deliverToId], references: [id])
+  paymentTerm        PaymentTermProfile     @relation(fields: [paymentTermId], references: [id])
+  salesperson        Employee               @relation(fields: [salespersonId], references: [id])
+  taxType            TaxProfile?            @relation(fields: [taxTypeId], references: [id])
+  items              SalesOrderItem[]
+}
+
+model SalesOrderItem {
+  id                    String                @id @default(cuid())
+  salesOrderId          String
+  partId                String
+  quantity              Int
+  unitPrice             Decimal               @default(0)
+  uomId                 String
+  internalQuotationNo   String
+  vendorMaterialNo      String?
+  materialSpecification String?
+  estimateNo            String?
+  remark                String?
+  uploadUrl             String?
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  part                  FinishedGoodProfile   @relation(fields: [partId], references: [id])
+  salesOrder            SalesOrder            @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  uom                   UomProfile            @relation(fields: [uomId], references: [id])
+  batches               SalesOrderItemBatch[]
+}
+
+model SalesOrderItemBatch {
+  id               String         @id @default(cuid())
+  salesOrderItemId String
+  quantity         Int
+  deliveryDate     DateTime
+  workOrderNo      String?
+  remark           String?
+  noRoutingProcess Boolean        @default(false)
+  uploadUrl        String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  salesOrderItem   SalesOrderItem @relation(fields: [salesOrderItemId], references: [id], onDelete: Cascade)
+}
+
+model JointProfile {
+  id                       String                    @id @default(cuid())
+  joint                    String                    @unique
+  remark                   String?
+  status                   String                    @default("Active")
+  createdBy                String?
+  updatedBy                String?
+  isDeleted                Boolean                   @default(false)
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  processParameterWeldings ProcessParameterWelding[]
+}
+
+model FailureModeProfile {
+  id             String           @id @default(cuid())
+  failureMode    String           @unique
+  remark         String?
+  status         String           @default("Active")
+  createdBy      String?
+  updatedBy      String?
+  isDeleted      Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  NcrFailureMode NcrFailureMode[]
+}
+
+model WorkOrder {
+  workOrderNo         String               @id
+  date                DateTime
+  customerId          String
+  internalQuotationNo String?
+  customerPoRef       String?
+  projectCode         String?
+  deliveryDate        DateTime?
+  jobDescription      String?
+  quantity            Decimal?
+  uom                 String?
+  amount              Decimal?
+  remark              String?
+  qcAcceptance        String?
+  qcById              String?
+  qcDate              DateTime?
+  labelExpiryDate     DateTime?
+  labelQty            Decimal?
+  labelUomId          String?
+  uploadUrl           String?
+  status              String               @default("Draft")
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  Ncr                 Ncr[]
+  customer            CustomerProfile      @relation(fields: [customerId], references: [id])
+  labelUom            UomProfile?          @relation(fields: [labelUomId], references: [id])
+  qcBy                Employee?            @relation("WorkOrderQc", fields: [qcById], references: [id])
+  inProcesses         WorkOrderInProcess[]
+}
+
+model WorkOrderInProcess {
+  id                   String               @id @default(cuid())
+  workOrderNo          String
+  sn                   Int?
+  description          String
+  conditionalSnId      String?
+  allFlag              Boolean              @default(false)
+  targetCompletionDate DateTime
+  remark               String?
+  status               String               @default("New")
+  uploadUrl            String?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  Ncr                  Ncr[]
+  routingProcesses     RoutingProcess[]
+  conditionalSn        WorkOrderInProcess?  @relation("ConditionalSn", fields: [conditionalSnId], references: [id])
+  dependentProcesses   WorkOrderInProcess[] @relation("ConditionalSn")
+  workOrder            WorkOrder            @relation(fields: [workOrderNo], references: [workOrderNo], onDelete: Cascade)
+
+  @@unique([workOrderNo, description])
+}
+
+model RoutingProcess {
+  id                   String                @id @default(cuid())
+  inProcessId          String
+  sn                   String
+  mainProcessId        String?
+  routingProcessId     String?
+  targetCompletionDate DateTime
+  fullyReceived        Boolean               @default(false)
+  remark               String?
+  status               String                @default("New")
+  uploadUrl            String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  Ncr                  Ncr[]
+  productionTimesheets ProductionTimesheet[]
+  inProcess            WorkOrderInProcess    @relation(fields: [inProcessId], references: [id], onDelete: Cascade)
+  mainProcess          MainProcess?          @relation(fields: [mainProcessId], references: [id])
+  routingProcess       ProcessProfile?       @relation(fields: [routingProcessId], references: [id])
+
+  @@unique([inProcessId, sn])
+}
+
+model ProductionTimesheet {
+  id                 String                         @id @default(cuid())
+  routingProcessId   String
+  employeeId         String
+  timeIn             DateTime?
+  timeOut            DateTime?
+  totalMinutes       Decimal?
+  completed          Boolean                        @default(false)
+  completedQty       Decimal?
+  machineCodes       String?
+  createdAt          DateTime                       @default(now())
+  updatedAt          DateTime                       @updatedAt
+  machiningParameter ProcessParameterMachining?
+  sprayParameter     ProcessParameterSprayPainting?
+  weldingParameter   ProcessParameterWelding?
+  employee           Employee                       @relation("TimesheetEmployee", fields: [employeeId], references: [id])
+  routingProcess     RoutingProcess                 @relation(fields: [routingProcessId], references: [id], onDelete: Cascade)
+}
+
+model ProcessParameterWelding {
+  id               String               @id @default(cuid())
+  timesheetId      String               @unique
+  weldingMachineId String?
+  typeOfJointId    String?
+  electrodeType    String?
+  weldingPosition  String?
+  weldingJoint     Decimal?
+  weldingSizeMm    Decimal?
+  voltageVolts     Decimal?
+  currentAmp       Decimal?
+  coolingTimeMins  Decimal?
+  preHeatingC      Decimal?
+  postHeatingC     Decimal?
+  heatTreatmentHrc Decimal?
+  remark           String?
+  status           String?
+  confirmedById    String?
+  confirmedDate    DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  materialTypes    MaterialType[]
+  confirmedBy      Employee?            @relation("WeldingConfirmedBy", fields: [confirmedById], references: [id])
+  timesheet        ProductionTimesheet  @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
+  typeOfJoint      JointProfile?        @relation(fields: [typeOfJointId], references: [id])
+  weldingMachine   MachineProfile?      @relation(fields: [weldingMachineId], references: [id])
+  weldingTypes     WeldingTypeProfile[]
+}
+
+model ProcessParameterSprayPainting {
+  id                        String              @id @default(cuid())
+  timesheetId               String              @unique
+  paintTankPressurePsi      Decimal
+  sprayNozzleSize           Decimal
+  typeOfPaint               String
+  remark                    String?
+  surfaceStartDatetime      DateTime?
+  surfaceEndDatetime        DateTime?
+  surfaceGeneralWeather     String?
+  surfaceEnvTemperature     String?
+  surfaceRelativeHumidity   String?
+  surfaceAbrasiveType       String?
+  surfaceSandpaperGrit      String?
+  primerStartDatetime       DateTime?
+  primerEndDatetime         DateTime?
+  primerGeneralWeather      String?
+  primerEnvTemperature      String?
+  primerRelativeHumidity    String?
+  primerPaintBatchNo        String?
+  primerExpiryDate          DateTime?
+  primerDftMeasurement      String?
+  topcoatStartDatetime      DateTime?
+  topcoatEndDatetime        DateTime?
+  topcoatGeneralWeather     String?
+  topcoatEnvTemperature     String?
+  topcoatRelativeHumidity   String?
+  topcoatAbrasiveType       String?
+  topcoatSandpaperGrit      String?
+  topcoatStartDatetime2     DateTime?
+  topcoatEndDatetime2       DateTime?
+  topcoatGeneralWeather2    String?
+  topcoatEnvTemperature2    String?
+  topcoatRelativeHumidity2  String?
+  topcoatPaintBatchNo       String?
+  topcoatExpiryDate         DateTime?
+  topcoatDftMeasurement     String?
+  topcoatAdhesiveTestResult String?
+  additionalRemark          String?
+  status                    String?
+  elcometerName             String?
+  elcometerSerialNoId       String?
+  confirmedById             String?
+  confirmedDate             DateTime?
+  createdAt                 DateTime            @default(now())
+  updatedAt                 DateTime            @updatedAt
+  confirmedBy               Employee?           @relation("SprayConfirmedBy", fields: [confirmedById], references: [id])
+  elcometer                 ElcometerProfile?   @relation(fields: [elcometerSerialNoId], references: [id])
+  timesheet                 ProductionTimesheet @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
+}
+
+model ProcessParameterMachining {
+  id                String              @id @default(cuid())
+  timesheetId       String              @unique
+  machineSerialNoId String
+  cncProgramNo      String?
+  testRun           String?
+  specialTooling    String?
+  partRuntimeHr     Decimal?
+  partRuntimeMins   Decimal?
+  remark            String?
+  status            String?
+  confirmedById     String?
+  confirmedDate     DateTime?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  toolLists         MachiningToolList[]
+  confirmedBy       Employee?           @relation("MachiningConfirmedBy", fields: [confirmedById], references: [id])
+  machine           MachineProfile      @relation(fields: [machineSerialNoId], references: [id])
+  timesheet         ProductionTimesheet @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
+}
+
+model MachiningToolList {
+  id               String                    @id @default(cuid())
+  machiningParamId String
+  toolValue        Decimal
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+  machiningParam   ProcessParameterMachining @relation(fields: [machiningParamId], references: [id], onDelete: Cascade)
+}
+
+model CompanyProfile {
+  id                    String   @id @default(cuid())
+  companyName           String   @unique
+  address               String
+  phoneNo               String
+  faxNo                 String
+  email                 String?
+  website               String?
+  rocNo                 String?
+  gstRegistrationNo     String
+  uploadUrl             String
+  logoName              String
+  footerName            String
+  allowPoForWo          Boolean  @default(false)
+  as9100RequirementNote Boolean  @default(false)
+  status                String   @default("Active")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Quotation {
+  id                 String                 @id @default(cuid())
+  quotationNo        String
+  revision           Int                    @default(0)
+  date               DateTime
+  salespersonId      String
+  customerId         String
+  contactPersonId    String?
+  customerPoRef      String?
+  refNo              String?
+  title              String
+  paymentTermId      String?
+  quoteValidityDays  Int                    @default(60)
+  leadTime           String?
+  incoterms          String?
+  currencyId         String
+  exchangeRate       Decimal
+  subTotal           Decimal
+  lumpSumDisc        Decimal                @default(0)
+  taxTypeId          String?
+  taxRate            Float?
+  taxAmount          Decimal?
+  totalAmount        Decimal
+  termsAndConditions String?
+  remark             String?
+  uploadUrl          String?
+  status             String                 @default("Draft")
+  salesOrderId       String?                @unique
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  contactPerson      CustomerContactPerson? @relation(fields: [contactPersonId], references: [id])
+  currency           Currency               @relation(fields: [currencyId], references: [id])
+  customer           CustomerProfile        @relation(fields: [customerId], references: [id])
+  paymentTerm        PaymentTermProfile?    @relation(fields: [paymentTermId], references: [id])
+  salesOrder         SalesOrder?            @relation(fields: [salesOrderId], references: [id])
+  salesperson        Employee               @relation(fields: [salespersonId], references: [id])
+  taxType            TaxProfile?            @relation(fields: [taxTypeId], references: [id])
+  items              QuotationItem[]
+
+  @@unique([quotationNo, revision])
+}
+
+model QuotationItem {
+  id          String               @id @default(cuid())
+  quotationId String
+  partId      String?
+  uomId       String?
+  unitPrice   Decimal              @default(0)
+  quantity    Int                  @default(1)
+  amount      Decimal              @default(0)
+  sortOrder   Int                  @default(0)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  part        FinishedGoodProfile? @relation(fields: [partId], references: [id])
+  quotation   Quotation            @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  uom         UomProfile?          @relation(fields: [uomId], references: [id])
+}
+
+model DepartmentProfile {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ncr {
+  id                                                 String              @id
+  ncrNo                                              String              @unique
+  ncrDate                                            DateTime
+  customerId                                         String
+  workOrderNo                                        String
+  inProcessId                                        String?
+  mainProcessId                                      String?
+  routingProcessId                                   String?
+  requestorId                                        String
+  responsiblePartyId                                 String?
+  descriptionOfNonConformance                        String
+  ncrQuantity                                        Int
+  reworkQuantity                                     Int                 @default(0)
+  useAsIsQuantity                                    Int                 @default(0)
+  scrapQuantity                                      Int                 @default(0)
+  otherDecisions                                     String?
+  otherQuantity                                      Int                 @default(0)
+  customerAcceptanceForUseAsIs                       Boolean?
+  department                                         String?
+  correctiveAction                                   Boolean?
+  reasonToJustify                                    String?
+  rootCause                                          String?
+  rootCauseResponsibleStaffId                        String?
+  rootCauseDate                                      DateTime?
+  correctivePreventiveAction                         String?
+  cpaResponsibleStaffId                              String?
+  cpaDate                                            DateTime?
+  followUpVerification                               String?
+  actionTaken                                        String?
+  verifiedConfirmedById                              String?
+  verifiedConfirmedDate                              DateTime?
+  status                                             String              @default("Draft")
+  createdAt                                          DateTime            @default(now())
+  updatedAt                                          DateTime
+  Employee_Ncr_cpaResponsibleStaffIdToEmployee       Employee?           @relation("Ncr_cpaResponsibleStaffIdToEmployee", fields: [cpaResponsibleStaffId], references: [id])
+  CustomerProfile                                    CustomerProfile     @relation(fields: [customerId], references: [id])
+  WorkOrderInProcess                                 WorkOrderInProcess? @relation(fields: [inProcessId], references: [id])
+  MainProcess                                        MainProcess?        @relation(fields: [mainProcessId], references: [id])
+  Employee_Ncr_requestorIdToEmployee                 Employee            @relation("Ncr_requestorIdToEmployee", fields: [requestorId], references: [id])
+  Employee_Ncr_responsiblePartyIdToEmployee          Employee?           @relation("Ncr_responsiblePartyIdToEmployee", fields: [responsiblePartyId], references: [id])
+  Employee_Ncr_rootCauseResponsibleStaffIdToEmployee Employee?           @relation("Ncr_rootCauseResponsibleStaffIdToEmployee", fields: [rootCauseResponsibleStaffId], references: [id])
+  RoutingProcess                                     RoutingProcess?     @relation(fields: [routingProcessId], references: [id])
+  Employee_Ncr_verifiedConfirmedByIdToEmployee       Employee?           @relation("Ncr_verifiedConfirmedByIdToEmployee", fields: [verifiedConfirmedById], references: [id])
+  WorkOrder                                          WorkOrder           @relation(fields: [workOrderNo], references: [workOrderNo])
+  NcrFailureMode                                     NcrFailureMode[]
+}
+
+model NcrFailureMode {
+  id                 String             @id
+  ncrId              String
+  failureModeId      String
+  FailureModeProfile FailureModeProfile @relation(fields: [failureModeId], references: [id], onDelete: Cascade)
+  Ncr                Ncr                @relation(fields: [ncrId], references: [id], onDelete: Cascade)
+
+  @@unique([ncrId, failureModeId])
+}
+
+enum UserRole {
+  ADMIN
+  SALES
+  PRODUCTION
+  PURCHASING
+  QC
+  PLANNER
+  VIEWER
+}
+
+

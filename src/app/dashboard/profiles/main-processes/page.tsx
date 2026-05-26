@@ -67,7 +67,7 @@ export default function mainProcessesPage() {
 
   // Navigate to Edit page
   const handleEditOpen = (process: MainProcess) => {
-    router.push(`/dashboard/profiles/main-processes/edit/${type.id}`);
+    router.push(`/dashboard/profiles/main-processes/edit/${process.id}`);
   };
 
   // Toggle status between Active and Inactive
