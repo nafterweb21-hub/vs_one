@@ -15,7 +15,7 @@ export async function GET() {
           id: true,
           customerName: true,
           customerCode: true,
-          contactPersons: {
+          CustomerContactPerson: {
             where: { status: "Active" },
             select: {
               id: true,
@@ -26,7 +26,7 @@ export async function GET() {
               isDefault: true,
             },
           },
-          addresses: {
+          CustomerAddress: {
             where: { status: "Active" },
             select: { id: true, address: true, isDefault: true },
           },
@@ -62,7 +62,13 @@ export async function GET() {
 
     return NextResponse.json({
       employees,
-      customers,
+      customers: customers.map(c => ({
+        id: c.id,
+        customerName: c.customerName,
+        customerCode: c.customerCode,
+        contactPersons: c.CustomerContactPerson,
+        addresses: c.CustomerAddress
+      })),
       paymentTerms,
       currencies: currencies.map((c) => ({ ...c, exchangeRate: Number(c.exchangeRate) })),
       taxes,

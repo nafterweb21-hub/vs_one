@@ -67,6 +67,7 @@ export default function QuotationEditPage() {
     (async () => {
       try {
         const fd = await fetch("/api/sales/quotation/form-data").then((r) => r.json());
+        if (fd.error) throw new Error(fd.error);
         setData(fd);
 
         if (!isNew) {
@@ -103,7 +104,7 @@ export default function QuotationEditPage() {
           );
         } else {
           // sensible defaults
-          const def = fd.currencies.find((c: any) => c.isDefault) || fd.currencies[0];
+          const def = fd.currencies?.find((c: any) => c.isDefault) || fd.currencies?.[0];
           if (def) {
             setCurrencyId(def.id);
             setExchangeRate(String(def.exchangeRate));
@@ -118,7 +119,7 @@ export default function QuotationEditPage() {
   }, [id, isNew]);
 
   const customer = useMemo(
-    () => data?.customers.find((c) => c.id === customerId) || null,
+    () => data?.customers?.find((c) => c.id === customerId) || null,
     [data, customerId],
   );
 
@@ -138,7 +139,7 @@ export default function QuotationEditPage() {
   // sync exchange rate when currency changes
   useEffect(() => {
     if (!currencyId || !data) return;
-    const c = data.currencies.find((x) => x.id === currencyId);
+    const c = data.currencies?.find((x) => x.id === currencyId);
     if (c) setExchangeRate(String(c.exchangeRate));
   }, [currencyId, data]);
 
@@ -152,7 +153,7 @@ export default function QuotationEditPage() {
     );
     const disc = Number(lumpSumDisc || 0);
     const afterDisc = Math.max(0, subTotal - disc);
-    const tax = data?.taxes.find((t) => t.id === taxTypeId);
+    const tax = data?.taxes?.find((t) => t.id === taxTypeId);
     const taxRate = tax?.taxRate ?? 0;
     const taxAmount = +(afterDisc * (taxRate / 100)).toFixed(2);
     const total = +(afterDisc + taxAmount).toFixed(2);
@@ -321,7 +322,7 @@ export default function QuotationEditPage() {
             className={inputCls}
           >
             <option value="">— Select —</option>
-            {data?.employees.map((e) => (
+            {data?.employees?.map((e) => (
               <option key={e.id} value={e.id}>
                 {e.name}
               </option>
@@ -347,7 +348,7 @@ export default function QuotationEditPage() {
             className={inputCls}
           >
             <option value="">— Select —</option>
-            {data?.customers.map((c) => (
+            {data?.customers?.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.customerName}
               </option>
@@ -399,7 +400,7 @@ export default function QuotationEditPage() {
             className={inputCls}
           >
             <option value="">— Select —</option>
-            {data?.paymentTerms.map((p) => (
+            {data?.paymentTerms?.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name} ({p.days} days)
               </option>
@@ -425,7 +426,7 @@ export default function QuotationEditPage() {
             className={inputCls}
           >
             <option value="">— Select —</option>
-            {data?.currencies.map((c) => (
+            {data?.currencies?.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.code}
               </option>
@@ -505,7 +506,7 @@ export default function QuotationEditPage() {
                         className={inputCls}
                       >
                         <option value="">— Select —</option>
-                        {data?.finishedGoods.map((fg) => (
+                        {data?.finishedGoods?.map((fg) => (
                           <option key={fg.id} value={fg.id}>
                             {fg.partNo ? `${fg.partNo} — ` : ""}{fg.description}
                           </option>
@@ -520,7 +521,7 @@ export default function QuotationEditPage() {
                         className={inputCls}
                       >
                         <option value="">—</option>
-                        {data?.uoms.map((u) => (
+                        {data?.uoms?.map((u) => (
                           <option key={u.id} value={u.id}>
                             {u.uomName}
                           </option>
@@ -580,7 +581,7 @@ export default function QuotationEditPage() {
               className={inputCls}
             >
               <option value="">— None —</option>
-              {data?.taxes.map((t) => (
+              {data?.taxes?.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.taxType} ({t.taxRate}%)
                 </option>
