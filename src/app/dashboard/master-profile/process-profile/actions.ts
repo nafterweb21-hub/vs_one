@@ -13,7 +13,7 @@ import {
 export async function getProcessProfilesAction() {
   try {
     const data = await getProcessProfiles();
-    return { success: true, data };
+    return { success: true, data: JSON.parse(JSON.stringify(data)) };
   } catch (error: any) {
     return { success: false, error: error.message || "Failed to get process profiles" };
   }
@@ -23,7 +23,7 @@ export async function getProcessProfileByIdAction(id: string) {
   try {
     const data = await getProcessProfileById(id);
     if (!data) return { success: false, error: "Not found" };
-    return { success: true, data };
+    return { success: true, data: JSON.parse(JSON.stringify(data)) };
   } catch (error: any) {
     return { success: false, error: error.message || "Failed to get process profile" };
   }

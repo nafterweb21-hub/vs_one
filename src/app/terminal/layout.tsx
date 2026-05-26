@@ -15,7 +15,7 @@ export default function TerminalLayout({ children }: { children: React.ReactNode
         </div>
         <LogoutButton />
       </header>
-      <main className="p-6 relative z-0">{children}</main>
+      <main className="p-6">{children}</main>
     </div>
   );
 }

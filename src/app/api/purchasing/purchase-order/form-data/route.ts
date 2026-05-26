@@ -36,13 +36,13 @@ export async function GET() {
       prisma.supplierProfile.findMany({
         where: { status: "Active" },
         include: {
-          SupplierContactPerson: {
+          contactPersons: {
             where: { status: "Active" },
             select: { id: true, contactPersonName: true, telNo: true, faxNo: true, mobileNo: true, email: true, isDefault: true },
           },
         },
         orderBy: { supplierName: "asc" },
-      }).then(res => res.map(s => ({ ...s, contactPersons: s.SupplierContactPerson }))),
+      }),
       prisma.currency.findMany({
         where: { status: "Active" },
         select: { id: true, code: true, name: true, exchangeRate: true, isDefault: true },

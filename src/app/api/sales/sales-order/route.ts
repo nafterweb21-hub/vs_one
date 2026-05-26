@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     if (search) {
       where.OR = [
         { orderNo: { contains: search } },
-        { CustomerProfile: { customerName: { contains: search } } },
+        { customer: { customerName: { contains: search } } },
       ];
     }
     if (status && status !== "All") {
@@ -21,21 +21,14 @@ export async function GET(request: Request) {
     const orders = await prisma.salesOrder.findMany({
       where,
       include: {
-        CustomerProfile: { select: { customerName: true } },
-        Employee: { select: { name: true } },
-        Currency: { select: { code: true } },
+        customer: { select: { customerName: true } },
+        salesperson: { select: { name: true } },
+        currency: { select: { code: true } },
       },
       orderBy: { createdAt: "desc" },
     });
 
-    const mappedOrders = orders.map(order => ({
-      ...order,
-      customer: order.CustomerProfile,
-      salesperson: order.Employee,
-      currency: order.Currency,
-    }));
-
-    return NextResponse.json(mappedOrders);
+    return NextResponse.json(orders);
   } catch (error: any) {
     console.error("Sales Order GET Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

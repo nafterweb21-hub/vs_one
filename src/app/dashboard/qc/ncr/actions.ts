@@ -21,7 +21,8 @@ export async function getNcrFormData() {
         where: { 
           OR: [
             { status: "Proceed" },
-            { status: "Pending For QC" },
+            { status: "WIP" },
+            { status: "Pending for QC" },
             { qcAcceptance: "Rejected" }
           ] 
         }, 
@@ -29,16 +30,16 @@ export async function getNcrFormData() {
           workOrderNo: true, 
           customerId: true, 
           quantity: true, 
-          WorkOrderInProcess: { 
+          inProcesses: { 
             select: { 
               id: true, 
               description: true, 
-              RoutingProcess: { 
+              routingProcesses: { 
                 select: { 
                   id: true, 
                   mainProcessId: true, 
                   routingProcessId: true, 
-                  ProcessProfile: { select: { routingProcess: true } } 
+                  routingProcess: { select: { routingProcess: true } } 
                 } 
               } 
             } 
@@ -48,7 +49,7 @@ export async function getNcrFormData() {
       prisma.departmentProfile.findMany({ where: { status: "Active" }, select: { id: true, name: true } }),
     ]);
 
-    return {
+    const data = {
       customers,
       employees,
       failureModes,
@@ -56,6 +57,8 @@ export async function getNcrFormData() {
       workOrders,
       departments,
     };
+
+    return JSON.parse(JSON.stringify(data));
   } catch (error) {
     console.error("Error fetching NCR form data:", error);
     throw new Error("Failed to load NCR prerequisite data");

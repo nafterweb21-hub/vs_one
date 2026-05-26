@@ -49,8 +49,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         `Your purchase order ${po.poNo} has been rejected.\nRemark: ${remark}\nPlease revise and amend.`
       );
     } else if (action === "approve") {
-      updateData.approval1ById = currentUserId === "mock-user-id" ? po.purchaserId : currentUserId;
-      updateData.approval1Date = new Date();
 
       newStatus = "Issued";
       // Send email to supplier

@@ -1,12 +1,16 @@
 import NcrForm from "../components/NcrForm";
+import PrintButton from "../components/PrintButton";
 import { getNcrFormData, getNcr } from "../actions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export default async function EditNcrPage({ params }: { params: { id: string } }) {
+export default async function EditNcrPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  
   const [formData, ncr] = await Promise.all([
     getNcrFormData(),
-    getNcr(params.id)
+    getNcr(id)
   ]);
 
   if (!ncr) {
@@ -23,11 +27,7 @@ export default async function EditNcrPage({ params }: { params: { id: string } }
           <h1 className="text-2xl font-bold text-gray-800">Edit NCR: {ncr.ncrNo}</h1>
         </div>
         
-        <button type="button" onClick={() => {
-            if (typeof window !== 'undefined') window.print();
-        }} className="bg-gray-100 text-gray-700 border border-gray-300 px-4 py-2 rounded shadow-sm hover:bg-gray-200">
-          🖨️ Print NCR
-        </button>
+        <PrintButton />
       </div>
       
       <NcrForm formData={formData} initialData={ncr} />

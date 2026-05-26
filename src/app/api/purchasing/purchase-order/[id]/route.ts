@@ -21,8 +21,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         taxType: true,
         contactPerson: true,
         purchaser: true,
-        approval1By: true,
-        approval2By: true,
         purchaseRequisition: true,
       },
     });

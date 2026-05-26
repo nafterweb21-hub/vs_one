@@ -155,7 +155,7 @@ export default function NcrForm({ initialData, formData }: { initialData?: any, 
           <label className="block text-sm font-medium text-gray-700 mb-1">In-Process Description</label>
           <select value={inProcessId} onChange={(e) => setInProcessId(e.target.value)} className="w-full border-gray-300 rounded-md shadow-sm p-2 border">
             <option value="">Select In-Process</option>
-            {formData.workOrders.find((w: any) => w.workOrderNo === workOrderNo)?.WorkOrderInProcess.map((ip: any) => (
+            {formData.workOrders.find((w: any) => w.workOrderNo === workOrderNo)?.inProcesses?.map((ip: any) => (
               <option key={ip.id} value={ip.id}>{ip.description}</option>
             ))}
           </select>
