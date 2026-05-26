@@ -1,11 +1,39 @@
-import { PrismaClient } from '@prisma/client';
+const { PrismaClient } = require('./src/generated/prisma/index.js');
 const prisma = new PrismaClient();
-prisma.quotation.findMany({
-  include: {
-    customer: { select: { customerName: true } },
-    salesperson: { select: { name: true } },
-    currency: { select: { code: true } },
-    taxType: { select: { taxType: true, taxRate: true } }
-  },
-  orderBy: [{ quotationNo: 'desc' }, { revision: 'desc' }]
-}).then(console.log).catch(console.error).finally(() => prisma.$disconnect());
+
+async function test() {
+  try {
+    const workOrders = await prisma.workOrder.findMany({ 
+        where: { 
+          OR: [
+            { status: "Proceed" },
+            { status: "Pending For QC" },
+            { qcAcceptance: "Rejected" }
+          ] 
+        }, 
+        select: { 
+          workOrderNo: true, 
+          customerId: true, 
+          quantity: true, 
+          WorkOrderInProcess: { 
+            select: { 
+              id: true, 
+              description: true, 
+              RoutingProcess: { 
+                select: { 
+                  id: true, 
+                  mainProcessId: true, 
+                  routingProcessId: true, 
+                  ProcessProfile: { select: { routingProcess: true } } 
+                } 
+              } 
+            } 
+          } 
+        } 
+      });
+      console.log("Success, got", workOrders.length, "work orders");
+  } catch (e) {
+      console.error(e);
+  }
+}
+test();

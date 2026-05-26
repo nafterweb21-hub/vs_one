@@ -102,7 +102,7 @@ export default async function WorkOrdersPage() {
                   <tr key={wo.workOrderNo} className="hover:bg-slate-50/50">
                     <td className="px-6 py-4 font-medium text-blue-600">{wo.workOrderNo}</td>
                     <td className="px-6 py-4">{new Date(wo.date).toLocaleDateString()}</td>
-                    <td className="px-6 py-4">{wo.customer.customerName}</td>
+                    <td className="px-6 py-4">{wo.customer?.customerName || wo.CustomerProfile?.customerName}</td>
                     <td className="px-6 py-4 max-w-xs truncate">{wo.jobDescription || "-"}</td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1.5 min-w-[120px]">

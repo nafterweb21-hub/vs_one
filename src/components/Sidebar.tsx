@@ -141,6 +141,62 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             </div>
           )}
 
+          {(allow("/dashboard/purchasing/purchase-requisition") || 
+             allow("/dashboard/purchasing/purchase-order") ||
+             allow("/dashboard/purchasing/purchase-order-approval")) && (
+            <div className="pt-4">
+              <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                Purchasing
+              </p>
+              {allow("/dashboard/purchasing/purchase-requisition") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-requisition"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-requisition")}
+                >
+                  <ShoppingCart size={16} />
+                  <span>Purchase Requisitions</span>
+                </Link>
+              )}
+              {allow("/dashboard/purchasing/purchase-order") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-order"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-order")}
+                >
+                  <FileText size={16} />
+                  <span>Purchase Orders</span>
+                </Link>
+              )}
+              {allow("/dashboard/purchasing/purchase-order-approval") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-order-approval"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-order-approval")}
+                >
+                  <ClipboardList size={16} />
+                  <span>Purchase Order Approval</span>
+                </Link>
+              )}
+            </div>
+          )}
+
+          {allow("/dashboard/qc/ncr") && (
+            <div className="pt-4">
+              <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                Quality Control
+              </p>
+              <Link
+                href="/dashboard/qc/ncr"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/qc/ncr")}
+              >
+                <ClipboardList size={16} />
+                <span>Non-Conformance Report (NCR)</span>
+              </Link>
+            </div>
+          )}
+
           {allow("/dashboard/profiles/currency") && (
           <div className="pt-4">
             <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
@@ -193,6 +249,14 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             >
               <Users size={16} />
               <span>Employee Profile</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/department"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/department")}
+            >
+              <Users size={16} />
+              <span>Department Master</span>
             </Link>
             <Link
               href="/dashboard/master-profile/material"
