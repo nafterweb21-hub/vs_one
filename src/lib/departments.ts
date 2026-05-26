@@ -11,7 +11,6 @@ export async function createDepartment(data: { name: string; remark?: string }) 
   return prisma.departmentProfile.create({
     data: {
       name: data.name,
-      remark: data.remark || null,
     },
   });
 }
@@ -23,7 +22,6 @@ export async function updateDepartment(
   return prisma.departmentProfile.update({
     where: { id },
     data: {
-      remark: data.remark !== undefined ? data.remark : undefined,
       status: data.status,
     },
   });
