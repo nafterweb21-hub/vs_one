@@ -10,15 +10,15 @@ export async function getOutstandingWorkBatches() {
   const batches = await prisma.salesOrderItemBatch.findMany({
     where: {
       workOrderNo: { not: null },
-      SalesOrderItem: { SalesOrder: { status: "Confirmed" } },
+      salesOrderItem: { salesOrder: { status: "Confirmed" } },
     },
     include: {
-      SalesOrderItem: {
+      salesOrderItem: {
         include: {
-          FinishedGoodProfile: { select: { partNo: true, description: true } },
-          UomProfile: { select: { uomName: true } },
-          SalesOrder: {
-            include: { CustomerProfile: { select: { customerName: true } } },
+          part: { select: { partNo: true, description: true } },
+          uom: { select: { uomName: true } },
+          salesOrder: {
+            include: { customer: { select: { customerName: true } } },
           },
         },
       },
@@ -37,12 +37,12 @@ export async function getOutstandingWorkBatches() {
     .map((b: any) => ({
       batchId: b.id,
       workOrderNo: b.workOrderNo!,
-      salesOrderNo: b.SalesOrderItem.SalesOrder.orderNo,
-      customer: b.SalesOrderItem.SalesOrder.CustomerProfile.customerName,
-      partNo: b.SalesOrderItem.FinishedGoodProfile.partNo,
-      jobDescription: b.SalesOrderItem.FinishedGoodProfile.description,
+      salesOrderNo: b.salesOrderItem.salesOrder.orderNo,
+      customer: b.salesOrderItem.salesOrder.customer.customerName,
+      partNo: b.salesOrderItem.part.partNo,
+      jobDescription: b.salesOrderItem.part.description,
       quantity: b.quantity,
-      uom: b.SalesOrderItem.UomProfile.uomName,
+      uom: b.salesOrderItem.uom.uomName,
       deliveryDate: b.deliveryDate.toISOString(),
       noRoutingProcess: b.noRoutingProcess,
     }));
@@ -53,12 +53,12 @@ export async function createWorkOrderFromBatch(batchId: string) {
     const batch = await prisma.salesOrderItemBatch.findUnique({
       where: { id: batchId },
       include: {
-        SalesOrderItem: {
+        salesOrderItem: {
           include: {
-            FinishedGoodProfile: true,
-            UomProfile: true,
-            SalesOrder: {
-              include: { CustomerProfile: true, SalesOrderItem: true },
+            part: true,
+            uom: true,
+            salesOrder: {
+              include: { customer: true, items: true },
             },
           },
         },
@@ -68,7 +68,7 @@ export async function createWorkOrderFromBatch(batchId: string) {
     if (!batch || !batch.workOrderNo) {
       return { success: false, error: "Batch has no Work Order No allocated" };
     }
-    if (batch.SalesOrderItem.SalesOrder.status !== "Confirmed") {
+    if (batch.salesOrderItem.salesOrder.status !== "Confirmed") {
       return { success: false, error: "Sales Order is not Confirmed" };
     }
 
@@ -79,20 +79,20 @@ export async function createWorkOrderFromBatch(batchId: string) {
       return { success: false, error: "Work Order already exists for this batch" };
     }
 
-    const so = batch.SalesOrderItem.SalesOrder;
+    const so = batch.salesOrderItem.salesOrder;
     const wo = await prisma.workOrder.create({
       data: {
         workOrderNo: batch.workOrderNo,
         date: new Date(),
         customerId: so.customerId,
-        internalQuotationNo: batch.SalesOrderItem.internalQuotationNo,
+        internalQuotationNo: batch.salesOrderItem.internalQuotationNo,
         customerPoRef: so.customerPoRef,
         projectCode: so.projectCode,
         deliveryDate: batch.deliveryDate,
-        jobDescription: batch.SalesOrderItem.FinishedGoodProfile.description,
+        jobDescription: batch.salesOrderItem.part.description,
         quantity: batch.quantity,
-        uom: batch.SalesOrderItem.UomProfile.uomName,
-        amount: Number(batch.SalesOrderItem.unitPrice) * batch.quantity,
+        uom: batch.salesOrderItem.uom.uomName,
+        amount: Number(batch.salesOrderItem.unitPrice) * batch.quantity,
         status: "Draft",
       },
     });
