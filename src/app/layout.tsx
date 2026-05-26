@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: "Enterprise Resource Planning System",
 };
 
+import { Toaster } from "react-hot-toast";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -13,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>{children}</body>
+      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
+        {children}
+        <Toaster position="top-right" />
+      </body>
     </html>
   );
 }

@@ -114,6 +114,14 @@ export default function Sidebar() {
               <ClipboardList size={16} />
               <span>Work Orders</span>
             </Link>
+            <Link
+              href="/dashboard/production/process-parameter-confirmation"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/production/process-parameter-confirmation")}
+            >
+              <ClipboardList size={16} />
+              <span>Process Parameter Confirmation</span>
+            </Link>
           </div>
 
           <div className="pt-4">

@@ -81,6 +81,9 @@ export default function SalesOrderListPage() {
             <option value="All">All Status</option>
             <option value="Draft">Draft</option>
             <option value="Confirmed">Confirmed</option>
+            <option value="Revised">Revised</option>
+            <option value="Old Version">Old Version</option>
+            <option value="Void">Void</option>
             <option value="Closed">Closed</option>
           </select>
         </div>
