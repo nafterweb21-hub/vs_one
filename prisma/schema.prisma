@@ -122,6 +122,7 @@ model Currency {
   salesOrders    SalesOrder[]
   quotations     Quotation[]
   purchaseOrders PurchaseOrder[]
+  goodsReceives  GoodsReceive[]
 }
 
 model Employee {
@@ -149,11 +150,12 @@ model Employee {
   purchaseRequisitions   PurchaseRequisition[]
   purchaseOrders         PurchaseOrder[]
 
-  Ncr_Ncr_cpaResponsibleStaffIdToEmployee       Ncr[] @relation("Ncr_cpaResponsibleStaffIdToEmployee")
-  Ncr_Ncr_requestorIdToEmployee                 Ncr[] @relation("Ncr_requestorIdToEmployee")
-  Ncr_Ncr_responsiblePartyIdToEmployee          Ncr[] @relation("Ncr_responsiblePartyIdToEmployee")
-  Ncr_Ncr_rootCauseResponsibleStaffIdToEmployee Ncr[] @relation("Ncr_rootCauseResponsibleStaffIdToEmployee")
-  Ncr_Ncr_verifiedConfirmedByIdToEmployee       Ncr[] @relation("Ncr_verifiedConfirmedByIdToEmployee")
+  Ncr_Ncr_cpaResponsibleStaffIdToEmployee       Ncr[]          @relation("Ncr_cpaResponsibleStaffIdToEmployee")
+  Ncr_Ncr_requestorIdToEmployee                 Ncr[]          @relation("Ncr_requestorIdToEmployee")
+  Ncr_Ncr_responsiblePartyIdToEmployee          Ncr[]          @relation("Ncr_responsiblePartyIdToEmployee")
+  Ncr_Ncr_rootCauseResponsibleStaffIdToEmployee Ncr[]          @relation("Ncr_rootCauseResponsibleStaffIdToEmployee")
+  Ncr_Ncr_verifiedConfirmedByIdToEmployee       Ncr[]          @relation("Ncr_verifiedConfirmedByIdToEmployee")
+  goodsReceives                                 GoodsReceive[]
 }
 
 model TaxProfile {
@@ -166,6 +168,7 @@ model TaxProfile {
   salesOrders    SalesOrder[]
   quotations     Quotation[]
   purchaseOrders PurchaseOrder[]
+  goodsReceives  GoodsReceive[]
 }
 
 model CustomerProfile {
@@ -300,6 +303,7 @@ model SupplierProfile {
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
   purchaseOrders PurchaseOrder[]
+  goodsReceives  GoodsReceive[]
 }
 
 model SupplierContactPerson {
@@ -827,6 +831,7 @@ model CompanyProfile {
   updatedAt             DateTime              @updatedAt
   purchaseRequisitions  PurchaseRequisition[]
   purchaseOrders        PurchaseOrder[]
+  goodsReceives         GoodsReceive[]
 }
 
 // ==========================================
@@ -1025,7 +1030,8 @@ model PurchaseOrder {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  items PurchaseOrderItem[]
+  items         PurchaseOrderItem[]
+  goodsReceives GoodsReceive[]
 
   @@unique([poNo, revision])
 }
@@ -1067,8 +1073,9 @@ model PurchaseOrderItem {
 
   sortOrder Int @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  goodsReceiveItems GoodsReceiveItem[]
 }
 
 model Ncr {
@@ -1133,6 +1140,62 @@ model DepartmentProfile {
   id        String   @id @default(cuid())
   name      String   @unique
   status    String   @default("Active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// Goods Receive
+// ==========================================
+model GoodsReceive {
+  id   String   @id @default(cuid())
+  grNo String   @unique // Format: GRYYXXXXX
+  date DateTime
+
+  companyId String
+  company   CompanyProfile @relation(fields: [companyId], references: [id])
+
+  supplierId String
+  supplier   SupplierProfile @relation(fields: [supplierId], references: [id])
+
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id])
+
+  currencyId   String
+  currency     Currency @relation(fields: [currencyId], references: [id])
+  exchangeRate Decimal
+
+  taxTypeId String
+  taxType   TaxProfile @relation(fields: [taxTypeId], references: [id])
+  taxRate   Decimal
+
+  doNo        String?
+  doDate      DateTime?
+  invoiceNo   String?
+  invoiceDate DateTime?
+  remark      String?
+
+  creatorId String
+  creator   Employee @relation(fields: [creatorId], references: [id])
+
+  status String @default("Draft")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items GoodsReceiveItem[]
+}
+
+model GoodsReceiveItem {
+  id             String       @id @default(cuid())
+  goodsReceiveId String
+  goodsReceive   GoodsReceive @relation(fields: [goodsReceiveId], references: [id], onDelete: Cascade)
+
+  purchaseOrderItemId String
+  purchaseOrderItem   PurchaseOrderItem @relation(fields: [purchaseOrderItemId], references: [id])
+
+  receiveQty Decimal
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

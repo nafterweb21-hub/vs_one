@@ -20,6 +20,7 @@ import {
   Cpu,
   Truck,
   Package,
+  PackageCheck,
   Box,
   Flame,
   ShoppingCart,
@@ -143,7 +144,8 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
 
           {(allow("/dashboard/purchasing/purchase-requisition") || 
              allow("/dashboard/purchasing/purchase-order") ||
-             allow("/dashboard/purchasing/purchase-order-approval")) && (
+             allow("/dashboard/purchasing/purchase-order-approval") ||
+             allow("/dashboard/purchasing/goods-receive")) && (
             <div className="pt-4">
               <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
                 Purchasing
@@ -176,6 +178,16 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
                 >
                   <ClipboardList size={16} />
                   <span>Purchase Order Approval</span>
+                </Link>
+              )}
+              {allow("/dashboard/purchasing/goods-receive") && (
+                <Link
+                  href="/dashboard/purchasing/goods-receive"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/goods-receive")}
+                >
+                  <PackageCheck size={16} />
+                  <span>Goods Receive</span>
                 </Link>
               )}
             </div>
