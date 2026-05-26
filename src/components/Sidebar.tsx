@@ -181,19 +181,31 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             </div>
           )}
 
-          {allow("/dashboard/qc/ncr") && (
+          {(allow("/dashboard/qc/ncr") || allow("/dashboard/qc/coc")) && (
             <div className="pt-4">
               <p className="px-3 py-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
                 Quality Control
               </p>
-              <Link
-                href="/dashboard/qc/ncr"
-                onClick={() => setIsOpen(false)}
-                className={linkClass("/dashboard/qc/ncr")}
-              >
-                <ClipboardList size={16} />
-                <span>Non-Conformance Report (NCR)</span>
-              </Link>
+              {allow("/dashboard/qc/ncr") && (
+                <Link
+                  href="/dashboard/qc/ncr"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/qc/ncr")}
+                >
+                  <ClipboardList size={16} />
+                  <span>Non-Conformance Report (NCR)</span>
+                </Link>
+              )}
+              {allow("/dashboard/qc/coc") && (
+                <Link
+                  href="/dashboard/qc/coc"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/qc/coc")}
+                >
+                  <FileText size={16} />
+                  <span>Certificate of Conformity (COC)</span>
+                </Link>
+              )}
             </div>
           )}
 
@@ -257,6 +269,14 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             >
               <Users size={16} />
               <span>Department Master</span>
+            </Link>
+            <Link
+              href="/dashboard/master-profile/coc-type"
+              onClick={() => setIsOpen(false)}
+              className={linkClass("/dashboard/master-profile/coc-type")}
+            >
+              <ClipboardList size={16} />
+              <span>COC Type Profile</span>
             </Link>
             <Link
               href="/dashboard/master-profile/material"

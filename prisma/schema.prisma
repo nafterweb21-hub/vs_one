@@ -134,6 +134,9 @@ model CustomerProfile {
   Quotation             Quotation[]
   SalesOrder            SalesOrder[]
   WorkOrder             WorkOrder[]
+
+  deliveryOrders DeliveryOrder[]
+  cocs           CertificateOfConformity[]
 }
 
 model DepartmentProfile {
@@ -187,6 +190,11 @@ model Employee {
   purchaseOrdersAsApproval1 PurchaseOrder[]       @relation("PoApproval1")
   purchaseOrdersAsApproval2 PurchaseOrder[]       @relation("PoApproval2")
   purchaseOrdersAsPurchaser PurchaseOrder[]       @relation("PoPurchaser")
+
+  cocsAsWelder     CertificateOfConformity[] @relation("CocWelder")
+  cocsAsPainter    CertificateOfConformity[] @relation("CocPainter")
+  cocsAsCheckedBy  CertificateOfConformity[] @relation("CocCheckedBy")
+  cocsAsApprovedBy CertificateOfConformity[] @relation("CocApprovedBy")
 }
 
 model FailureModeProfile {
@@ -245,6 +253,7 @@ model MachineProfile {
   updatedAt                 DateTime
   ProcessParameterMachining ProcessParameterMachining[]
   ProcessParameterWelding   ProcessParameterWelding[]
+  cocs                      CertificateOfConformity[]
 }
 
 model MachiningToolList {
@@ -578,23 +587,24 @@ model QuotationItem {
 }
 
 model RoutingProcess {
-  id                   String                @id
+  id                   String                    @id
   inProcessId          String
   sn                   String
   mainProcessId        String?
   routingProcessId     String?
   targetCompletionDate DateTime
-  fullyReceived        Boolean               @default(false)
+  fullyReceived        Boolean                   @default(false)
   remark               String?
-  status               String                @default("New")
+  status               String                    @default("New")
   uploadUrl            String?
-  createdAt            DateTime              @default(now())
+  createdAt            DateTime                  @default(now())
   updatedAt            DateTime
   Ncr                  Ncr[]
   ProductionTimesheet  ProductionTimesheet[]
-  WorkOrderInProcess   WorkOrderInProcess    @relation(fields: [inProcessId], references: [id], onDelete: Cascade)
-  MainProcess          MainProcess?          @relation(fields: [mainProcessId], references: [id])
-  ProcessProfile       ProcessProfile?       @relation(fields: [routingProcessId], references: [id])
+  WorkOrderInProcess   WorkOrderInProcess        @relation(fields: [inProcessId], references: [id], onDelete: Cascade)
+  MainProcess          MainProcess?              @relation(fields: [mainProcessId], references: [id])
+  ProcessProfile       ProcessProfile?           @relation(fields: [routingProcessId], references: [id])
+  cocs                 CertificateOfConformity[]
 
   @@unique([inProcessId, sn])
 }
@@ -754,6 +764,9 @@ model UomProfile {
   purchaseRequisitionItems        PurchaseRequisitionItem[]
   purchaseOrderItemsAsPoUom       PurchaseOrderItem[]       @relation("PoUom")
   purchaseOrderItemsAsInternalUom PurchaseOrderItem[]       @relation("InternalUom")
+  cocsAsWoUom                     CertificateOfConformity[] @relation("CocWoUom")
+  cocsAsDoUom                     CertificateOfConformity[] @relation("CocDoUom")
+  cocsAsCocUom                    CertificateOfConformity[] @relation("CocUom")
 }
 
 model User {
@@ -824,6 +837,7 @@ model WorkOrder {
 
   purchaseRequisitions PurchaseRequisition[]
   purchaseOrders       PurchaseOrder[]
+  cocs                 CertificateOfConformity[]
 }
 
 model WorkOrderInProcess {
@@ -1028,6 +1042,113 @@ model PurchaseOrderItem {
   purchaseRequisitionItem   PurchaseRequisitionItem? @relation(fields: [purchaseRequisitionItemId], references: [id])
 
   sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// Delivery Order Module (Stub)
+// ==========================================
+model DeliveryOrder {
+  id          String          @id @default(cuid())
+  doNo        String          @unique
+  date        DateTime
+  customerId  String
+  customer    CustomerProfile @relation(fields: [customerId], references: [id])
+  cocRequired Boolean         @default(false)
+  status      String          @default("Draft") // Draft / Submitted
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cocs CertificateOfConformity[]
+}
+
+// ==========================================
+// Certificate Of Conformity (COC) Module
+// ==========================================
+model CocSequence {
+  id        String @id @default("coc-sequence")
+  year      Int
+  lastValue Int    @default(0)
+}
+
+model CocTypeProfile {
+  id        String   @id @default(cuid())
+  type      String   @unique
+  remark    String?
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cocs CertificateOfConformity[]
+}
+
+model CertificateOfConformity {
+  id    String   @id @default(cuid())
+  cocNo String   @unique
+  date  DateTime
+  
+  cocTypeId String
+  cocType   CocTypeProfile @relation(fields: [cocTypeId], references: [id])
+
+  customerId String
+  customer   CustomerProfile @relation(fields: [customerId], references: [id])
+
+  deliveryOrderId String
+  deliveryOrder   DeliveryOrder @relation(fields: [deliveryOrderId], references: [id])
+
+  workOrderNo String
+  workOrder   WorkOrder @relation(fields: [workOrderNo], references: [workOrderNo])
+
+  routingProcessId String?
+  routingProcess   RoutingProcess? @relation(fields: [routingProcessId], references: [id])
+
+  description   String?
+  drawingNo     String?
+  customerRefNo String?
+
+  woQuantity Decimal?
+  doQuantity Decimal?
+  woUomId    String?
+  woUom      UomProfile? @relation("CocWoUom", fields: [woUomId], references: [id])
+
+  doUomId String?
+  doUom   UomProfile? @relation("CocDoUom", fields: [doUomId], references: [id])
+
+  cocQuantity Decimal?
+  cocUomId    String?
+  cocUom      UomProfile? @relation("CocUom", fields: [cocUomId], references: [id])
+
+  // Welding specifics
+  sanNo            String?
+  welderId         String?
+  welder           Employee?       @relation("CocWelder", fields: [welderId], references: [id])
+  weldingProcess   String?
+  weldingMachineId String?
+  weldingMachine   MachineProfile? @relation(fields: [weldingMachineId], references: [id])
+
+  // Spray Painting specifics
+  partName                    String?
+  partNumber                  String?
+  paintingSanNo               String?
+  painterId                   String?
+  painter                     Employee? @relation("CocPainter", fields: [painterId], references: [id])
+  paintingMethod              String?
+  paintingSpecification       String?
+  paintThicknessSpecification String?
+  measuredTotalPaintThickness String?
+  paintBatchNo                String?
+  inspectionEquipment         String?
+
+  checkedById String?
+  checkedBy   Employee? @relation("CocCheckedBy", fields: [checkedById], references: [id])
+
+  approvedById String?
+  approvedBy   Employee? @relation("CocApprovedBy", fields: [approvedById], references: [id])
+
+  status String @default("Draft") // Draft, Require Approval, Approved, Void
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
