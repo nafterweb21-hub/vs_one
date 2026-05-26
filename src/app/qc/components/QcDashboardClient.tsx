@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, ClipboardCheck, ArrowLeft, RefreshCw, FileText, CheckCircle, AlertCircle, X, Loader2, Calendar, User, Briefcase, Activity } from "lucide-react";
+import { Search, ClipboardCheck, ArrowLeft, RefreshCw, FileText, CheckCircle, AlertCircle, X, Loader2, Calendar, User, Briefcase, Activity, LogOut } from "lucide-react";
 import { submitWorkOrderQc, submitProcessQc } from "../actions";
 
 export default function QcDashboardClient({ initialAwaiting, initialWorkOrders }: { initialAwaiting: any[], initialWorkOrders: any[] }) {
@@ -115,13 +115,22 @@ export default function QcDashboardClient({ initialAwaiting, initialWorkOrders }
           </div>
         </div>
         
-        <button 
-          onClick={handleRefresh}
-          className={`flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-md border border-white shadow-sm rounded-xl text-sm font-bold text-blue-900 hover:bg-white transition-colors ${isRefreshing ? 'opacity-50' : ''}`}
-        >
-          <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
-          REFRESH
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleRefresh}
+            className={`flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-md border border-white shadow-sm rounded-xl text-sm font-bold text-blue-900 hover:bg-white transition-colors ${isRefreshing ? 'opacity-50' : ''}`}
+          >
+            <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
+            REFRESH
+          </button>
+          <button 
+            onClick={() => router.push('/')}
+            className="flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-md border border-white shadow-sm rounded-xl text-sm font-bold text-rose-600 hover:bg-rose-50 transition-colors"
+          >
+            <LogOut size={16} />
+            LOGOUT
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] lg:grid-cols-[1fr_350px] gap-6 relative z-10">
