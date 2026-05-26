@@ -123,6 +123,7 @@ model Currency {
   quotations     Quotation[]
   purchaseOrders PurchaseOrder[]
   goodsReceives  GoodsReceive[]
+  goodsReturns   GoodsReturn[]
 }
 
 model Employee {
@@ -156,6 +157,7 @@ model Employee {
   Ncr_Ncr_rootCauseResponsibleStaffIdToEmployee Ncr[]          @relation("Ncr_rootCauseResponsibleStaffIdToEmployee")
   Ncr_Ncr_verifiedConfirmedByIdToEmployee       Ncr[]          @relation("Ncr_verifiedConfirmedByIdToEmployee")
   goodsReceives                                 GoodsReceive[]
+  goodsReturnCreations                          GoodsReturn[]  @relation("GoodsReturnCreator")
 }
 
 model TaxProfile {
@@ -169,6 +171,7 @@ model TaxProfile {
   quotations     Quotation[]
   purchaseOrders PurchaseOrder[]
   goodsReceives  GoodsReceive[]
+  goodsReturns   GoodsReturn[]
 }
 
 model CustomerProfile {
@@ -304,6 +307,7 @@ model SupplierProfile {
   updatedAt      DateTime                @updatedAt
   purchaseOrders PurchaseOrder[]
   goodsReceives  GoodsReceive[]
+  goodsReturns   GoodsReturn[]
 }
 
 model SupplierContactPerson {
@@ -832,6 +836,7 @@ model CompanyProfile {
   purchaseRequisitions  PurchaseRequisition[]
   purchaseOrders        PurchaseOrder[]
   goodsReceives         GoodsReceive[]
+  goodsReturns          GoodsReturn[]
 }
 
 // ==========================================
@@ -1032,6 +1037,7 @@ model PurchaseOrder {
 
   items         PurchaseOrderItem[]
   goodsReceives GoodsReceive[]
+  goodsReturns  GoodsReturn[]
 
   @@unique([poNo, revision])
 }
@@ -1183,7 +1189,8 @@ model GoodsReceive {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  items GoodsReceiveItem[]
+  items        GoodsReceiveItem[]
+  goodsReturns GoodsReturn[]
 }
 
 model GoodsReceiveItem {
@@ -1195,6 +1202,65 @@ model GoodsReceiveItem {
   purchaseOrderItem   PurchaseOrderItem @relation(fields: [purchaseOrderItemId], references: [id])
 
   receiveQty Decimal
+
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  goodsReturnItems GoodsReturnItem[]
+}
+
+// ==========================================
+// Goods Return
+// ==========================================
+model GoodsReturn {
+  id     String   @id @default(cuid())
+  rtnNo  String   @unique // Format: RTNYYXXXXX
+  rtnDate DateTime
+
+  companyId String
+  company   CompanyProfile @relation(fields: [companyId], references: [id])
+
+  supplierId String
+  supplier   SupplierProfile @relation(fields: [supplierId], references: [id])
+
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id])
+
+  goodsReceiveId String
+  goodsReceive   GoodsReceive @relation(fields: [goodsReceiveId], references: [id])
+
+  currencyId   String
+  currency     Currency @relation(fields: [currencyId], references: [id])
+  exchangeRate Decimal
+
+  taxTypeId String
+  taxType   TaxProfile @relation(fields: [taxTypeId], references: [id])
+  taxRate   Decimal
+
+  remark    String?
+  status    String  @default("Draft") // Draft, Submitted, Void
+
+  creatorId String
+  creator   Employee @relation("GoodsReturnCreator", fields: [creatorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items GoodsReturnItem[]
+}
+
+model GoodsReturnItem {
+  id String @id @default(cuid())
+
+  goodsReturnId String
+  goodsReturn   GoodsReturn @relation(fields: [goodsReturnId], references: [id], onDelete: Cascade)
+
+  goodsReceiveItemId String
+  goodsReceiveItem   GoodsReceiveItem @relation(fields: [goodsReceiveItemId], references: [id])
+
+  returnQty    Decimal
+  amount       Decimal // returnQty * unitPrice
+  internalQty  Decimal // returnQty * conversion
+  remark       String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
