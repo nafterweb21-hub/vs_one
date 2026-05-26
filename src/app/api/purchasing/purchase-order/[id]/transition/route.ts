@@ -116,8 +116,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
           where: { id: po.id },
           data: { 
             status: "Approved",
-            approval1ById: userId || po.purchaserId, // In reality, get from session
-            approval1Date: new Date(),
           },
         });
         return NextResponse.json({ success: true, status: "Approved" });

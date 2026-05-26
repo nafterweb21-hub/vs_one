@@ -111,16 +111,17 @@ model MaterialType {
 // Currency Profile
 // ==========================================
 model Currency {
-  id           String       @id @default(cuid())
-  code         String       @unique // Immutable
-  name         String       @unique // Immutable
-  exchangeRate Decimal
-  isDefault    Boolean      @default(false)
-  status       String       @default("Active")
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  salesOrders  SalesOrder[]
-  quotations   Quotation[]
+  id             String          @id @default(cuid())
+  code           String          @unique // Immutable
+  name           String          @unique // Immutable
+  exchangeRate   Decimal
+  isDefault      Boolean         @default(false)
+  status         String          @default("Active")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  salesOrders    SalesOrder[]
+  quotations     Quotation[]
+  purchaseOrders PurchaseOrder[]
 }
 
 model Employee {
@@ -145,17 +146,26 @@ model Employee {
   sprayConfirmations     ProcessParameterSprayPainting[] @relation("SprayConfirmedBy")
   machiningConfirmations ProcessParameterMachining[]     @relation("MachiningConfirmedBy")
   user                   User?                           @relation("EmployeeUser")
+  purchaseRequisitions   PurchaseRequisition[]
+  purchaseOrders         PurchaseOrder[]
+
+  Ncr_Ncr_cpaResponsibleStaffIdToEmployee       Ncr[] @relation("Ncr_cpaResponsibleStaffIdToEmployee")
+  Ncr_Ncr_requestorIdToEmployee                 Ncr[] @relation("Ncr_requestorIdToEmployee")
+  Ncr_Ncr_responsiblePartyIdToEmployee          Ncr[] @relation("Ncr_responsiblePartyIdToEmployee")
+  Ncr_Ncr_rootCauseResponsibleStaffIdToEmployee Ncr[] @relation("Ncr_rootCauseResponsibleStaffIdToEmployee")
+  Ncr_Ncr_verifiedConfirmedByIdToEmployee       Ncr[] @relation("Ncr_verifiedConfirmedByIdToEmployee")
 }
 
 model TaxProfile {
-  id          String       @id @default(cuid())
-  taxType     String       @unique
-  taxRate     Float
-  status      String       @default("Active") // "Active" or "Inactive"
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  salesOrders SalesOrder[]
-  quotations  Quotation[]
+  id             String          @id @default(cuid())
+  taxType        String          @unique
+  taxRate        Float
+  status         String          @default("Active") // "Active" or "Inactive"
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  salesOrders    SalesOrder[]
+  quotations     Quotation[]
+  purchaseOrders PurchaseOrder[]
 }
 
 model CustomerProfile {
@@ -171,6 +181,7 @@ model CustomerProfile {
   salesOrders    SalesOrder[]
   workOrders     WorkOrder[]
   quotations     Quotation[]
+  Ncr            Ncr[]
 }
 
 model CustomerContactPerson {
@@ -215,17 +226,19 @@ model MaterialCategory {
 }
 
 model MaterialProfile {
-  id          String           @id @default(cuid())
-  partNo      String?          @unique // Not mandatory, unique
-  description String           @unique // Mandatory, unique
-  shape       String // Mandatory
-  size        String? // Not mandatory
-  categoryId  String // Dropdown from Material Category profile
-  category    MaterialCategory @relation(fields: [categoryId], references: [id])
-  remark      String?
-  status      String           @default("Active") // Default Active
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  id                       String                    @id @default(cuid())
+  partNo                   String?                   @unique // Not mandatory, unique
+  description              String                    @unique // Mandatory, unique
+  shape                    String // Mandatory
+  size                     String? // Not mandatory
+  categoryId               String // Dropdown from Material Category profile
+  category                 MaterialCategory          @relation(fields: [categoryId], references: [id])
+  remark                   String?
+  status                   String                    @default("Active") // Default Active
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  purchaseRequisitionItems PurchaseRequisitionItem[]
+  purchaseOrderItems       PurchaseOrderItem[]
 }
 
 model WeldingTypeProfile {
@@ -257,6 +270,7 @@ model MainProcess {
   updatedAt        DateTime         @updatedAt
   processProfiles  ProcessProfile[]
   routingProcesses RoutingProcess[]
+  Ncr              Ncr[]
 }
 
 model ProcessProfile {
@@ -285,6 +299,7 @@ model SupplierProfile {
   addresses      SupplierAddress[]
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
+  purchaseOrders PurchaseOrder[]
 }
 
 model SupplierContactPerson {
@@ -301,6 +316,7 @@ model SupplierContactPerson {
   isDefault         Boolean         @default(false)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+  purchaseOrders    PurchaseOrder[]
 }
 
 model SupplierAddress {
@@ -330,15 +346,18 @@ model FinishedGoodProfile {
 // UOM Profile
 // ==========================================
 model UomProfile {
-  id              String           @id @default(cuid())
-  uomName         String           @unique // Immutable after save
-  remarks         String?
-  status          String           @default("Active") // "Active" or "Inactive"
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  salesOrderItems SalesOrderItem[]
-  workOrders      WorkOrder[]
-  quotationItems  QuotationItem[]
+  id                       String                    @id @default(cuid())
+  uomName                  String                    @unique // Immutable after save
+  remarks                  String?
+  status                   String                    @default("Active") // "Active" or "Inactive"
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  salesOrderItems          SalesOrderItem[]
+  workOrders               WorkOrder[]
+  quotationItems           QuotationItem[]
+  poItemsPoUom             PurchaseOrderItem[]       @relation("PoItemPoUom")
+  poItemsInternalUom       PurchaseOrderItem[]       @relation("PoItemInternalUom")
+  purchaseRequisitionItems PurchaseRequisitionItem[]
 }
 
 // ==========================================
@@ -517,15 +536,16 @@ model JointProfile {
 // Failure Mode Profile
 // ==========================================
 model FailureModeProfile {
-  id          String   @id @default(cuid())
-  failureMode String   @unique
-  remark      String?
-  status      String   @default("Active")
-  createdBy   String?
-  updatedBy   String?
-  isDeleted   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String           @id @default(cuid())
+  failureMode    String           @unique
+  remark         String?
+  status         String           @default("Active")
+  createdBy      String?
+  updatedBy      String?
+  isDeleted      Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  NcrFailureMode NcrFailureMode[]
 }
 
 // ==========================================
@@ -565,7 +585,10 @@ model WorkOrder {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  inProcesses WorkOrderInProcess[]
+  inProcesses          WorkOrderInProcess[]
+  purchaseRequisitions PurchaseRequisition[]
+  purchaseOrders       PurchaseOrder[]
+  Ncr                  Ncr[]
 }
 
 model WorkOrderInProcess {
@@ -590,6 +613,7 @@ model WorkOrderInProcess {
   updatedAt DateTime @updatedAt
 
   routingProcesses RoutingProcess[]
+  Ncr              Ncr[]
 
   @@unique([workOrderNo, description])
 }
@@ -617,6 +641,7 @@ model RoutingProcess {
   updatedAt DateTime @updatedAt
 
   productionTimesheets ProductionTimesheet[]
+  Ncr                  Ncr[]
 
   @@unique([inProcessId, sn])
 }
@@ -636,8 +661,8 @@ model ProductionTimesheet {
   completedQty Decimal?
   machineCodes String?
 
-  qcStatus     String    @default("Pending")
-  qcRemark     String?
+  qcStatus String  @default("Pending")
+  qcRemark String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -783,8 +808,8 @@ model MachiningToolList {
 // Company Profile
 // ==========================================
 model CompanyProfile {
-  id                    String   @id @default(cuid())
-  companyName           String   @unique
+  id                    String                @id @default(cuid())
+  companyName           String                @unique
   address               String
   phoneNo               String
   faxNo                 String
@@ -795,11 +820,13 @@ model CompanyProfile {
   uploadUrl             String
   logoName              String
   footerName            String
-  allowPoForWo          Boolean  @default(false)
-  as9100RequirementNote Boolean  @default(false)
-  status                String   @default("Active") // "Active" or "Inactive"
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  allowPoForWo          Boolean               @default(false)
+  as9100RequirementNote Boolean               @default(false)
+  status                String                @default("Active") // "Active" or "Inactive"
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  purchaseRequisitions  PurchaseRequisition[]
+  purchaseOrders        PurchaseOrder[]
 }
 
 // ==========================================
@@ -872,13 +899,240 @@ model QuotationItem {
   partId String?
   part   FinishedGoodProfile? @relation(fields: [partId], references: [id])
   uomId  String?
-  uom    UomProfile? @relation(fields: [uomId], references: [id])
+  uom    UomProfile?          @relation(fields: [uomId], references: [id])
 
-  unitPrice   Decimal @default(0)
-  quantity    Int     @default(1)
-  amount      Decimal @default(0) // qty * unitPrice
-  sortOrder   Int     @default(0)
+  unitPrice Decimal @default(0)
+  quantity  Int     @default(1)
+  amount    Decimal @default(0) // qty * unitPrice
+  sortOrder Int     @default(0)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PurchaseRequisition {
+  id       String   @id @default(cuid())
+  prNo     String
+  revision Int      @default(0)
+  date     DateTime
+  status   String   @default("Draft")
+  poStatus String   @default("N/A")
+  remark   String?
+
+  companyId String
+  company   CompanyProfile @relation(fields: [companyId], references: [id])
+
+  workOrderNo String?
+  workOrder   WorkOrder? @relation(fields: [workOrderNo], references: [workOrderNo])
+
+  requestedById String
+  requestedBy   Employee @relation(fields: [requestedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items          PurchaseRequisitionItem[]
+  purchaseOrders PurchaseOrder[]
+
+  @@unique([prNo, revision])
+}
+
+model PurchaseRequisitionItem {
+  id                    String              @id @default(cuid())
+  purchaseRequisitionId String
+  purchaseRequisition   PurchaseRequisition @relation(fields: [purchaseRequisitionId], references: [id], onDelete: Cascade)
+
+  fromMaterialProfile Boolean @default(false)
+  material            String?
+  description         String
+  shape               String?
+  size                String?
+
+  uomId String
+  uom   UomProfile @relation(fields: [uomId], references: [id])
+
+  quantity       Decimal
+  cancelQuantity Decimal @default(0)
+  prQuantity     Decimal
+
+  deliveryDate DateTime
+  remark       String?
+
+  poQuantityIssued       Decimal @default(0)
+  balanceRequirePurchase Decimal
+
+  materialProfileId String?
+  materialProfile   MaterialProfile? @relation(fields: [materialProfileId], references: [id])
+
+  sortOrder Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchaseOrderItems PurchaseOrderItem[]
+}
+
+model PurchaseOrder {
+  id       String   @id @default(cuid())
+  poNo     String
+  revision Int      @default(0)
+  date     DateTime
+
+  companyId String
+  company   CompanyProfile @relation(fields: [companyId], references: [id])
+
+  supplierId String
+  supplier   SupplierProfile @relation(fields: [supplierId], references: [id])
+
+  workOrderNo String?
+  workOrder   WorkOrder? @relation(fields: [workOrderNo], references: [workOrderNo])
+
+  purchaseRequisitionId String?
+  purchaseRequisition   PurchaseRequisition? @relation(fields: [purchaseRequisitionId], references: [id])
+
+  currencyId String
+  currency   Currency @relation(fields: [currencyId], references: [id])
+
+  exchangeRate Decimal
+
+  taxTypeId String
+  taxType   TaxProfile @relation(fields: [taxTypeId], references: [id])
+
+  taxRate         Decimal
+  amountBeforeTax Decimal @default(0)
+  taxAmount       Decimal @default(0)
+  amountAfterTax  Decimal @default(0)
+
+  millCertificate   Boolean @default(false)
+  certOfConformance Boolean @default(false)
+
+  contactPersonId String?
+  contactPerson   SupplierContactPerson? @relation(fields: [contactPersonId], references: [id])
+
+  telNo    String @default("")
+  faxNo    String @default("")
+  mobileNo String @default("")
+  email    String @default("")
+
+  receiveStatus String @default("NA")
+
+  purchaserId String
+  purchaser   Employee @relation(fields: [purchaserId], references: [id])
+
+  remark String @default("")
+  status String @default("Draft")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items PurchaseOrderItem[]
+
+  @@unique([poNo, revision])
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+
+  fromMaterialProfile Boolean @default(false)
+  material            String  @default("")
+  description         String  @default("")
+  supplierMaterialNo  String  @default("")
+  shape               String  @default("")
+  size                String  @default("")
+
+  quantity Decimal @default(0)
+
+  poUomId String
+  poUom   UomProfile @relation("PoItemPoUom", fields: [poUomId], references: [id])
+
+  unitPrice  Decimal @default(0)
+  amount     Decimal @default(0)
+  conversion Decimal @default(1)
+
+  internalUomId String?
+  internalUom   UomProfile? @relation("PoItemInternalUom", fields: [internalUomId], references: [id])
+
+  internalQuantity Decimal @default(0)
+
+  deliveryDate DateTime @default(now())
+  remark       String   @default("")
+
+  materialProfileId String?
+  materialProfile   MaterialProfile? @relation(fields: [materialProfileId], references: [id])
+
+  purchaseRequisitionItemId String?
+  purchaseRequisitionItem   PurchaseRequisitionItem? @relation(fields: [purchaseRequisitionItemId], references: [id])
+
+  sortOrder Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ncr {
+  id                                                 String              @id @default(cuid())
+  ncrNo                                              String              @unique
+  ncrDate                                            DateTime
+  customerId                                         String
+  workOrderNo                                        String
+  inProcessId                                        String?
+  mainProcessId                                      String?
+  routingProcessId                                   String?
+  requestorId                                        String
+  responsiblePartyId                                 String?
+  descriptionOfNonConformance                        String
+  ncrQuantity                                        Int
+  reworkQuantity                                     Int                 @default(0)
+  useAsIsQuantity                                    Int                 @default(0)
+  scrapQuantity                                      Int                 @default(0)
+  otherDecisions                                     String?
+  otherQuantity                                      Int                 @default(0)
+  customerAcceptanceForUseAsIs                       Boolean?
+  department                                         String?
+  correctiveAction                                   Boolean?
+  reasonToJustify                                    String?
+  rootCause                                          String?
+  rootCauseResponsibleStaffId                        String?
+  rootCauseDate                                      DateTime?
+  correctivePreventiveAction                         String?
+  cpaResponsibleStaffId                              String?
+  cpaDate                                            DateTime?
+  followUpVerification                               String?
+  actionTaken                                        String?
+  verifiedConfirmedById                              String?
+  verifiedConfirmedDate                              DateTime?
+  status                                             String              @default("Draft")
+  createdAt                                          DateTime            @default(now())
+  updatedAt                                          DateTime            @updatedAt
+  Employee_Ncr_cpaResponsibleStaffIdToEmployee       Employee?           @relation("Ncr_cpaResponsibleStaffIdToEmployee", fields: [cpaResponsibleStaffId], references: [id])
+  CustomerProfile                                    CustomerProfile     @relation(fields: [customerId], references: [id])
+  WorkOrderInProcess                                 WorkOrderInProcess? @relation(fields: [inProcessId], references: [id])
+  MainProcess                                        MainProcess?        @relation(fields: [mainProcessId], references: [id])
+  Employee_Ncr_requestorIdToEmployee                 Employee            @relation("Ncr_requestorIdToEmployee", fields: [requestorId], references: [id])
+  Employee_Ncr_responsiblePartyIdToEmployee          Employee?           @relation("Ncr_responsiblePartyIdToEmployee", fields: [responsiblePartyId], references: [id])
+  Employee_Ncr_rootCauseResponsibleStaffIdToEmployee Employee?           @relation("Ncr_rootCauseResponsibleStaffIdToEmployee", fields: [rootCauseResponsibleStaffId], references: [id])
+  RoutingProcess                                     RoutingProcess?     @relation(fields: [routingProcessId], references: [id])
+  Employee_Ncr_verifiedConfirmedByIdToEmployee       Employee?           @relation("Ncr_verifiedConfirmedByIdToEmployee", fields: [verifiedConfirmedById], references: [id])
+  WorkOrder                                          WorkOrder           @relation(fields: [workOrderNo], references: [workOrderNo])
+  NcrFailureMode                                     NcrFailureMode[]
+}
+
+model NcrFailureMode {
+  id                 String             @id @default(cuid())
+  ncrId              String
+  failureModeId      String
+  FailureModeProfile FailureModeProfile @relation(fields: [failureModeId], references: [id], onDelete: Cascade)
+  Ncr                Ncr                @relation(fields: [ncrId], references: [id], onDelete: Cascade)
+
+  @@unique([ncrId, failureModeId])
+}
+
+model DepartmentProfile {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  status    String   @default("Active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

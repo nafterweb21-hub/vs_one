@@ -405,15 +405,29 @@ export default function QcDashboardClient({ initialAwaiting, initialWorkOrders }
                 {/* STATUS */}
                 <div>
                   <label className="block text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">Status</label>
-                  <select 
-                    value={qcStatus}
-                    onChange={(e) => setQcStatus(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-bold text-blue-950 shadow-sm focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none transition-all appearance-none cursor-pointer"
-                  >
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                    <option value="Pending">Pending</option>
-                  </select>
+                  <div className="flex bg-slate-100 p-1 rounded-xl">
+                    <button 
+                      type="button" 
+                      onClick={() => setQcStatus("Approved")} 
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${qcStatus === 'Approved' ? 'bg-white text-emerald-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
+                    >
+                      Approved
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => setQcStatus("Rejected")} 
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${qcStatus === 'Rejected' ? 'bg-white text-rose-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
+                    >
+                      Rejected
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => setQcStatus("Pending")} 
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${qcStatus === 'Pending' ? 'bg-white text-amber-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
+                    >
+                      Pending
+                    </button>
+                  </div>
                 </div>
 
                 {/* REMARKS */}
@@ -544,15 +558,29 @@ export default function QcDashboardClient({ initialAwaiting, initialWorkOrders }
                 {/* STATUS */}
                 <div>
                   <label className="block text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">Status</label>
-                  <select 
-                    value={qcStatus}
-                    onChange={(e) => setQcStatus(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-bold text-blue-950 shadow-sm focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none transition-all appearance-none cursor-pointer"
-                  >
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                    <option value="Pending">Pending</option>
-                  </select>
+                  <div className="flex bg-slate-100 p-1 rounded-xl">
+                    <button 
+                      type="button" 
+                      onClick={() => setQcStatus("Approved")} 
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${qcStatus === 'Approved' ? 'bg-white text-emerald-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
+                    >
+                      Approved
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => setQcStatus("Rejected")} 
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${qcStatus === 'Rejected' ? 'bg-white text-rose-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
+                    >
+                      Rejected
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => setQcStatus("Pending")} 
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${qcStatus === 'Pending' ? 'bg-white text-amber-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
+                    >
+                      Pending
+                    </button>
+                  </div>
                 </div>
 
                 {/* REMARKS */}
