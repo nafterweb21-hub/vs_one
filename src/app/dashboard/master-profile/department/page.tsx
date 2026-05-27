@@ -11,7 +11,7 @@ import {
 interface DepartmentProfile {
   id: string;
   name: string;
-  remark: string | null;
+  remark?: string | null;
   status: string;
 }
 
