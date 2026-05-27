@@ -1,18 +1,29 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { 
+  ClipboardList, 
+  ShoppingCart, 
+  FileText, 
+  Users, 
+  Building2, 
+  Settings,
+  ArrowRight,
+  Activity,
+  CheckCircle2,
+  AlertCircle,
+  Clock
+} from "lucide-react";
 
 export default function DashboardPage() {
   const [activeCompany, setActiveCompany] = useState("Vision One Pte Ltd");
 
   useEffect(() => {
-    // Read initially
     const stored = localStorage.getItem("fitprise_company");
     if (stored) {
       setActiveCompany(stored);
     }
 
-    // Listener for header change
     const handleCompanyChange = () => {
       const updated = localStorage.getItem("fitprise_company");
       if (updated) {
@@ -25,33 +36,41 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in pb-12">
       {/* Welcome Banner */}
-      <div className="rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-800 p-8 text-white shadow-lg shadow-indigo-600/10">
-        <div className="max-w-2xl">
-          <span className="rounded-full bg-indigo-500/30 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-200">
-            System Overview
-          </span>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight">
-            Welcome to FITPRISE EMS
-          </h2>
-          <p className="mt-2 text-indigo-100 text-sm leading-relaxed">
-            Enterprise Resource Planning &amp; Shop Floor Tracking for Vision One Pte Ltd.
-            Manage Sales, Purchasing, Subcon, and Production routing processes.
-          </p>
+      <div className="relative overflow-hidden rounded-3xl bg-slate-900 px-8 py-10 shadow-2xl sm:px-12 sm:py-16">
+        <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-indigo-600/30 blur-3xl"></div>
+        <div className="absolute -bottom-40 -right-20 h-96 w-96 rounded-full bg-blue-600/30 blur-3xl"></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-indigo-400"></span>
+              System Overview
+            </span>
+            <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+              Welcome to Vision One ERP
+            </h2>
+            <p className="mt-4 text-slate-300 text-lg leading-relaxed max-w-xl">
+              Manage Sales, Purchasing, Subcon, and Production routing processes all in one centralized platform.
+            </p>
+          </div>
           
-          <div className="mt-6 flex flex-wrap gap-4 border-t border-indigo-500/30 pt-6">
+          <div className="flex flex-col gap-4 min-w-[280px] rounded-2xl bg-white/10 p-6 backdrop-blur-md border border-white/10">
             <div>
-              <p className="text-[10px] text-indigo-300 font-semibold uppercase tracking-wider">Active Company</p>
-              <p className="text-sm font-bold text-white">{activeCompany}</p>
+              <p className="text-[10px] text-indigo-200 font-semibold uppercase tracking-wider">Active Company</p>
+              <div className="flex items-center gap-2 mt-1">
+                <Building2 className="w-4 h-4 text-white" />
+                <p className="text-base font-bold text-white">{activeCompany}</p>
+              </div>
             </div>
-            <div className="h-8 w-px bg-indigo-500/30"></div>
+            <div className="h-px w-full bg-white/10"></div>
             <div>
-              <p className="text-[10px] text-indigo-300 font-semibold uppercase tracking-wider">Purchasing Access</p>
-              <p className="text-sm font-bold text-white">
+              <p className="text-[10px] text-indigo-200 font-semibold uppercase tracking-wider">Purchasing Access</p>
+              <p className="mt-1 text-sm font-medium text-white/90">
                 {activeCompany === "Vision One Pte Ltd" 
-                  ? "Standard PO & Subcon PO (With or Without Work Order)" 
-                  : "Standard PO & Subcon PO (Without Work Order Only)"
+                  ? "Standard & Subcon PO (Full Access)" 
+                  : "Standard & Subcon PO (Restricted)"
                 }
               </p>
             </div>
@@ -61,163 +80,179 @@ export default function DashboardPage() {
 
       {/* Quick Statistics */}
       <div>
-        <h3 className="text-base font-semibold text-blue-900 ">Active Operational Metrics</h3>
-        <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-indigo-600" />
+            Operational Metrics
+          </h3>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { 
               label: "Purchase Requisitions", 
-              value: "4 Pending", 
+              value: "4", 
               sub: "2 awaiting validation", 
-              color: "border-indigo-500/20",
-              text: "text-indigo-600 "
+              icon: <ShoppingCart className="w-5 h-5" />,
+              color: "indigo"
             },
             { 
               label: "Purchase Orders (PO)", 
-              value: "2 In Approval", 
+              value: "2", 
               sub: "Requires Tier 1/2 signoff", 
-              color: "border-amber-500/20",
-              text: "text-amber-600 "
+              icon: <FileText className="w-5 h-5" />,
+              color: "amber"
             },
             { 
               label: "Active Work Orders", 
-              value: "12 Shop Floor", 
+              value: "12", 
               sub: "Production Scan-ins active", 
-              color: "border-sky-500/20",
-              text: "text-sky-600 "
+              icon: <ClipboardList className="w-5 h-5" />,
+              color: "sky"
             },
             { 
               label: "Non-Conformance (NCR)", 
-              value: "1 Open", 
+              value: "1", 
               sub: "Requires QC check", 
-              color: "border-rose-500/20",
-              text: "text-rose-600 "
+              icon: <AlertCircle className="w-5 h-5" />,
+              color: "rose"
             },
-          ].map((card) => (
-            <div
-              key={card.label}
-              className={`rounded-xl border ${card.color} bg-white p-6 shadow-sm `}
-            >
-              <p className="text-xs font-semibold uppercase tracking-wider text-blue-400">
-                {card.label}
-              </p>
-              <p className="mt-2.5 text-2xl font-bold text-blue-900 ">
-                {card.value}
-              </p>
-              <p className="mt-1 text-xs text-blue-500 ">
-                {card.sub}
-              </p>
-            </div>
-          ))}
+          ].map((card) => {
+            const colors = {
+              indigo: "bg-indigo-50 text-indigo-600 border-indigo-100",
+              amber: "bg-amber-50 text-amber-600 border-amber-100",
+              sky: "bg-sky-50 text-sky-600 border-sky-100",
+              rose: "bg-rose-50 text-rose-600 border-rose-100",
+            }[card.color];
+
+            return (
+              <div
+                key={card.label}
+                className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md"
+              >
+                <div className={`absolute -right-4 -top-4 rounded-full p-4 opacity-50 transition-transform group-hover:scale-150 ${colors}`}>
+                  {card.icon}
+                </div>
+                <div className={`mb-4 inline-flex rounded-xl p-3 ${colors}`}>
+                  {card.icon}
+                </div>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  {card.label}
+                </p>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <p className="text-3xl font-extrabold text-slate-900">
+                    {card.value}
+                  </p>
+                </div>
+                <p className="mt-2 text-sm font-medium text-slate-500 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" />
+                  {card.sub}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Main Actions Panel */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-8 lg:grid-cols-3">
         {/* Master Profiles Portal */}
-        <div className="md:col-span-2 rounded-xl border border-blue-200 bg-white p-6 shadow-sm ">
+        <div className="lg:col-span-2 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="text-lg font-bold text-blue-900 ">System Configurations</h4>
-              <p className="text-xs text-blue-500 ">Manage Master data profiles that govern the ERP rules</p>
+              <h4 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <Settings className="w-6 h-6 text-indigo-600" />
+                System Configurations
+              </h4>
+              <p className="mt-1 text-sm text-slate-500">Manage Master data profiles that govern the ERP rules</p>
             </div>
             <a
               href="/dashboard/profiles"
-              className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 :text-indigo-300"
+              className="group flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
             >
-              View All &rarr;
+              View All 
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </a>
           </div>
           
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <a
               href="/dashboard/profiles/approval-levels"
-              className="flex items-center gap-4 rounded-xl border border-blue-100 bg-blue-50 p-4 transition hover:border-indigo-500/30 hover:bg-indigo-500/[0.02] :border-indigo-500/30"
+              className="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-5 transition-all hover:border-indigo-200 hover:bg-indigo-50/50 hover:shadow-sm"
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-indigo-600 shadow-sm border border-slate-100 transition-transform group-hover:scale-110">
+                <CheckCircle2 className="h-6 w-6" />
               </div>
               <div>
-                <h5 className="text-sm font-semibold text-blue-900 ">Approval Level Profile</h5>
-                <p className="mt-0.5 text-xs text-blue-500 ">Configure value bands and multi-tier approvers</p>
+                <h5 className="text-sm font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">Approval Level Profile</h5>
+                <p className="mt-1 text-xs text-slate-500 line-clamp-1">Configure value bands and multi-tier approvers</p>
               </div>
             </a>
 
-            <div className="flex items-center gap-4 rounded-xl border border-blue-100 bg-blue-50 p-4 opacity-70 cursor-not-allowed ">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-200 text-blue-500 ">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+            <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-5 opacity-60">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-slate-400 shadow-sm border border-slate-100">
+                <Users className="h-6 w-6" />
               </div>
               <div>
-                <h5 className="text-sm font-semibold text-blue-900 ">Employee Profile</h5>
-                <p className="mt-0.5 text-xs text-blue-500 ">Manage employee codes, FINs &amp; designations</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 rounded-xl border border-blue-100 bg-blue-50 p-4 opacity-70 cursor-not-allowed ">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-200 text-blue-500 ">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <h5 className="text-sm font-semibold text-blue-900 ">Currency Profile</h5>
-                <p className="mt-0.5 text-xs text-blue-500 ">Maintain exchange rates &amp; foreign conversion</p>
+                <h5 className="text-sm font-bold text-slate-900">Employee Profile</h5>
+                <p className="mt-1 text-xs text-slate-500 line-clamp-1">Manage employee codes, FINs &amp; designations</p>
               </div>
             </div>
 
             <a
               href="/dashboard/profiles/company"
-              className="flex items-center gap-4 rounded-xl border border-blue-100 bg-blue-50 p-4 transition hover:border-indigo-500/30 hover:bg-indigo-500/[0.02] :border-indigo-500/30"
+              className="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-5 transition-all hover:border-indigo-200 hover:bg-indigo-50/50 hover:shadow-sm"
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-indigo-600 shadow-sm border border-slate-100 transition-transform group-hover:scale-110">
+                <Building2 className="h-6 w-6" />
               </div>
               <div>
-                <h5 className="text-sm font-semibold text-blue-900 ">Company Profile</h5>
-                <p className="mt-0.5 text-xs text-blue-500 ">AS9100 requirement logs &amp; legal identifiers</p>
+                <h5 className="text-sm font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">Company Profile</h5>
+                <p className="mt-1 text-xs text-slate-500 line-clamp-1">AS9100 requirement logs &amp; legal identifiers</p>
               </div>
             </a>
           </div>
         </div>
 
         {/* Company Quick-Rules Card */}
-        <div className="rounded-xl border border-blue-200 bg-white p-6 shadow-sm ">
-          <h4 className="text-base font-bold text-blue-900 ">Tenant Specifications</h4>
-          <p className="mt-1 text-xs text-blue-500 ">Rules fetched from active profile</p>
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+              <FileText className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-lg font-bold text-slate-900">Tenant Specifications</h4>
+              <p className="text-xs font-medium text-slate-500">Rules fetched from active profile</p>
+            </div>
+          </div>
 
-          <div className="mt-6 space-y-4">
-            <div className="rounded-lg bg-blue-50 p-3.5 ">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-indigo-500"></span>
-                <p className="text-xs font-bold text-blue-800 ">Company Name</p>
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-slate-100/50">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-2 w-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]"></div>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Company Name</p>
               </div>
-              <p className="mt-1.5 text-sm font-medium text-blue-600 ">{activeCompany}</p>
+              <p className="text-sm font-bold text-slate-900">{activeCompany}</p>
             </div>
 
-            <div className="rounded-lg bg-blue-50 p-3.5 ">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                <p className="text-xs font-bold text-blue-800 ">PO linkage to Work Orders</p>
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-slate-100/50">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">PO linkage to Work Orders</p>
               </div>
-              <p className="mt-1.5 text-xs font-semibold text-emerald-600 ">
+              <p className="text-sm font-semibold text-emerald-600 bg-emerald-50 inline-flex px-2 py-1 rounded-md">
                 {activeCompany === "Vision One Pte Ltd" 
-                  ? "✓ Allowed (Standard configuration)" 
-                  : "✗ Forbidden (PO must stand alone)"
+                  ? "✓ Allowed (Standard)" 
+                  : "✗ Forbidden (Standalone)"
                 }
               </p>
             </div>
 
-            <div className="rounded-lg bg-blue-50 p-3.5 ">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-violet-500"></span>
-                <p className="text-xs font-bold text-blue-800 ">AS9100 Certification Note</p>
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-slate-100/50">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-2 w-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]"></div>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">AS9100 Certification Note</p>
               </div>
-              <p className="mt-1.5 text-xs text-blue-600 ">
+              <p className="text-sm font-medium text-slate-700">
                 {activeCompany === "Vision One Pte Ltd"
                   ? "Toggled on for PR, PO, Subcon forms."
                   : "Not standard for this company profile."
