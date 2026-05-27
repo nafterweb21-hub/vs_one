@@ -127,6 +127,8 @@ export default function PurchaseOrderSubconEditPage() {
             masterMainProcessId: "",
             masterRoutingProcessId: "",
             description: "",
+            hardness: "",
+            thickness: "",
             poUomId: "",
             quantity: "1.00",
             unitPrice: "0.00",
@@ -250,6 +252,8 @@ export default function PurchaseOrderSubconEditPage() {
         masterMainProcessId: "",
         masterRoutingProcessId: "",
         description: "",
+        hardness: "",
+        thickness: "",
         poUomId: "",
         quantity: "1.00",
         unitPrice: "0.00",
@@ -320,6 +324,8 @@ export default function PurchaseOrderSubconEditPage() {
           masterMainProcessId: !workOrderNo ? it.masterMainProcessId : null,
           masterRoutingProcessId: !workOrderNo ? it.masterRoutingProcessId : null,
           description: it.description,
+          hardness: it.hardness || null,
+          thickness: it.thickness || null,
           poUomId: it.poUomId,
           quantity: Number(it.quantity),
           unitPrice: Number(it.unitPrice),
@@ -637,6 +643,8 @@ export default function PurchaseOrderSubconEditPage() {
                   </>
                 )}
                 <th className="px-3 py-2 text-left w-56">Description</th>
+                <th className="px-3 py-2 text-left w-24">Hardness</th>
+                <th className="px-3 py-2 text-left w-24">Thickness</th>
                 <th className="px-3 py-2 text-left w-28">PO UOM</th>
                 <th className="px-3 py-2 text-right w-24">Qty</th>
                 <th className="px-3 py-2 text-right w-32">Unit Price</th>
@@ -709,6 +717,28 @@ export default function PurchaseOrderSubconEditPage() {
                         onChange={(e) => updateItem(idx, { description: e.target.value })}
                         className={inputCls}
                         placeholder="Description"
+                      />
+                    </td>
+
+                    <td className="px-3 py-2 align-top">
+                      <input
+                        type="text"
+                        value={it.hardness || ""}
+                        disabled={readOnly}
+                        onChange={(e) => updateItem(idx, { hardness: e.target.value })}
+                        className={inputCls}
+                        placeholder="Hardness"
+                      />
+                    </td>
+
+                    <td className="px-3 py-2 align-top">
+                      <input
+                        type="text"
+                        value={it.thickness || ""}
+                        disabled={readOnly}
+                        onChange={(e) => updateItem(idx, { thickness: e.target.value })}
+                        className={inputCls}
+                        placeholder="Thickness"
                       />
                     </td>
 
@@ -799,17 +829,17 @@ export default function PurchaseOrderSubconEditPage() {
             </tbody>
             <tfoot className="bg-blue-50/30 border-t border-blue-200 text-blue-900 text-xs font-bold">
               <tr>
-                <td colSpan={workOrderNo ? 5 : 6} className="px-4 py-3 text-right">Amount Before Tax</td>
+                <td colSpan={workOrderNo ? 7 : 8} className="px-4 py-3 text-right">Amount Before Tax</td>
                 <td className="px-4 py-3 text-right">{amountBeforeTax}</td>
                 <td colSpan={3}></td>
               </tr>
               <tr>
-                <td colSpan={workOrderNo ? 5 : 6} className="px-4 py-3 text-right">Tax Amount</td>
+                <td colSpan={workOrderNo ? 7 : 8} className="px-4 py-3 text-right">Tax Amount</td>
                 <td className="px-4 py-3 text-right">{taxAmount}</td>
                 <td colSpan={3}></td>
               </tr>
               <tr className="text-sm">
-                <td colSpan={workOrderNo ? 5 : 6} className="px-4 py-3 text-right text-blue-950 font-extrabold">Amount After Tax</td>
+                <td colSpan={workOrderNo ? 7 : 8} className="px-4 py-3 text-right text-blue-950 font-extrabold">Amount After Tax</td>
                 <td className="px-4 py-3 text-right text-blue-950 font-extrabold">{amountAfterTax}</td>
                 <td colSpan={3}></td>
               </tr>

@@ -1057,6 +1057,8 @@ model PurchaseOrderItem {
   supplierMaterialNo  String  @default("")
   shape               String  @default("")
   size                String  @default("")
+  hardness            String?
+  thickness           String?
 
   quantity Decimal @default(0)
 

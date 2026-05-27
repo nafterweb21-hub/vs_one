@@ -103,6 +103,8 @@ export async function POST(req: Request) {
               supplierMaterialNo: it.supplierMaterialNo || "",
               shape: it.shape || "",
               size: it.size || "",
+              hardness: it.hardness || null,
+              thickness: it.thickness || null,
               quantity: it.quantity || 0,
               poUomId: it.poUomId,
               unitPrice: it.unitPrice || 0,
