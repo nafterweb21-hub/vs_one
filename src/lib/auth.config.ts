@@ -5,6 +5,7 @@ import type { UserRole } from "@/generated/prisma/client";
 // Used by middleware to check auth state via the JWT cookie.
 // The full config in auth.ts extends this with the Credentials provider.
 export const authConfig = {
+  trustHost: true,
   session: { strategy: "jwt" },
   pages: { signIn: "/auth/signin" },
   providers: [],
