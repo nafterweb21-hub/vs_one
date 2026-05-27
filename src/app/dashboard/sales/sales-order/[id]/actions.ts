@@ -14,7 +14,7 @@ export async function getFormData() {
       uoms,
     ] = await Promise.all([
       prisma.employee.findMany({ where: { status: "ACTIVE" }, select: { id: true, name: true, code: true } }),
-      prisma.customerProfile.findMany({ where: { status: "Active" }, select: { id: true, customerName: true, customerCode: true, contactPersons: true, addresses: true } }),
+      prisma.customerProfile.findMany({ where: { status: "Active" }, select: { id: true, customerName: true, customerCode: true, customerPoRef: true, contactPersons: true, addresses: true } }),
       prisma.paymentTermProfile.findMany({ where: { status: "Active" }, select: { id: true, name: true, days: true } }),
       prisma.currency.findMany({ where: { status: "Active" }, select: { id: true, code: true, exchangeRate: true } }),
       prisma.taxProfile.findMany({ where: { status: "Active" }, select: { id: true, taxType: true, taxRate: true } }),

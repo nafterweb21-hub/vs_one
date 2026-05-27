@@ -11,7 +11,6 @@ import {
 interface DepartmentProfile {
   id: string;
   name: string;
-  remark: string | null;
   status: string;
 }
 
@@ -67,9 +66,7 @@ export default function DepartmentProfilePage() {
   };
 
   const filteredItems = items.filter(
-    (m) =>
-      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (m.remark?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+    (m) => m.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -104,7 +101,7 @@ export default function DepartmentProfilePage() {
           </div>
           <input
             type="text"
-            placeholder="Search by department or remark..."
+            placeholder="Search by department name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full rounded-lg border border-blue-200 bg-blue-50 py-2 pl-10 pr-4 text-sm text-blue-900 outline-none focus:ring-2 focus:ring-cyan-500"
@@ -145,7 +142,6 @@ export default function DepartmentProfilePage() {
                 <tr className="border-b border-blue-200 bg-blue-50 text-xs font-bold uppercase tracking-wider text-blue-500">
                   <th className="px-6 py-4 w-16">SN</th>
                   <th className="px-6 py-4">Department</th>
-                  <th className="px-6 py-4">Remark</th>
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
@@ -161,9 +157,6 @@ export default function DepartmentProfilePage() {
                     </td>
                     <td className="px-6 py-4 text-sm font-bold text-blue-900 whitespace-nowrap">
                       {item.name}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-blue-700">
-                      {item.remark || "-"}
                     </td>
                     <td className="px-6 py-4">
                       <div className="relative inline-block">

@@ -15,6 +15,7 @@ export async function GET() {
           id: true,
           customerName: true,
           customerCode: true,
+          customerPoRef: true,
           contactPersons: {
             where: { status: "Active" },
             select: {

@@ -7,6 +7,7 @@ export interface CustomerProfileInput {
   customerCode: string;
   customerName: string;
   remarks?: string;
+  customerPoRef?: string;
 }
 
 export interface ContactPersonInput {
@@ -89,6 +90,7 @@ export async function createCustomerProfile(data: CustomerProfileInput) {
     const customerCode = data.customerCode.trim();
     const customerName = data.customerName.trim();
     const remarks = data.remarks?.trim() || "";
+    const customerPoRef = data.customerPoRef?.trim() || null;
 
     if (!customerCode) {
       return { success: false, error: "Customer Code is required." };
@@ -118,6 +120,7 @@ export async function createCustomerProfile(data: CustomerProfileInput) {
         customerCode,
         customerName,
         remarks,
+        customerPoRef,
         status: "Active",
       },
     });
@@ -130,7 +133,7 @@ export async function createCustomerProfile(data: CustomerProfileInput) {
   }
 }
 
-export async function updateCustomerRemarks(id: string, remarks: string) {
+export async function updateCustomerGeneralInfo(id: string, data: { remarks: string; customerPoRef: string }) {
   try {
     const existing = await prisma.customerProfile.findUnique({
       where: { id },
@@ -142,7 +145,8 @@ export async function updateCustomerRemarks(id: string, remarks: string) {
     const updated = await prisma.customerProfile.update({
       where: { id },
       data: {
-        remarks: remarks.trim(),
+        remarks: data.remarks.trim(),
+        customerPoRef: data.customerPoRef.trim() || null,
       },
     });
 

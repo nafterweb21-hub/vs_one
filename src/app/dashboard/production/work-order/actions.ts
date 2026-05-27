@@ -413,8 +413,61 @@ export async function upsertTimesheet(data: {
       if (ms > 0) totalMinutes = Number((ms / 60000).toFixed(2));
     }
 
+    let routingProcessIdToUse = data.routingProcessId;
+
+    const processProfile = await prisma.processProfile.findUnique({
+      where: { id: data.routingProcessId }
+    });
+
+    if (processProfile) {
+      let inProcess = await prisma.workOrderInProcess.findFirst({
+        where: { workOrderNo: data.workOrderNo },
+        orderBy: { sn: "asc" }
+      });
+
+      if (!inProcess) {
+        inProcess = await prisma.workOrderInProcess.create({
+          data: {
+            workOrderNo: data.workOrderNo,
+            sn: 1,
+            description: "Default Component",
+            targetCompletionDate: new Date(),
+            status: "New"
+          }
+        });
+      }
+
+      let routingProcess = await prisma.routingProcess.findFirst({
+        where: {
+          inProcessId: inProcess.id,
+          routingProcessId: processProfile.id
+        }
+      });
+
+      if (!routingProcess) {
+        const lastRp = await prisma.routingProcess.findFirst({
+          where: { inProcessId: inProcess.id },
+          orderBy: { sn: 'desc' }
+        });
+        const nextSn = lastRp && !isNaN(Number(lastRp.sn)) ? Number(lastRp.sn) + 1 : 1;
+
+        routingProcess = await prisma.routingProcess.create({
+          data: {
+            inProcessId: inProcess.id,
+            sn: String(nextSn),
+            mainProcessId: processProfile.mainProcessId,
+            routingProcessId: processProfile.id,
+            targetCompletionDate: new Date(),
+            status: "New"
+          }
+        });
+      }
+      
+      routingProcessIdToUse = routingProcess.id;
+    }
+
     const payload = {
-      routingProcessId: data.routingProcessId,
+      routingProcessId: routingProcessIdToUse,
       employeeId: data.employeeId,
       timeIn: data.timeIn ? new Date(data.timeIn) : null,
       timeOut: data.timeOut ? new Date(data.timeOut) : null,

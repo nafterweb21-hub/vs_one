@@ -5,7 +5,7 @@ import {
   getCustomerProfiles,
   getCustomerDetail,
   createCustomerProfile,
-  updateCustomerRemarks,
+  updateCustomerGeneralInfo,
   toggleCustomerStatus,
   deleteCustomerProfile,
   addContactPerson,
@@ -60,6 +60,7 @@ interface CustomerFullDetail {
   customerCode: string;
   customerName: string;
   remarks: string | null;
+  customerPoRef: string | null;
   status: string;
   contactPersons: ContactPerson[];
   addresses: CustomerAddress[];
@@ -82,10 +83,12 @@ export default function CustomerProfilePage() {
   const [newCode, setNewCode] = useState("");
   const [newName, setNewName] = useState("");
   const [newRemarks, setNewRemarks] = useState("");
+  const [newCustomerPoRef, setNewCustomerPoRef] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
 
   // Manage Customer General Info Form States
   const [remarksEdit, setRemarksEdit] = useState("");
+  const [customerPoRefEdit, setCustomerPoRefEdit] = useState("");
   const [remarksSuccess, setRemarksSuccess] = useState(false);
 
   // Manage Contacts Sub-states
@@ -132,6 +135,7 @@ export default function CustomerProfilePage() {
     if (res.success && res.data) {
       setCustomerDetail(res.data as CustomerFullDetail);
       setRemarksEdit(res.data.remarks || "");
+      setCustomerPoRefEdit(res.data.customerPoRef || "");
     } else {
       alert(res.error || "Failed to load customer details.");
     }
@@ -141,6 +145,7 @@ export default function CustomerProfilePage() {
     setNewCode("");
     setNewName("");
     setNewRemarks("");
+    setNewCustomerPoRef("");
     setFormError(null);
     setIsCreateModalOpen(true);
   };
@@ -166,6 +171,7 @@ export default function CustomerProfilePage() {
         customerCode: code,
         customerName: name,
         remarks: newRemarks,
+        customerPoRef: newCustomerPoRef,
       });
 
       if (res.success) {
@@ -187,11 +193,14 @@ export default function CustomerProfilePage() {
     await loadCustomerDetailData(id);
   };
 
-  const handleSaveRemarks = async () => {
+  const handleSaveGeneralInfo = async () => {
     if (!selectedCustomerId) return;
     setRemarksSuccess(false);
     startTransition(async () => {
-      const res = await updateCustomerRemarks(selectedCustomerId, remarksEdit);
+      const res = await updateCustomerGeneralInfo(selectedCustomerId, {
+        remarks: remarksEdit,
+        customerPoRef: customerPoRefEdit,
+      });
       if (res.success) {
         setRemarksSuccess(true);
         loadCustomers();
@@ -657,6 +666,19 @@ export default function CustomerProfilePage() {
               {/* Remarks */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-bold text-blue-800">
+                  Customer PO Ref
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. BLANKET-2024"
+                  value={newCustomerPoRef}
+                  onChange={(e) => setNewCustomerPoRef(e.target.value)}
+                  className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-bold text-blue-800">
                   Remarks
                 </label>
                 <textarea
@@ -776,27 +798,41 @@ export default function CustomerProfilePage() {
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-base font-bold text-blue-800">
-                          Remarks
-                        </label>
-                        <textarea
-                          rows={4}
-                          placeholder="Enter remarks..."
-                          value={remarksEdit}
-                          onChange={(e) => setRemarksEdit(e.target.value)}
-                          className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden resize-none"
-                        />
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-base font-bold text-blue-800">
+                            Customer PO Ref
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Enter PO Ref..."
+                            value={customerPoRefEdit}
+                            onChange={(e) => setCustomerPoRefEdit(e.target.value)}
+                            className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-base font-bold text-blue-800">
+                            Remarks
+                          </label>
+                          <textarea
+                            rows={1}
+                            placeholder="Enter remarks..."
+                            value={remarksEdit}
+                            onChange={(e) => setRemarksEdit(e.target.value)}
+                            className="rounded-lg glossy-input px-3 py-2 text-base outline-hidden resize-none"
+                          />
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 mt-4">
                         <button
                           type="button"
-                          onClick={handleSaveRemarks}
+                          onClick={handleSaveGeneralInfo}
                           disabled={isPending}
                           className="rounded-lg glossy-button-blue px-5 py-2.5 text-base font-bold text-white shadow-md cursor-pointer"
                         >
-                          Save Remarks
+                          Save Info
                         </button>
 
                         {remarksSuccess && (

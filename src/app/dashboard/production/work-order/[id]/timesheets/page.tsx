@@ -74,6 +74,7 @@ export default async function WorkOrderTimesheetsPage({
         runningSum += qty;
         return {
           ...ts,
+          processProfileId: rp.routingProcessId,
           inProcessDescription: `${ip.sn}. ${ip.description}`,
           processName: rp.routingProcess?.routingProcess || rp.mainProcess?.process || "Unknown",
           runningSum,
@@ -84,13 +85,17 @@ export default async function WorkOrderTimesheetsPage({
 
   const totalOrderQty = Number(workOrder.quantity) || 0;
 
-  const routingProcesses = workOrder.inProcesses.flatMap((ip: any) =>
-    ip.routingProcesses.map((rp: any) => ({
-      id: rp.id,
-      name: rp.routingProcess?.routingProcess || rp.mainProcess?.process || "Unknown",
-      description: ip.description,
-    })),
-  );
+  const processProfilesData = await prisma.processProfile.findMany({
+    where: { status: "Active" },
+    include: { mainProcess: true },
+    orderBy: { routingProcess: "asc" },
+  });
+
+  const routingProcesses = processProfilesData.map((p: any) => ({
+    id: p.id,
+    name: p.routingProcess,
+    description: p.mainProcess?.process || "Master Profile",
+  }));
 
   const editable = !["Void", "Cancelled", "Completed"].includes(workOrder.status);
 
@@ -232,7 +237,7 @@ export default async function WorkOrderTimesheetsPage({
                           routingProcesses={routingProcesses}
                           timesheet={{
                             id: ts.id,
-                            routingProcessId: ts.routingProcessId,
+                            routingProcessId: ts.processProfileId || ts.routingProcessId,
                             employeeId: ts.employeeId,
                             timeIn: ts.timeIn ? ts.timeIn.toISOString() : null,
                             timeOut: ts.timeOut ? ts.timeOut.toISOString() : null,

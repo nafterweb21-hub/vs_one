@@ -19,7 +19,6 @@ export default function EditDepartmentPage() {
 
   const [initialData, setInitialData] = useState<{
     name: string;
-    remark: string;
   } | null>(null);
 
   useEffect(() => {
@@ -29,7 +28,6 @@ export default function EditDepartmentPage() {
       if (res.success && res.data) {
         setInitialData({
           name: res.data.name,
-          remark: res.data.remark || "",
         });
       } else {
         setErrorMsg(res.error || "Failed to load department details");
@@ -44,10 +42,8 @@ export default function EditDepartmentPage() {
     setIsSubmitting(true);
     setErrorMsg(null);
 
-    const formData = new FormData(e.currentTarget);
-    const remark = formData.get("remark") as string;
-
-    const res = await updateDepartmentProfile(id, { remark });
+    // No additional fields to update for now
+    const res = await updateDepartmentProfile(id, {});
 
     if (res.success) {
       router.push("/dashboard/master-profile/department");
@@ -116,20 +112,6 @@ export default function EditDepartmentPage() {
               <p className="text-xs text-blue-500 mt-1.5">
                 Department name cannot be changed once created.
               </p>
-            </div>
-
-            <div>
-              <label htmlFor="remark" className="block text-sm font-semibold text-blue-900 mb-1.5">
-                Remark
-              </label>
-              <textarea
-                id="remark"
-                name="remark"
-                rows={4}
-                defaultValue={initialData?.remark}
-                placeholder="Optional remarks..."
-                className="w-full rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-900 outline-none focus:ring-2 focus:ring-cyan-500 resize-y"
-              />
             </div>
           </div>
 

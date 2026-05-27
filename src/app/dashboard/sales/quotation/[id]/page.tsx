@@ -11,6 +11,7 @@ type FormData = {
     id: string;
     customerName: string;
     customerCode: string;
+    customerPoRef: string | null;
     contactPersons: { id: string; contactPersonName: string; email: string | null; telNo: string | null; faxNo: string | null; isDefault: boolean }[];
     addresses: { id: string; address: string; isDefault: boolean }[];
   }[];
@@ -132,6 +133,11 @@ export default function QuotationEditPage() {
     if (!cur) {
       const def = customer.contactPersons.find((p) => p.isDefault) || customer.contactPersons[0];
       setContactPersonId(def?.id || "");
+    }
+    if (customer.customerPoRef) {
+      setCustomerPoRef(customer.customerPoRef);
+    } else {
+      setCustomerPoRef("");
     }
   }, [customer]); // eslint-disable-line react-hooks/exhaustive-deps
 

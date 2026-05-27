@@ -179,6 +179,7 @@ model CustomerProfile {
   customerCode   String                  @unique
   customerName   String                  @unique
   remarks        String?
+  customerPoRef  String?
   status         String                  @default("Active") // "Active" or "Inactive"
   contactPersons CustomerContactPerson[]
   addresses      CustomerAddress[]

@@ -134,7 +134,7 @@ export default function WorkOrderHeader({ wo, uoms }: Props) {
         </Editable>
         <ReadOnly label="Customer" value={wo.customer?.customerName} />
         <ReadOnly label="Internal Quotation No" value={wo.internalQuotationNo} />
-        <ReadOnly label="Customer PO Ref" value={wo.customerPoRef} />
+        <ReadOnly label="Customer PO Ref" value={wo.customer?.customerPoRef || wo.customerPoRef} />
         <ReadOnly label="Project Code" value={wo.projectCode} />
         <ReadOnly label="Delivery Date" value={fmtDate(wo.deliveryDate)} />
         <ReadOnly label="Quantity" value={wo.quantity != null ? String(wo.quantity) : "-"} />

@@ -6,7 +6,7 @@ export async function getFormData() {
   try {
     const customers = await prisma.customerProfile.findMany({
       where: { status: "Active" },
-      select: { id: true, customerName: true }
+      select: { id: true, customerName: true, customerPoRef: true }
     });
 
     const salesOrders = await prisma.salesOrder.findMany({
@@ -48,6 +48,6 @@ export async function getFormData() {
     };
   } catch (error) {
     console.error("Error fetching DO form data:", error);
-    throw new Error("Failed to load prerequisite data");
+    throw new Error("Failed to load prerequisite data: " + (error as any).message);
   }
 }

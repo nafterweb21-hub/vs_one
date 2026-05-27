@@ -111,6 +111,13 @@ export default function SalesOrderFormPage({ params }: PageProps) {
         next.fax = "";
         next.tel = "";
         next.email = "";
+        
+        const newCustomer = formDataCache?.customers?.find((c: any) => c.id === value);
+        if (newCustomer?.customerPoRef) {
+          next.customerPoRef = newCustomer.customerPoRef;
+        } else {
+          next.customerPoRef = "";
+        }
       }
       if (field === "contactPersonId") {
         const cp = selectedCustomer?.contactPersons.find((c: any) => c.id === value);
