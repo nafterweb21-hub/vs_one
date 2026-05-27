@@ -15,6 +15,8 @@ type Item = {
   supplierMaterialNo: string;
   shape: string;
   size: string;
+  hardness: string;
+  thickness: string;
   poUomId: string;
   quantity: string;
   unitPrice: string;
@@ -33,7 +35,7 @@ export default function PurchaseOrderApprovalDetailPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [meta, setMeta] = useState<{ poNo?: string; revision?: number; status?: string }>({});
+  const [meta, setMeta] = useState<{ poNo?: string; revision?: number; status?: string; poType?: string }>({});
 
   const [companyId, setCompanyId] = useState("");
   const [date, setDate] = useState<string>(new Date().toISOString().slice(0, 10));
@@ -61,6 +63,8 @@ export default function PurchaseOrderApprovalDetailPage() {
 
   // Approval specific
   const [approvalRemark, setApprovalRemark] = useState("");
+  const [confirmModal, setConfirmModal] = useState<{ isOpen: boolean; action: "approve" | "reject" | null; message: string }>({ isOpen: false, action: null, message: "" });
+  const [alertModal, setAlertModal] = useState<{ isOpen: boolean; message: string }>({ isOpen: false, message: "" });
 
   const [companies, setCompanies] = useState<any[]>([]);
   const [suppliers, setSuppliers] = useState<any[]>([]);
@@ -89,7 +93,7 @@ export default function PurchaseOrderApprovalDetailPage() {
         const po = await fetch(`/api/purchasing/purchase-order/${id}`).then((r) => r.json());
         if (po.error) throw new Error(po.error);
         
-        setMeta({ poNo: po.poNo, revision: po.revision, status: po.status });
+        setMeta({ poNo: po.poNo, revision: po.revision, status: po.status, poType: po.poType });
         setCompanyId(po.companyId);
         setDate(new Date(po.date).toISOString().slice(0, 10));
         setWorkOrderNo(po.workOrderNo || "");
@@ -122,6 +126,8 @@ export default function PurchaseOrderApprovalDetailPage() {
             supplierMaterialNo: it.supplierMaterialNo || "",
             shape: it.shape || "",
             size: it.size || "",
+            hardness: it.hardness || "",
+            thickness: it.thickness || "",
             poUomId: it.poUomId,
             quantity: Number(it.quantity).toFixed(2),
             unitPrice: Number(it.unitPrice).toFixed(4),
@@ -141,15 +147,23 @@ export default function PurchaseOrderApprovalDetailPage() {
     })();
   }, [id]);
 
-  const handleAction = async (action: "approve" | "reject") => {
+  const handleAction = (action: "approve" | "reject") => {
     if (action === "reject" && !approvalRemark.trim()) {
-      alert("Please provide an approval remark for rejection.");
+      setAlertModal({ isOpen: true, message: "Please provide an approval remark for rejection." });
       return;
     }
     
-    if (!confirm(`Are you sure you want to ${action} this Purchase Order?`)) {
-      return;
-    }
+    setConfirmModal({
+      isOpen: true,
+      action,
+      message: `Are you sure you want to ${action} this Purchase Order?`
+    });
+  };
+
+  const executeAction = async () => {
+    if (!confirmModal.action) return;
+    const action = confirmModal.action;
+    setConfirmModal({ isOpen: false, action: null, message: "" });
 
     setSubmitting(true);
     try {
@@ -170,7 +184,7 @@ export default function PurchaseOrderApprovalDetailPage() {
       router.push("/dashboard/purchasing/purchase-order-approval");
       router.refresh();
     } catch (e: any) {
-      alert(e.message);
+      setAlertModal({ isOpen: true, message: e.message });
       setSubmitting(false);
     }
   };
@@ -331,19 +345,33 @@ export default function PurchaseOrderApprovalDetailPage() {
           <table className="w-full text-sm min-w-[2200px]">
             <thead className="text-xs text-blue-500 bg-blue-50/50 uppercase tracking-wider">
               <tr>
-                <th className="px-3 py-2 text-left w-24">Type</th>
-                <th className="px-3 py-2 text-left w-48">Material Profile / Code</th>
-                <th className="px-3 py-2 text-left w-56">Description</th>
-                <th className="px-3 py-2 text-left w-40">Supplier Part No</th>
-                <th className="px-3 py-2 text-left w-32">Shape</th>
-                <th className="px-3 py-2 text-left w-32">Size</th>
+                {meta.poType === "Subcon" ? (
+                  <>
+                    <th className="px-3 py-2 text-left w-56">Description</th>
+                    <th className="px-3 py-2 text-left w-32">Hardness</th>
+                    <th className="px-3 py-2 text-left w-32">Thickness</th>
+                  </>
+                ) : (
+                  <>
+                    <th className="px-3 py-2 text-left w-24">Type</th>
+                    <th className="px-3 py-2 text-left w-48">Material Profile / Code</th>
+                    <th className="px-3 py-2 text-left w-56">Description</th>
+                    <th className="px-3 py-2 text-left w-40">Supplier Part No</th>
+                    <th className="px-3 py-2 text-left w-32">Shape</th>
+                    <th className="px-3 py-2 text-left w-32">Size</th>
+                  </>
+                )}
                 <th className="px-3 py-2 text-left w-28">PO UOM</th>
                 <th className="px-3 py-2 text-right w-24">Qty</th>
                 <th className="px-3 py-2 text-right w-32">Unit Price</th>
                 <th className="px-3 py-2 text-right w-32">Amount</th>
-                <th className="px-3 py-2 text-right w-24">Conv</th>
-                <th className="px-3 py-2 text-left w-28">Int UOM</th>
-                <th className="px-3 py-2 text-right w-24">Int Qty</th>
+                {meta.poType !== "Subcon" && (
+                  <>
+                    <th className="px-3 py-2 text-right w-24">Conv</th>
+                    <th className="px-3 py-2 text-left w-28">Int UOM</th>
+                    <th className="px-3 py-2 text-right w-24">Int Qty</th>
+                  </>
+                )}
                 <th className="px-3 py-2 text-left w-40">Delivery Date</th>
                 <th className="px-3 py-2 text-left min-w-[150px]">Remark</th>
               </tr>
@@ -351,33 +379,49 @@ export default function PurchaseOrderApprovalDetailPage() {
             <tbody className="divide-y divide-blue-100">
               {items.map((it, idx) => (
                 <tr key={idx} className="bg-white">
-                  <td className="px-3 py-2 align-top">
-                    <input type="text" value={it.fromMaterialProfile ? "Profile" : "FreeText"} disabled className={inputCls} />
-                  </td>
-                  <td className="px-3 py-2 align-top">
-                    {it.fromMaterialProfile ? (
-                      <select value={it.materialProfileId} disabled className={inputCls}>
-                        <option value="">— Select —</option>
-                        {materials.map((m) => (
-                          <option key={m.id} value={m.id}>{m.partNo || "N/A"}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <input type="text" value={it.material} disabled className={inputCls} />
-                    )}
-                  </td>
-                  <td className="px-3 py-2 align-top">
-                    <textarea rows={1} value={it.description} disabled className={inputCls} />
-                  </td>
-                  <td className="px-3 py-2 align-top">
-                    <input type="text" value={it.supplierMaterialNo} disabled className={inputCls} />
-                  </td>
-                  <td className="px-3 py-2 align-top">
-                    <input type="text" value={it.shape} disabled className={inputCls} />
-                  </td>
-                  <td className="px-3 py-2 align-top">
-                    <input type="text" value={it.size} disabled className={inputCls} />
-                  </td>
+                  {meta.poType === "Subcon" ? (
+                    <>
+                      <td className="px-3 py-2 align-top">
+                        <textarea rows={1} value={it.description} disabled className={inputCls} />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <input type="text" value={it.hardness} disabled className={inputCls} />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <input type="text" value={it.thickness} disabled className={inputCls} />
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-3 py-2 align-top">
+                        <input type="text" value={it.fromMaterialProfile ? "Profile" : "FreeText"} disabled className={inputCls} />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        {it.fromMaterialProfile ? (
+                          <select value={it.materialProfileId} disabled className={inputCls}>
+                            <option value="">— Select —</option>
+                            {materials.map((m) => (
+                              <option key={m.id} value={m.id}>{m.partNo || "N/A"}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input type="text" value={it.material} disabled className={inputCls} />
+                        )}
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <textarea rows={1} value={it.description} disabled className={inputCls} />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <input type="text" value={it.supplierMaterialNo} disabled className={inputCls} />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <input type="text" value={it.shape} disabled className={inputCls} />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <input type="text" value={it.size} disabled className={inputCls} />
+                      </td>
+                    </>
+                  )}
                   <td className="px-3 py-2 align-top">
                     <select value={it.poUomId} disabled className={inputCls}>
                       <option value="">—</option>
@@ -393,18 +437,22 @@ export default function PurchaseOrderApprovalDetailPage() {
                   <td className="px-3 py-2 align-top text-right font-mono text-blue-900 font-semibold pt-4">
                     {it.amount}
                   </td>
-                  <td className="px-3 py-2 align-top">
-                    <input type="number" value={it.conversion} disabled className={`${inputCls} text-right`} />
-                  </td>
-                  <td className="px-3 py-2 align-top">
-                    <select value={it.internalUomId} disabled className={inputCls}>
-                      <option value="">—</option>
-                      {uoms.map((u) => <option key={u.id} value={u.id}>{u.uomName}</option>)}
-                    </select>
-                  </td>
-                  <td className="px-3 py-2 align-top text-right font-mono text-blue-900 pt-4">
-                    {it.internalQuantity}
-                  </td>
+                  {meta.poType !== "Subcon" && (
+                    <>
+                      <td className="px-3 py-2 align-top">
+                        <input type="number" value={it.conversion} disabled className={`${inputCls} text-right`} />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <select value={it.internalUomId} disabled className={inputCls}>
+                          <option value="">—</option>
+                          {uoms.map((u) => <option key={u.id} value={u.id}>{u.uomName}</option>)}
+                        </select>
+                      </td>
+                      <td className="px-3 py-2 align-top text-right font-mono text-blue-900 pt-4">
+                        {it.internalQuantity}
+                      </td>
+                    </>
+                  )}
                   <td className="px-3 py-2 align-top">
                     <input type="date" value={it.deliveryDate} disabled className={inputCls} />
                   </td>
@@ -452,6 +500,51 @@ export default function PurchaseOrderApprovalDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      {alertModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-lg max-w-sm w-full p-6 space-y-4 border border-blue-100">
+            <h3 className="text-lg font-bold text-blue-900 flex items-center gap-2">
+              <span className="text-rose-500"><XCircle size={20} /></span> Alert
+            </h3>
+            <p className="text-sm text-slate-700">{alertModal.message}</p>
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => setAlertModal({ isOpen: false, message: "" })}
+                className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-sm transition-colors active:scale-95 cursor-pointer"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-lg max-w-sm w-full p-6 space-y-4 border border-blue-100">
+            <h3 className="text-lg font-bold text-blue-900 flex items-center gap-2">
+              <span className="text-blue-500"><CheckCircle2 size={20} /></span> Confirm Action
+            </h3>
+            <p className="text-sm text-slate-700">{confirmModal.message}</p>
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                onClick={() => setConfirmModal({ isOpen: false, action: null, message: "" })}
+                className="px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors active:scale-95 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={executeAction}
+                className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-sm transition-colors active:scale-95 cursor-pointer"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Approval Action Panel */}
       <div className="bg-blue-50 border border-blue-200 rounded-xl shadow-sm p-6 space-y-4">

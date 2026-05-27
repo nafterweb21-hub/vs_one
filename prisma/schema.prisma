@@ -268,31 +268,33 @@ model PaintingMethodProfile {
 }
 
 model MainProcess {
-  id               String           @id @default(cuid())
-  process          String           @unique
-  remark           String?
-  status           String           @default("Active") // "Active", "Inactive", or "Void"
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-  processProfiles  ProcessProfile[]
-  routingProcesses RoutingProcess[]
-  Ncr              Ncr[]
+  id                 String              @id @default(cuid())
+  process            String              @unique
+  remark             String?
+  status             String              @default("Active") // "Active", "Inactive", or "Void"
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  processProfiles    ProcessProfile[]
+  routingProcesses   RoutingProcess[]
+  Ncr                Ncr[]
+  purchaseOrderItems PurchaseOrderItem[]
 }
 
 model ProcessProfile {
-  id               String           @id @default(cuid())
-  mainProcessId    String
-  mainProcess      MainProcess      @relation(fields: [mainProcessId], references: [id])
-  routingProcess   String           @unique
-  welding          Boolean          @default(false)
-  sprayPainting    Boolean          @default(false)
-  machining        Boolean          @default(false)
-  costPerMinute    Decimal
-  remark           String?
-  status           String           @default("Active") // "Active", "Inactive", or "Void"
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-  routingProcesses RoutingProcess[]
+  id                 String              @id @default(cuid())
+  mainProcessId      String
+  mainProcess        MainProcess         @relation(fields: [mainProcessId], references: [id])
+  routingProcess     String              @unique
+  welding            Boolean             @default(false)
+  sprayPainting      Boolean             @default(false)
+  machining          Boolean             @default(false)
+  costPerMinute      Decimal
+  remark             String?
+  status             String              @default("Active") // "Active", "Inactive", or "Void"
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  routingProcesses   RoutingProcess[]
+  purchaseOrderItems PurchaseOrderItem[]
 }
 
 model SupplierProfile {
@@ -620,8 +622,9 @@ model WorkOrderInProcess {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  routingProcesses RoutingProcess[]
-  Ncr              Ncr[]
+  routingProcesses   RoutingProcess[]
+  Ncr                Ncr[]
+  purchaseOrderItems PurchaseOrderItem[]
 
   @@unique([workOrderNo, description])
 }
@@ -650,6 +653,7 @@ model RoutingProcess {
 
   productionTimesheets ProductionTimesheet[]
   Ncr                  Ncr[]
+  purchaseOrderItems   PurchaseOrderItem[]
 
   @@unique([inProcessId, sn])
 }
@@ -985,6 +989,7 @@ model PurchaseRequisitionItem {
 model PurchaseOrder {
   id       String   @id @default(cuid())
   poNo     String
+  poType   String   @default("Material") // "Material" or "Subcon"
   revision Int      @default(0)
   date     DateTime
 
@@ -1076,6 +1081,27 @@ model PurchaseOrderItem {
 
   purchaseRequisitionItemId String?
   purchaseRequisitionItem   PurchaseRequisitionItem? @relation(fields: [purchaseRequisitionItemId], references: [id])
+
+  // ====================
+  // Subcon specific fields
+  // ====================
+  inProcessId String?
+  inProcess   WorkOrderInProcess? @relation(fields: [inProcessId], references: [id])
+
+  mainProcessId String?
+  mainProcess   MainProcess? @relation(fields: [mainProcessId], references: [id])
+
+  processProfileId String?
+  processProfile   ProcessProfile? @relation(fields: [processProfileId], references: [id])
+
+  routingProcessId String?
+  routingProcess   RoutingProcess? @relation(fields: [routingProcessId], references: [id])
+
+  hardness  String?
+  thickness String?
+
+  qtyAcknowledged Decimal @default(0)
+  qtyReturned     Decimal @default(0)
 
   sortOrder Int @default(0)
 
@@ -1212,8 +1238,8 @@ model GoodsReceiveItem {
 // Goods Return
 // ==========================================
 model GoodsReturn {
-  id     String   @id @default(cuid())
-  rtnNo  String   @unique // Format: RTNYYXXXXX
+  id      String   @id @default(cuid())
+  rtnNo   String   @unique // Format: RTNYYXXXXX
   rtnDate DateTime
 
   companyId String
@@ -1236,8 +1262,8 @@ model GoodsReturn {
   taxType   TaxProfile @relation(fields: [taxTypeId], references: [id])
   taxRate   Decimal
 
-  remark    String?
-  status    String  @default("Draft") // Draft, Submitted, Void
+  remark String?
+  status String  @default("Draft") // Draft, Submitted, Void
 
   creatorId String
   creator   Employee @relation("GoodsReturnCreator", fields: [creatorId], references: [id])
@@ -1257,10 +1283,10 @@ model GoodsReturnItem {
   goodsReceiveItemId String
   goodsReceiveItem   GoodsReceiveItem @relation(fields: [goodsReceiveItemId], references: [id])
 
-  returnQty    Decimal
-  amount       Decimal // returnQty * unitPrice
-  internalQty  Decimal // returnQty * conversion
-  remark       String?
+  returnQty   Decimal
+  amount      Decimal // returnQty * unitPrice
+  internalQty Decimal // returnQty * conversion
+  remark      String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

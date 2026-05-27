@@ -145,6 +145,7 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
 
           {(allow("/dashboard/purchasing/purchase-requisition") || 
              allow("/dashboard/purchasing/purchase-order") ||
+             allow("/dashboard/purchasing/purchase-order-subcon") ||
              allow("/dashboard/purchasing/purchase-order-approval") ||
              allow("/dashboard/purchasing/goods-receive") ||
              allow("/dashboard/purchasing/goods-return")) && (
@@ -170,6 +171,16 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
                 >
                   <FileText size={16} />
                   <span>Purchase Orders</span>
+                </Link>
+              )}
+              {allow("/dashboard/purchasing/purchase-order-subcon") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-order-subcon"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-order-subcon")}
+                >
+                  <FileText size={16} />
+                  <span>PO Subcon</span>
                 </Link>
               )}
               {allow("/dashboard/purchasing/purchase-order-approval") && (
