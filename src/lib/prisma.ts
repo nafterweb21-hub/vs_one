@@ -10,7 +10,14 @@ const globalForPrisma = globalThis as unknown as {
 function createPrismaClient(): PrismaClient {
   const url = process.env.DATABASE_URL;
   if (!url) {
-    throw new Error("DATABASE_URL is not set. PostgreSQL is required.");
+    console.warn("DATABASE_URL is not set. Skipping PrismaClient initialization during build.");
+    return new Proxy({} as any, {
+      get() {
+        return function () {
+          throw new Error("DATABASE_URL is not set. PrismaClient was not initialized.");
+        };
+      },
+    }) as PrismaClient;
   }
   const pool = new Pool({ connectionString: url });
   const adapter = new PrismaPg(pool);
