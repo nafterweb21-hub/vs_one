@@ -188,6 +188,7 @@ model CustomerProfile {
   workOrders     WorkOrder[]
   quotations     Quotation[]
   Ncr            Ncr[]
+  deliveryOrders DeliveryOrder[]
 }
 
 model CustomerContactPerson {
@@ -476,8 +477,9 @@ model SalesOrder {
 
   quotation Quotation?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  deliveryOrders DeliveryOrder[]
 }
 
 model SalesOrderItem {
@@ -597,6 +599,7 @@ model WorkOrder {
   purchaseRequisitions PurchaseRequisition[]
   purchaseOrders       PurchaseOrder[]
   Ncr                  Ncr[]
+  deliveryOrderItems   DeliveryOrderItem[]
 }
 
 model WorkOrderInProcess {
@@ -1264,4 +1267,41 @@ model GoodsReturnItem {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// Delivery Order
+// ==========================================
+model DeliveryOrder {
+  id            String   @id @default(cuid())
+  doNo          String   @unique
+  doDate        DateTime
+
+  customerId    String
+  customer      CustomerProfile @relation(fields: [customerId], references: [id])
+
+  salesOrderId  String
+  salesOrder    SalesOrder @relation(fields: [salesOrderId], references: [id])
+
+  cocRequired   Boolean  @default(false)
+  status        String   @default("Draft") // Draft, Submitted, Void
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items         DeliveryOrderItem[]
+}
+
+model DeliveryOrderItem {
+  id              String        @id @default(cuid())
+  deliveryOrderId String
+  deliveryOrder   DeliveryOrder @relation(fields: [deliveryOrderId], references: [id], onDelete: Cascade)
+
+  workOrderNo     String
+  workOrder       WorkOrder     @relation(fields: [workOrderNo], references: [workOrderNo])
+
+  quantity        Decimal
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }

@@ -124,6 +124,14 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
                 <ShoppingCart size={16} />
                 <span>Sales Orders</span>
               </Link>
+              <Link
+                href="/dashboard/sales/delivery-order"
+                onClick={() => setIsOpen(false)}
+                className={linkClass("/dashboard/sales/delivery-order")}
+              >
+                <Truck size={16} />
+                <span>Delivery Orders</span>
+              </Link>
             </div>
           )}
 
