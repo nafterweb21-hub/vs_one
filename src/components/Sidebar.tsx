@@ -177,6 +177,16 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
                   <span>Purchase Orders</span>
                 </Link>
               )}
+              {allow("/dashboard/purchasing/purchase-order-subcon") && (
+                <Link
+                  href="/dashboard/purchasing/purchase-order-subcon"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/purchase-order-subcon")}
+                >
+                  <ClipboardList size={16} />
+                  <span>PO - Subcon</span>
+                </Link>
+              )}
               {allow("/dashboard/purchasing/purchase-order-approval") && (
                 <Link
                   href="/dashboard/purchasing/purchase-order-approval"
