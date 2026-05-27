@@ -1,0 +1,17 @@
+import { NextResponse } from "next/server";
+import { transitionQuotation } from "@/lib/quotations";
+
+export async function POST(request: Request, ctx: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await ctx.params;
+    const { action } = await request.json();
+    if (!["issue", "confirm", "void", "revise", "convertToSo"].includes(action)) {
+      return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+    }
+    const result = await transitionQuotation(id, action);
+    return NextResponse.json(result);
+  } catch (e: any) {
+    console.error("Quotation transition:", e);
+    return NextResponse.json({ error: e.message }, { status: 400 });
+  }
+}
