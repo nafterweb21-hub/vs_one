@@ -29,7 +29,7 @@ export default function EditDepartmentPage() {
       if (res.success && res.data) {
         setInitialData({
           name: res.data.name,
-          remark: res.data.remark || "",
+          remark: (res.data as any).remark || "",
         });
       } else {
         setErrorMsg(res.error || "Failed to load department details");
