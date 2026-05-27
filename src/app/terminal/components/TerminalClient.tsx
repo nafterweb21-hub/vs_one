@@ -19,6 +19,7 @@ type Support = {
   weldingTypes: any[];
   joints: any[];
   elcometers: any[];
+  activeWorkOrders?: { workOrderNo: string }[];
 };
 
 export default function TerminalClient({ support, loggedInEmployee, initialSessions = [], initialRecentCompletes = [] }: { support: Support, loggedInEmployee?: any | null, initialSessions?: any[], initialRecentCompletes?: any[] }) {
