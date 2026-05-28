@@ -129,6 +129,16 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
                 <ShoppingCart size={16} />
                 <span>Sales Orders</span>
               </Link>
+              {allow("/dashboard/sales/delivery-order") && (
+                <Link
+                  href="/dashboard/sales/delivery-order"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/sales/delivery-order")}
+                >
+                  <Truck size={16} />
+                  <span>Delivery Orders</span>
+                </Link>
+              )}
             </div>
           )}
 
@@ -150,6 +160,9 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
 
           {(allow("/dashboard/purchasing/purchase-requisition") || 
              allow("/dashboard/purchasing/purchase-order") ||
+             allow("/dashboard/purchasing/purchase-order-subcon") ||
+             allow("/dashboard/purchasing/subcon-request-form") ||
+             allow("/dashboard/purchasing/subcon-return-tracking") ||
              allow("/dashboard/purchasing/purchase-order-approval") ||
              allow("/dashboard/purchasing/goods-receive") ||
              allow("/dashboard/purchasing/goods-return")) && (
@@ -185,6 +198,26 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
                 >
                   <ClipboardList size={16} />
                   <span>PO - Subcon</span>
+                </Link>
+              )}
+              {allow("/dashboard/purchasing/subcon-request-form") && (
+                <Link
+                  href="/dashboard/purchasing/subcon-request-form"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/subcon-request-form")}
+                >
+                  <ClipboardList size={16} />
+                  <span>Subcon Request Form</span>
+                </Link>
+              )}
+              {allow("/dashboard/purchasing/subcon-return-tracking") && (
+                <Link
+                  href="/dashboard/purchasing/subcon-return-tracking"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/purchasing/subcon-return-tracking")}
+                >
+                  <ClipboardList size={16} />
+                  <span>Subcon Return Tracking</span>
                 </Link>
               )}
               {allow("/dashboard/purchasing/purchase-order-approval") && (
@@ -233,6 +266,16 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
                 <ClipboardList size={16} />
                 <span>Non-Conformance Report (NCR)</span>
               </Link>
+              {allow("/dashboard/qc/coc") && (
+                <Link
+                  href="/dashboard/qc/coc"
+                  onClick={() => setIsOpen(false)}
+                  className={linkClass("/dashboard/qc/coc")}
+                >
+                  <ClipboardList size={16} />
+                  <span>Certificate Of Conformity</span>
+                </Link>
+              )}
             </div>
           )}
 

@@ -30,7 +30,7 @@ export default function DepartmentProfilePage() {
     const res = await getDepartmentsList();
 
     if (res.success && res.data) {
-      setItems(res.data as DepartmentProfile[]);
+      setItems(res.data as unknown as DepartmentProfile[]);
     } else {
       setErrorMsg(res.error || "Failed to load departments.");
     }

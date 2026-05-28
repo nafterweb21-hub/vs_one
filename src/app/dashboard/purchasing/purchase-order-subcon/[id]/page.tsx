@@ -33,6 +33,8 @@ type Item = {
   masterMainProcessId: string;
   masterRoutingProcessId: string;
   description: string;
+  hardness?: string;
+  thickness?: string;
   poUomId: string;
   quantity: string;
   unitPrice: string;
