@@ -95,7 +95,9 @@ export default async function PrintQuotationPage(
       <div className="page">
         <div className="row">
           <div className="quote-no">Quotation No.: <b>{q.quotationNo}</b></div>
-          <div className="brand">VISION<small>your engineering solutions</small></div>
+          <div className="brand">
+            <img src="/logo.jpg" alt="Vision Logo" style={{ maxHeight: "40px", objectFit: "contain" }} />
+          </div>
         </div>
 
         <h1 className="title">{q.title}</h1>
@@ -141,7 +143,9 @@ export default async function PrintQuotationPage(
       <div className="page">
         <div className="row">
           <div className="quote-no">Quotation No.: <b>{q.quotationNo}</b></div>
-          <div className="brand">VISION<small>your engineering solutions</small></div>
+          <div className="brand">
+            <img src="/logo.jpg" alt="Vision Logo" style={{ maxHeight: "40px", objectFit: "contain" }} />
+          </div>
         </div>
 
         <div className="blocks">

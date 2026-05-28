@@ -26,8 +26,7 @@ export default async function EditNcrPage({ params }: { params: Promise<{ id: st
           </Link>
           <h1 className="text-2xl font-bold text-gray-800">Edit NCR: {ncr.ncrNo}</h1>
         </div>
-        
-        <PrintButton />
+        <PrintButton ncrId={ncr.id} />
       </div>
       
       <NcrForm formData={formData} initialData={ncr} />

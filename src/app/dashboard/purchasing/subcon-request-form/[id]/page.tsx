@@ -135,7 +135,7 @@ export default function SubconRequestFormDetailPage({ params }: { params: { id: 
   };
 
   const handlePrint = () => {
-    window.print();
+    window.open(`/print/subcon-request-form/${params.id}`, "_blank");
   };
 
   if (loading) {

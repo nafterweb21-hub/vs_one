@@ -72,7 +72,9 @@ export default async function PrintCocPage(
 
       <div className="page">
         <div className="row">
-          <div className="brand">VISION<small>your engineering solutions</small></div>
+          <div className="brand">
+            <img src="/logo.jpg" alt="Vision Logo" style={{ maxHeight: "40px", objectFit: "contain" }} />
+          </div>
           <div style={{ textAlign: 'right', fontSize: '12px', color: '#475569' }}>
             <div>COC No: <b>{coc.cocNo}</b></div>
             <div>Date: {fmtDate(coc.date)}</div>

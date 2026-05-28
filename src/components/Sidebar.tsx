@@ -84,9 +84,7 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
       >
         {/* Header Branding */}
         <div className="h-16 px-6 border-b border-slate-200 flex items-center gap-3 bg-gradient-to-r from-indigo-600/5 to-purple-600/5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-slate-500/30">
-            V
-          </div>
+          <img src="/logo.jpg" alt="Vision One Logo" className="h-8 w-auto object-contain drop-shadow-md" />
           <div>
             <h1 className="font-bold text-sm text-slate-900 tracking-wide">
               FITPRISE EMS
