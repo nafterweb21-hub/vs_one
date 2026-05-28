@@ -1,0 +1,156 @@
+model Account {
+  id                String  @id
+model ApprovalLevelProfile {
+  id             String           @id
+  updatedAt      DateTime
+model ApprovalPerson {
+  id                     String               @id
+  updatedAt              DateTime
+model CompanyProfile {
+  id                    String   @id
+  updatedAt             DateTime
+model Currency {
+  id           String       @id
+  updatedAt    DateTime
+model CustomerAddress {
+  id                                                 String          @id
+  updatedAt                                          DateTime
+model CustomerContactPerson {
+  id                String          @id
+  updatedAt         DateTime
+model CustomerProfile {
+  id                    String                  @id
+  updatedAt             DateTime
+model DepartmentProfile {
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+model ElcometerProfile {
+  id                            String                          @id
+  updatedAt                     DateTime
+model Employee {
+  id                                            String                          @id
+  updatedAt                                     DateTime
+model FailureModeProfile {
+  id             String           @id
+  updatedAt      DateTime
+model FinishedGoodProfile {
+  id             String           @id
+  updatedAt      DateTime
+model JointProfile {
+  id                      String                    @id
+  updatedAt               DateTime
+model MachineProfile {
+  id                        String                      @id
+  model                     String
+  updatedAt                 DateTime
+model MachiningToolList {
+  id                        String                    @id
+  updatedAt                 DateTime
+model MainProcess {
+  id             String           @id
+  updatedAt      DateTime
+model MaterialCategory {
+  id              String            @id
+  updatedAt       DateTime
+model MaterialProfile {
+  id               String           @id
+  updatedAt        DateTime
+model MaterialType {
+  id                        String                   @id
+model Ncr {
+  id                                                 String              @id
+  updatedAt                                          DateTime
+model NcrFailureMode {
+  id                 String             @id
+model PaintingMethodProfile {
+  id        String   @id
+  updatedAt DateTime
+model PaymentTermProfile {
+  id         String       @id
+  updatedAt  DateTime
+model ProcessParameterMachining {
+  id                  String              @id
+  updatedAt           DateTime
+model ProcessParameterSprayPainting {
+  id                        String              @id
+  updatedAt                 DateTime
+model ProcessParameterWelding {
+  id                  String               @id
+  updatedAt           DateTime
+model ProcessProfile {
+  id             String           @id
+  updatedAt      DateTime
+model ProductionTimesheet {
+  id                            String                         @id
+  updatedAt                     DateTime
+model Quotation {
+  id                    String                 @id
+  updatedAt             DateTime
+model QuotationItem {
+  id                  String               @id
+  updatedAt           DateTime
+model RoutingProcess {
+  id                   String                    @id
+  updatedAt            DateTime
+model SalesOrder {
+  id                                                      String                 @id
+  updatedAt                                               DateTime
+model SalesOrderItem {
+  id                    String                @id
+  updatedAt             DateTime
+model SalesOrderItemBatch {
+  id               String         @id
+  updatedAt        DateTime
+model Session {
+  id           String   @id
+model SupplierAddress {
+  id              String          @id
+  updatedAt       DateTime
+model SupplierContactPerson {
+  id                String          @id
+  updatedAt         DateTime
+model SupplierProfile {
+  id                    String                  @id
+  updatedAt             DateTime
+model TaxProfile {
+  id         String       @id
+  updatedAt  DateTime
+model UomProfile {
+  id             String           @id
+  updatedAt      DateTime
+model User {
+  id             String           @id
+  updatedAt      DateTime
+model VerificationToken {
+model WeldingTypeProfile {
+  id                        String                   @id
+  updatedAt                 DateTime
+model WorkOrder {
+  workOrderNo         String               @id
+  updatedAt           DateTime
+model WorkOrderInProcess {
+  id                       String               @id
+  updatedAt                DateTime
+model PurchaseRequisition {
+  id       String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+model PurchaseRequisitionItem {
+  id                    String              @id @default(cuid())
+  updatedAt DateTime @updatedAt
+model PurchaseOrder {
+  id       String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  updatedAt DateTime @updatedAt
+model DeliveryOrder {
+  id          String          @id @default(cuid())
+  updatedAt DateTime @updatedAt
+model CocSequence {
+  id        String @id @default("coc-sequence")
+model CocTypeProfile {
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+model CertificateOfConformity {
+  id    String   @id @default(cuid())
+  updatedAt DateTime @updatedAt

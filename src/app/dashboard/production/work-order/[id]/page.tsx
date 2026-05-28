@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import WorkOrderHeader from "../components/WorkOrderHeader";
 import { getUomList } from "../actions";
+import DeliveryLabelModal from "./DeliveryLabelModal";
 
 export default async function WorkOrderDetailPage({
   params,
@@ -37,13 +38,30 @@ export default async function WorkOrderDetailPage({
         >
           <ArrowLeft size={20} />
         </Link>
-        <div>
+        <div className="flex-1">
           <h1 className="text-2xl font-bold text-slate-800">
             Work Order: {workOrder.workOrderNo}
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Manage work order details, routing, and parameters
           </p>
+        </div>
+        <div>
+          <a
+            href={`/print/work-order/${id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg font-semibold transition-colors border border-blue-200"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print
+          </a>
+          <DeliveryLabelModal 
+            workOrderNo={workOrder.workOrderNo} 
+            defaultQty={workOrder.quantity?.toString() || "1"} 
+            defaultUom={workOrder.labelUom?.uomName || workOrder.uom || ""} 
+            uoms={uoms} 
+          />
         </div>
       </div>
 

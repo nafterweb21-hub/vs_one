@@ -1,17 +1,18 @@
 "use client";
 
 import React from "react";
+import { Printer } from "lucide-react";
 
-export default function PrintButton() {
+export default function PrintButton({ ncrId }: { ncrId: string }) {
   return (
-    <button
-      type="button"
-      onClick={() => {
-        if (typeof window !== "undefined") window.print();
-      }}
-      className="bg-gray-100 text-gray-700 border border-gray-300 px-4 py-2 rounded shadow-sm hover:bg-gray-200"
+    <a
+      href={`/print/ncr/${ncrId}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg font-semibold transition-colors border border-blue-200"
     >
-      🖨️ Print NCR
-    </button>
+      <Printer size={16} />
+      Print NCR
+    </a>
   );
 }

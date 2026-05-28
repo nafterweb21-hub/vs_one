@@ -17,6 +17,7 @@ import {
   GitBranch,
   History,
   X,
+  Printer,
 } from "lucide-react";
 
 const STATUS_TABS = [
@@ -247,6 +248,7 @@ export default function PurchaseOrderListPage() {
         <ToolbarBtn icon={<GitBranch size={14} />} label="Revise" onClick={onRevise} disabled={!selected || selected.status !== "Submitted"} />
         <ToolbarBtn icon={<History size={14} />} label="History" onClick={onHistory} disabled={!selected} />
         <ToolbarBtn icon={<Copy size={14} />} label="Copy" onClick={onCopy} disabled={!selected} />
+        <ToolbarBtn icon={<Printer size={14} />} label="Print" onClick={() => { if (selected) window.open(`/print/purchase-order/${selected.id}`, "_blank"); }} disabled={!selected} />
       </div>
 
       {/* Tabs */}
