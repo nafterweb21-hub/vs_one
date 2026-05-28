@@ -13,6 +13,8 @@ export async function GET() {
       uoms,
       materials,
       purchaseRequisitions,
+      mainProcesses,
+      processProfiles,
     ] = await Promise.all([
       prisma.companyProfile.findMany({
         where: { status: "Active" },
@@ -30,7 +32,20 @@ export async function GET() {
             notIn: ["Void", "Cancelled"],
           },
         },
-        select: { workOrderNo: true, jobDescription: true },
+        select: { 
+          workOrderNo: true, 
+          jobDescription: true,
+          inProcesses: {
+            include: {
+              routingProcesses: {
+                include: {
+                  mainProcess: true,
+                  routingProcess: true
+                }
+              }
+            }
+          }
+        },
         orderBy: { workOrderNo: "desc" },
       }),
       prisma.supplierProfile.findMany({
@@ -77,6 +92,16 @@ export async function GET() {
         },
         orderBy: { prNo: "desc" },
       }),
+      prisma.mainProcess.findMany({
+        where: { status: "Active" },
+        select: { id: true, process: true },
+        orderBy: { process: "asc" },
+      }),
+      prisma.processProfile.findMany({
+        where: { status: "Active" },
+        select: { id: true, routingProcess: true, mainProcessId: true, costPerMinute: true },
+        orderBy: { routingProcess: "asc" },
+      }),
     ]);
 
     return NextResponse.json({
@@ -89,6 +114,8 @@ export async function GET() {
       uoms,
       materials,
       purchaseRequisitions,
+      mainProcesses,
+      processProfiles,
     });
   } catch (e: any) {
     console.error("PO form-data error:", e);

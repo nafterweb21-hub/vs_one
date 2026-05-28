@@ -27,9 +27,10 @@ export default function EditDepartmentPage() {
       setIsLoading(true);
       const res = await getDepartmentDetail(id);
       if (res.success && res.data) {
+        const d: any = res.data;
         setInitialData({
-          name: res.data.name,
-          remark: res.data.remark || "",
+          name: d.name,
+          remark: d.remark || "",
         });
       } else {
         setErrorMsg(res.error || "Failed to load department details");

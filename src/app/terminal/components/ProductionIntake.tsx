@@ -5,6 +5,7 @@ import { lookupWorkOrder, scanIn } from "../actions";
 
 type Support = {
   employees: { id: string; name: string; code: string }[];
+  activeWorkOrders?: { workOrderNo: string }[];
 };
 
 type ProductionIntakeProps = {

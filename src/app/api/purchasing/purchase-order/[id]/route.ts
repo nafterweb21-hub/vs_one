@@ -13,6 +13,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             poUom: true,
             internalUom: true,
             materialProfile: true,
+            woRoutingProcess: {
+              include: { mainProcess: true, routingProcess: true }
+            },
+            masterMainProcess: true,
+            masterRoutingProcess: true,
           }
         },
         company: true,
@@ -79,6 +84,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
               supplierMaterialNo: it.supplierMaterialNo || "",
               shape: it.shape || "",
               size: it.size || "",
+              hardness: it.hardness || null,
+              thickness: it.thickness || null,
               quantity: it.quantity || 0,
               poUomId: it.poUomId,
               unitPrice: it.unitPrice || 0,
@@ -90,6 +97,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
               remark: it.remark || "",
               materialProfileId: it.materialProfileId || null,
               purchaseRequisitionItemId: it.purchaseRequisitionItemId || null,
+              woRoutingProcessId: it.woRoutingProcessId || null,
+              masterMainProcessId: it.masterMainProcessId || null,
+              masterRoutingProcessId: it.masterRoutingProcessId || null,
               sortOrder: i,
             })),
           },

@@ -6,8 +6,9 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const search = url.searchParams.get("search") || "";
     const status = url.searchParams.get("status") || "All";
+    const type = url.searchParams.get("type") || "MATERIAL"; // Default to MATERIAL
 
-    const where: any = {};
+    const where: any = { type };
 
     if (status !== "All") {
       where.status = status;
@@ -69,6 +70,7 @@ export async function POST(req: Request) {
       const po = await tx.purchaseOrder.create({
         data: {
           poNo,
+          type: body.type || "MATERIAL",
           revision: 0,
           date: new Date(body.date),
           companyId: body.companyId,
@@ -101,6 +103,8 @@ export async function POST(req: Request) {
               supplierMaterialNo: it.supplierMaterialNo || "",
               shape: it.shape || "",
               size: it.size || "",
+              hardness: it.hardness || null,
+              thickness: it.thickness || null,
               quantity: it.quantity || 0,
               poUomId: it.poUomId,
               unitPrice: it.unitPrice || 0,
@@ -112,6 +116,9 @@ export async function POST(req: Request) {
               remark: it.remark || "",
               materialProfileId: it.materialProfileId || null,
               purchaseRequisitionItemId: it.purchaseRequisitionItemId || null,
+              woRoutingProcessId: it.woRoutingProcessId || null,
+              masterMainProcessId: it.masterMainProcessId || null,
+              masterRoutingProcessId: it.masterRoutingProcessId || null,
               sortOrder: i,
             })),
           },
