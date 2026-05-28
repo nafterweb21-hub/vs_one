@@ -4,12 +4,13 @@ import PrintButton from "./PrintButton";
 
 export const dynamic = "force-dynamic";
 
-function fmtDate(d: Date | string) {
+function fmtDate(d: Date | string | null | undefined) {
   if (!d) return "—";
   const dt = new Date(d);
+  const m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const dd = String(dt.getDate()).padStart(2, "0");
-  const mm = String(dt.getMonth() + 1).padStart(2, "0");
-  return `${dd}/${mm}/${dt.getFullYear()}`;
+  const mm = m[dt.getMonth()];
+  return `${dd}-${mm}-${dt.getFullYear()}`;
 }
 
 export default async function PrintCocPage(
@@ -25,44 +26,67 @@ export default async function PrintCocPage(
       cocUom: true,
       approvedBy: true,
       checkedBy: true,
+      welder: true,
+      weldingMachine: true,
     },
   });
   if (!coc) notFound();
 
   const company = await prisma.companyProfile.findFirst({ where: { status: "Active" } });
-  
-  const footerLine = company
-    ? `${company.address} (Co. reg. No.: ${company.rocNo || ""}) Telephone: ${company.phoneNo} / Fax: ${company.faxNo}`
-    : "";
+
+  // Fallback to static if no company
+  const companyName = company?.companyName || "Vision One Pte Ltd";
+  const addressLines = company?.address ? company.address.split('\n') : ["No. 3 Kian Teck Road", "Singapore 628764"];
+  const tel = company?.phoneNo || "(65) 6264 8334";
+  const fax = company?.faxNo || "(65) 6264 8335";
+  const gst = company?.gstRegistrationNo || "201007671E";
+
+  const description = coc.workOrder?.jobDescription || "—";
+  const poNo = coc.workOrder?.customerPoRef || "—";
+  const qtyStr = `${coc.cocQuantity || 0} ${coc.cocUom?.uomName || ""}`;
 
   return (
     <>
       <style>{`
         @page { size: A4 portrait; margin: 0; }
-        body { margin: 0; padding: 0; background: #fff; color: #111; font-family: 'Helvetica Neue', Arial, sans-serif; }
-        .page { width: 210mm; min-height: 297mm; padding: 20mm; box-sizing: border-box; position: relative; }
-        .row { display: flex; justify-content: space-between; align-items: flex-start; }
-        .brand { color: #1e3a8a; font-weight: 700; font-size: 26px; letter-spacing: 0.5px; text-align: left; }
-        .brand small { display: block; color: #64748b; font-size: 11px; font-weight: 400; }
-        h1.title { text-align: center; font-size: 22px; margin: 20mm 0; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; display: inline-block; }
-        .content { margin-top: 10mm; }
-        table.kv { width: 100%; border-collapse: collapse; margin-bottom: 20mm; }
-        table.kv td { padding: 12px 10px; font-size: 13px; border: 1px solid #e2e8f0; }
-        table.kv td.label { color: #334155; font-weight: 600; width: 35%; background: #f8fafc; }
-        table.kv td.value { color: #0f172a; width: 65%; }
-        .footer { position: absolute; bottom: 15mm; left: 20mm; right: 20mm; font-size: 10px; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+        body { margin: 0; padding: 0; background: #fff; color: #111; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; }
+        .page { width: 210mm; min-height: 297mm; padding: 15mm 20mm; box-sizing: border-box; position: relative; margin: 0 auto; }
         
-        .signatures { display: flex; justify-content: space-between; margin-top: 30mm; }
-        .signature-box { width: 40%; text-align: center; }
-        .signature-line { border-bottom: 1px solid #111; height: 30px; margin-bottom: 5px; }
-        .signature-name { font-size: 12px; font-weight: 600; color: #1e293b; }
-        .signature-title { font-size: 11px; color: #475569; }
-
+        .doc-rev { text-align: right; font-size: 13px; margin-bottom: 10px; font-weight: normal; color: #000; }
+        
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15mm; }
+        .logo-box { width: 55%; height: 90px; background: transparent; display: flex; align-items: center; justify-content: flex-start; font-weight: bold; color: #0284c7; font-size: 14px; text-align: left; border-radius: 2px; }
+        .logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .company-info { width: 40%; color: #3b82f6; font-size: 13px; line-height: 1.4; }
+        
+        .title-container { text-align: center; margin-bottom: 15mm; }
+        h1.title { font-size: 18px; font-weight: bold; text-decoration: underline; margin: 0; display: inline-block; color: #000; }
+        
+        table.info-table { width: 100%; border-collapse: collapse; margin-bottom: 25mm; }
+        table.info-table td { padding: 4px 0; vertical-align: top; }
+        table.info-table td.label { width: 150px; font-weight: normal; color: #000; text-transform: uppercase; }
+        table.info-table td.colon { width: 20px; font-weight: normal; color: #000; }
+        table.info-table td.value { color: #3b82f6; text-transform: uppercase; }
+        
+        .body-text { margin-bottom: 25mm; line-height: 1.8; text-transform: uppercase; color: #000; }
+        .body-text .dynamic-blue { color: #3b82f6; }
+        
+        .signatures { display: flex; justify-content: space-between; margin-bottom: 20mm; }
+        .sig-block { width: 35%; }
+        .sig-title { margin-bottom: 5px; color: #000; text-transform: uppercase; }
+        .sig-role { margin-bottom: 5px; color: #000; text-transform: uppercase; }
+        .sig-name { color: #3b82f6; margin-bottom: 30px; text-transform: uppercase; min-height: 18px; }
+        .sig-line { border-bottom: 1px solid #000; margin-bottom: 5px; }
+        .sig-footer { text-align: center; color: #000; font-size: 12px; }
+        
+        
+        
         @media screen {
           body { background: #f1f1f1; }
           .page { box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin: 20px auto; background: #fff; }
           .print-actions { position: fixed; top: 12px; right: 12px; z-index: 100; }
-          .print-actions button { padding: 10px 16px; font-size: 14px; font-weight: 600; background: #1e3a8a; color: #fff; border: 0; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+          .print-actions button { padding: 10px 16px; font-size: 14px; font-weight: 600; background: #1e3a8a; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
           .print-actions button:hover { background: #1e40af; }
         }
         @media print { .print-actions { display: none; } }
@@ -71,71 +95,130 @@ export default async function PrintCocPage(
       <PrintButton />
 
       <div className="page">
-        <div className="row">
-          <div className="brand">
-            <img src="/logo.jpg" alt="Vision Logo" style={{ maxHeight: "40px", objectFit: "contain" }} />
+        <div className="doc-rev">V-QA-011 Rev B</div>
+        
+        <div className="header">
+          <div className="logo-box">
+            <img src="/logo.jpg" alt="Company Logo" style={{ maxHeight: "80px", maxWidth: "100%", objectFit: "contain" }} />
           </div>
-          <div style={{ textAlign: 'right', fontSize: '12px', color: '#475569' }}>
-            <div>COC No: <b>{coc.cocNo}</b></div>
-            <div>Date: {fmtDate(coc.date)}</div>
+          <div className="company-info">
+            <div>{companyName}</div>
+            {addressLines.map((line, i) => <div key={i}>{line}</div>)}
+            <div>T {tel}</div>
+            <div>F {fax}</div>
+            <div>GST Reg No. : {gst}</div>
           </div>
         </div>
 
-        <div style={{ textAlign: 'center' }}>
+        <div className="title-container">
           <h1 className="title">CERTIFICATE OF CONFORMITY</h1>
         </div>
 
-        <div className="content">
-          <p style={{ fontSize: '13px', lineHeight: '1.6', marginBottom: '8mm' }}>
-            This is to certify that the products detailed below have been inspected and tested in accordance with the conditions and requirements of the contract or purchase order, and unless otherwise noted below, conform in all respects to the specifications.
-          </p>
-
-          <table className="kv">
-            <tbody>
-              <tr>
-                <td className="label">Customer Name</td>
-                <td className="value">{coc.customer?.customerName || "—"}</td>
-              </tr>
-              <tr>
-                <td className="label">Delivery Order No.</td>
-                <td className="value">{coc.deliveryOrder?.doNo || "—"}</td>
-              </tr>
-              <tr>
-                <td className="label">Work Order No.</td>
-                <td className="value">{coc.workOrderNo || "—"}</td>
-              </tr>
-              {coc.drawingNo && (
+        <table className="info-table">
+          <tbody>
+            <tr>
+              <td className="label">CUSTOMER</td>
+              <td className="colon">:</td>
+              <td className="value">{coc.customer?.customerName || "—"}</td>
+            </tr>
+            <tr>
+              <td className="label">DESCRIPTION</td>
+              <td className="colon">:</td>
+              <td className="value">{description}</td>
+            </tr>
+            <tr>
+              <td className="label">DRAWING NO</td>
+              <td className="colon">:</td>
+              <td className="value">{coc.drawingNo || "—"}</td>
+            </tr>
+            <tr>
+              <td className="label">PO NO</td>
+              <td className="colon">:</td>
+              <td className="value">{poNo}</td>
+            </tr>
+            <tr>
+              <td className="label">WORK ORDER NO</td>
+              <td className="colon">:</td>
+              <td className="value">{coc.workOrderNo || "—"}</td>
+            </tr>
+            <tr>
+              <td className="label">QUANTITY</td>
+              <td className="colon">:</td>
+              <td className="value">{qtyStr}</td>
+            </tr>
+            {coc.type === "Welding" && (
+              <>
                 <tr>
-                  <td className="label">Drawing No.</td>
-                  <td className="value">{coc.drawingNo}</td>
+                  <td className="label">SAN NO</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.sanNo || "—"}</td>
                 </tr>
-              )}
-              <tr>
-                <td className="label">Quantity</td>
-                <td className="value">{coc.cocQuantity?.toString()} {coc.cocUom?.uomName || ""}</td>
-              </tr>
-              <tr>
-                <td className="label">Type of Inspection</td>
-                <td className="value">{coc.type}</td>
-              </tr>
-            </tbody>
-          </table>
+                <tr>
+                  <td className="label">WELDER NAME & ID</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.welder ? `${coc.welder.name} (${coc.welder.code})` : "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">WELDER ID NO</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.welder?.code || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">WELDING PROCESS</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.weldingProcess || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">
+                    <div>WELDING MACHINE</div>
+                    <div>SERIAL NO</div>
+                  </td>
+                  <td className="colon">
+                    <div>&nbsp;</div>
+                    <div>:</div>
+                  </td>
+                  <td className="value">
+                    <div>&nbsp;</div>
+                    <div>{coc.weldingMachine?.serialNo || "—"}</div>
+                  </td>
+                </tr>
+              </>
+            )}
+            <tr>
+              <td className="label">VISION ONE DO</td>
+              <td className="colon">:</td>
+              <td className="value">{coc.deliveryOrder?.doNo || "—"}</td>
+            </tr>
+            <tr>
+              <td className="label">{coc.type === "Welding" ? "DATE OF COC" : "DATE ISSUED"}</td>
+              <td className="colon">:</td>
+              <td className="value">{fmtDate(coc.date)}</td>
+            </tr>
+          </tbody>
+        </table>
 
-          <div className="signatures">
-            <div className="signature-box">
-              <div className="signature-line"></div>
-              <div className="signature-name">{coc.checkedBy?.name || "QC Inspector"}</div>
-              <div className="signature-title">Prepared By / Date</div>
-            </div>
-            <div className="signature-box">
-              <div className="signature-line"></div>
-              <div className="signature-name">{coc.approvedBy?.name || "QC Manager"}</div>
-              <div className="signature-title">Approved By / Date</div>
-            </div>
+        <div className="body-text">
+          THIS IS TO CERTIFY THAT THE FOLLOWING PARTS STATED IN THE COC ARE MANUFACTURED
+          ACCORDING TO THE REQUIREMENTS AS STATED IN THE <span className="dynamic-blue">{coc.customer?.customerName || "—"}</span> DRAWINGS.
+        </div>
+
+        <div className="signatures">
+          <div className="sig-block">
+            <div className="sig-title">CHECKED BY :</div>
+            <div className="sig-role">QC INSPECTOR</div>
+            <div className="sig-name">{coc.checkedBy?.name || "—"}</div>
+            <div className="sig-line"></div>
+            <div className="sig-footer">Authorised Signature</div>
+          </div>
+          <div className="sig-block">
+            <div className="sig-title">APPROVED BY :</div>
+            <div className="sig-role">QC MANAGER</div>
+            <div className="sig-name">{coc.approvedBy?.name || "—"}</div>
+            <div className="sig-line"></div>
+            <div className="sig-footer">Authorised Signature</div>
           </div>
         </div>
 
-        <div className="footer">{footerLine}</div>
       </div>
     </>
   );
