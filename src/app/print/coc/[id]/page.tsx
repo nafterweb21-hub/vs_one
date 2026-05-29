@@ -28,6 +28,8 @@ export default async function PrintCocPage(
       checkedBy: true,
       welder: true,
       weldingMachine: true,
+      painter: true,
+      paintingMethod: true,
     },
   });
   if (!coc) notFound();
@@ -121,26 +123,46 @@ export default async function PrintCocPage(
               <td className="colon">:</td>
               <td className="value">{coc.customer?.customerName || "—"}</td>
             </tr>
-            <tr>
-              <td className="label">DESCRIPTION</td>
-              <td className="colon">:</td>
-              <td className="value">{description}</td>
-            </tr>
-            <tr>
-              <td className="label">DRAWING NO</td>
-              <td className="colon">:</td>
-              <td className="value">{coc.drawingNo || "—"}</td>
-            </tr>
+            {coc.type !== "Spray Painting" && (
+              <>
+                <tr>
+                  <td className="label">DESCRIPTION</td>
+                  <td className="colon">:</td>
+                  <td className="value">{description}</td>
+                </tr>
+                <tr>
+                  <td className="label">DRAWING NO</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.drawingNo || "—"}</td>
+                </tr>
+              </>
+            )}
+            {coc.type === "Spray Painting" && (
+              <>
+                <tr>
+                  <td className="label">PART NAME</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.partName || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">PART NUMBER</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.partNumber || "—"}</td>
+                </tr>
+              </>
+            )}
             <tr>
               <td className="label">PO NO</td>
               <td className="colon">:</td>
               <td className="value">{poNo}</td>
             </tr>
-            <tr>
-              <td className="label">WORK ORDER NO</td>
-              <td className="colon">:</td>
-              <td className="value">{coc.workOrderNo || "—"}</td>
-            </tr>
+            {coc.type !== "Spray Painting" && (
+              <tr>
+                <td className="label">WORK ORDER NO</td>
+                <td className="colon">:</td>
+                <td className="value">{coc.workOrderNo || "—"}</td>
+              </tr>
+            )}
             <tr>
               <td className="label">QUANTITY</td>
               <td className="colon">:</td>
@@ -184,23 +206,80 @@ export default async function PrintCocPage(
                 </tr>
               </>
             )}
+            {coc.type === "Spray Painting" && (
+              <>
+                <tr>
+                  <td className="label">PAINTING SAN NUMBER</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.paintingSanNo || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">PAINTER NAME</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.painter?.name || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">PAINTER ID NO</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.painter?.code || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">PAINTING METHOD</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.paintingMethod?.name || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">PAINTING SPECIFICATION</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.paintingSpecification || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">PAINT THICKNESS SPECIFICATION</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.paintThicknessSpecification || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">MEASURED TOTAL PAINT THICKNESS</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.measuredTotalPaintThickness || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">PAINT BATCH NUMBER</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.paintBatchNo || "—"}</td>
+                </tr>
+                <tr>
+                  <td className="label">INSPECTION EQUIPMENT</td>
+                  <td className="colon">:</td>
+                  <td className="value">{coc.inspectionEquipment || "—"}</td>
+                </tr>
+              </>
+            )}
             <tr>
               <td className="label">VISION ONE DO</td>
               <td className="colon">:</td>
               <td className="value">{coc.deliveryOrder?.doNo || "—"}</td>
             </tr>
             <tr>
-              <td className="label">{coc.type === "Welding" ? "DATE OF COC" : "DATE ISSUED"}</td>
+              <td className="label">{coc.type === "Welding" || coc.type === "Spray Painting" ? "DATE OF COC" : "DATE ISSUED"}</td>
               <td className="colon">:</td>
               <td className="value">{fmtDate(coc.date)}</td>
             </tr>
           </tbody>
         </table>
 
-        <div className="body-text">
-          THIS IS TO CERTIFY THAT THE FOLLOWING PARTS STATED IN THE COC ARE MANUFACTURED
-          ACCORDING TO THE REQUIREMENTS AS STATED IN THE <span className="dynamic-blue">{coc.customer?.customerName || "—"}</span> DRAWINGS.
-        </div>
+        {coc.type === "Spray Painting" ? (
+          <div className="body-text" style={{ textTransform: "none" }}>
+            <b>Inspection</b><br />
+            Individual coat and completed coating are inspected for appearance. Coatings shall free from
+            be pinholes, blisters, craters, sogging, flakking, peeling and dry spray.
+          </div>
+        ) : (
+          <div className="body-text">
+            THIS IS TO CERTIFY THAT THE FOLLOWING PARTS STATED IN THE COC ARE MANUFACTURED
+            ACCORDING TO THE REQUIREMENTS AS STATED IN THE <span className="dynamic-blue">{coc.customer?.customerName || "—"}</span> DRAWINGS.
+          </div>
+        )}
 
         <div className="signatures">
           <div className="sig-block">

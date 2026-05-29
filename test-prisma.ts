@@ -1,6 +1,25 @@
-import { prisma } from './src/lib/prisma';
-async function run() {
-  const c = await prisma.companyProfile.findFirst();
-  console.log(JSON.stringify(c, null, 2));
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+async function main() {
+  const processes = await prisma.mainProcess.findMany()
+  console.log('Main Processes:', processes)
+  
+  const routing = await prisma.routingProcess.findMany({
+    include: {
+      mainProcess: true
+    }
+  })
+  console.log('Routing Processes:', routing.length)
 }
-run();
+
+main()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })

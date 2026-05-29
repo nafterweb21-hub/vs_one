@@ -15,7 +15,7 @@ export default function CertificateOfConformityFormPage() {
   const [initialLoading, setInitialLoading] = useState(isEdit);
   
   // Dummy user for approval flow demonstration
-  const dummyUserId = "cm0e8p8y60000abc123dummy"; 
+  const dummyUserId = "user-sy"; 
 
   const [formData, setFormData] = useState<any>({
     date: new Date().toISOString().split("T")[0],
