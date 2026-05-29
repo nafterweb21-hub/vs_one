@@ -1,0 +1,189 @@
+import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
+const IP_STATUS_BADGE: Record<string, string> = {
+  New: "bg-slate-100 text-slate-700",
+  WIP: "bg-amber-100 text-amber-700",
+  Completed: "bg-emerald-100 text-emerald-700",
+};
+
+export default async function QcApprovalRoutingPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  const workOrder = await prisma.workOrder.findUnique({
+    where: { workOrderNo: id },
+    include: {
+      inProcesses: {
+        orderBy: { sn: "asc" },
+        include: {
+          conditionalSn: { select: { sn: true, description: true } },
+          routingProcesses: {
+            orderBy: { sn: "asc" },
+            include: {
+              mainProcess: { select: { process: true } },
+              routingProcess: { select: { routingProcess: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!workOrder) notFound();
+
+  // Roll the in-process status from its routing rows
+  const inProcessRows = workOrder.inProcesses.map((ip: any) => {
+    const statuses = ip.routingProcesses.map((r: any) => r.status);
+    let derived = ip.status;
+    if (statuses.length > 0) {
+      if (statuses.every((s: string) => s === "Completed")) derived = "Completed";
+      else if (statuses.some((s: string) => s === "WIP" || s === "Completed")) derived = "WIP";
+      else derived = "New";
+    }
+    return { ...ip, derivedStatus: derived };
+  });
+
+  return (
+    <div className="p-6 max-w-6xl mx-auto space-y-6">
+      <div className="flex items-center gap-4">
+        <Link
+          href="/dashboard/qc/approval"
+          className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors"
+        >
+          <ArrowLeft size={20} />
+        </Link>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">QC Approval: {workOrder.workOrderNo}</h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Status: <span className="font-medium">{workOrder.status}</span>
+          </p>
+        </div>
+      </div>
+
+      <div className="border-b border-slate-200">
+        <nav className="-mb-px flex space-x-8">
+          <Link
+            href={`/dashboard/qc/approval/${id}`}
+            className="border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 py-4 px-1 text-sm font-medium"
+          >
+            Order Details
+          </Link>
+          <div className="border-b-2 border-blue-600 text-blue-600 py-4 px-1 text-sm font-medium">
+            In-Process & Routing
+          </div>
+          <Link
+            href={`/dashboard/qc/approval/${id}/timesheets`}
+            className="border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 py-4 px-1 text-sm font-medium"
+          >
+            Timesheets & Parameters
+          </Link>
+        </nav>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-slate-800">Inprocess Name</h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Read-only view of routing parameters.
+            </p>
+          </div>
+        </div>
+
+        {inProcessRows.length === 0 ? (
+          <div className="text-center py-12 text-slate-500 border-2 border-dashed border-slate-200 rounded-lg">
+            <p className="text-sm">No in-process steps defined.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {inProcessRows.map((ip: any) => (
+              <div key={ip.id} className="border border-slate-200 rounded-lg overflow-hidden">
+                <div className="p-4 bg-slate-50 border-b border-slate-200">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-semibold text-slate-800">
+                          {ip.sn}. {ip.description}
+                        </h4>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                            IP_STATUS_BADGE[ip.derivedStatus] ?? "bg-slate-100 text-slate-700"
+                          }`}
+                        >
+                          {ip.derivedStatus}
+                        </span>
+                        {ip.allFlag && (
+                          <span className="px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">All</span>
+                        )}
+                      </div>
+                      <div className="mt-1 text-xs text-slate-500 space-x-3">
+                        <span>Target: {new Date(ip.targetCompletionDate).toLocaleDateString()}</span>
+                        {ip.conditionalSn && (
+                          <span>Precondition: SN {ip.conditionalSn.sn} ({ip.conditionalSn.description})</span>
+                        )}
+                      </div>
+                      {ip.remark && <div className="mt-2 text-xs text-slate-600">{ip.remark}</div>}
+                    </div>
+                  </div>
+                </div>
+
+                {ip.routingProcesses.length === 0 ? (
+                  <div className="px-4 py-8 text-center text-slate-400 text-xs">
+                    No routing processes yet.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                      <thead className="text-xs text-slate-500 uppercase bg-white border-b border-slate-100">
+                        <tr>
+                          <th className="px-3 py-2 font-semibold w-12">SN</th>
+                          <th className="px-3 py-2 font-semibold">Main Process</th>
+                          <th className="px-3 py-2 font-semibold">Routing Process</th>
+                          <th className="px-3 py-2 font-semibold">Target Date</th>
+                          <th className="px-3 py-2 font-semibold text-center">Fully Recv?</th>
+                          <th className="px-3 py-2 font-semibold">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {ip.routingProcesses.map((rp: any) => (
+                          <tr key={rp.id} className="hover:bg-slate-50">
+                            <td className="px-3 py-2">{rp.sn}</td>
+                            <td className="px-3 py-2">{rp.mainProcess?.process}</td>
+                            <td className="px-3 py-2">{rp.routingProcess?.routingProcess}</td>
+                            <td className="px-3 py-2">{new Date(rp.targetCompletionDate).toLocaleDateString()}</td>
+                            <td className="px-3 py-2 text-center">
+                              {rp.fullyReceived ? (
+                                <span className="text-emerald-600 font-bold">✓</span>
+                              ) : (
+                                <span className="text-slate-300">-</span>
+                              )}
+                            </td>
+                            <td className="px-3 py-2">
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  IP_STATUS_BADGE[rp.status] ?? "bg-slate-100 text-slate-700"
+                                }`}
+                              >
+                                {rp.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

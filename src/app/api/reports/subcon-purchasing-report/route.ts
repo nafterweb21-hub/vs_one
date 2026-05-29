@@ -1,0 +1,186 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const company = searchParams.get("company");
+  const poNo = searchParams.get("poNo");
+  const poStatus = searchParams.get("poStatus");
+  const poDateFrom = searchParams.get("poDateFrom");
+  const poDateTo = searchParams.get("poDateTo");
+  const supplier = searchParams.get("supplier");
+  const itemDescription = searchParams.get("itemDescription");
+  const mainProcess = searchParams.get("mainProcess");
+  const routingProcess = searchParams.get("routingProcess");
+
+  try {
+    const whereClause: any = {
+      status: { not: "Void" },
+      type: "SUBCON" // Only subcon purchasing
+    };
+
+    if (poNo) whereClause.poNo = { contains: poNo, mode: "insensitive" };
+    if (poStatus) whereClause.status = poStatus;
+    if (poDateFrom || poDateTo) {
+      whereClause.date = {};
+      if (poDateFrom) whereClause.date.gte = new Date(poDateFrom);
+      if (poDateTo) {
+        const toDate = new Date(poDateTo);
+        toDate.setHours(23, 59, 59, 999);
+        whereClause.date.lte = toDate;
+      }
+    }
+    
+    if (company) {
+      whereClause.company = {
+        companyName: { contains: company, mode: "insensitive" }
+      };
+    }
+    
+    if (supplier) {
+      whereClause.supplier = {
+        vendorName: { contains: supplier, mode: "insensitive" }
+      };
+    }
+    
+    const itemsWhere: any = {};
+    let filterByItems = false;
+    
+    if (itemDescription) {
+      itemsWhere.description = { contains: itemDescription, mode: "insensitive" };
+      filterByItems = true;
+    }
+    if (mainProcess) {
+      itemsWhere.OR = [
+        { masterMainProcess: { mainProcess: { contains: mainProcess, mode: "insensitive" } } },
+        { woRoutingProcess: { masterRoutingProcess: { mainProcess: { mainProcess: { contains: mainProcess, mode: "insensitive" } } } } }
+      ];
+      filterByItems = true;
+    }
+    if (routingProcess) {
+      itemsWhere.OR = [
+        ...(itemsWhere.OR || []),
+        { masterRoutingProcess: { processName: { contains: routingProcess, mode: "insensitive" } } },
+        { woRoutingProcess: { masterRoutingProcess: { processName: { contains: routingProcess, mode: "insensitive" } } } }
+      ];
+      filterByItems = true;
+    }
+    
+    if (filterByItems) {
+      whereClause.items = { some: itemsWhere };
+    }
+
+    const purchaseOrders = await prisma.purchaseOrder.findMany({
+      where: whereClause,
+      include: {
+        company: true,
+        currency: true,
+        taxType: true,
+        purchaser: true,
+        supplier: true,
+        purchaseRequisition: true,
+        workOrder: true,
+        items: {
+          include: {
+            poUom: true,
+            masterMainProcess: true,
+            masterRoutingProcess: true,
+            woRoutingProcess: {
+              include: {
+                masterRoutingProcess: {
+                  include: {
+                    mainProcess: true
+                  }
+                }
+              }
+            },
+            subconRequestForms: {
+              include: {
+                subconReturnTrackings: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        poNo: 'asc'
+      }
+    });
+
+    const reportData = [];
+
+    for (const po of purchaseOrders) {
+      const filteredItems = po.items.filter(item => {
+        let keep = true;
+        
+        if (itemDescription && !item.description?.toLowerCase().includes(itemDescription.toLowerCase())) keep = false;
+        
+        const mp1 = item.masterMainProcess?.mainProcess || item.woRoutingProcess?.masterRoutingProcess?.mainProcess?.mainProcess || "";
+        const rp1 = item.masterRoutingProcess?.processName || item.woRoutingProcess?.masterRoutingProcess?.processName || "";
+
+        if (mainProcess && !mp1.toLowerCase().includes(mainProcess.toLowerCase())) keep = false;
+        if (routingProcess && !rp1.toLowerCase().includes(routingProcess.toLowerCase())) keep = false;
+
+        return keep;
+      });
+
+      for (const item of filteredItems) {
+        let totalAcknowledged = 0;
+        let totalReturned = 0;
+
+        for (const srf of item.subconRequestForms) {
+          totalAcknowledged += Number(srf.quantity || 0);
+          for (const srt of srf.subconReturnTrackings) {
+            totalReturned += Number(srt.returnedQty || 0);
+          }
+        }
+
+        const qty = Number(item.quantity || 0);
+        const notAcknowledged = Math.max(0, qty - totalAcknowledged);
+        const notReturned = Math.max(0, qty - totalReturned);
+
+        reportData.push({
+          company: po.company?.companyName || "",
+          poNo: po.poNo + (po.revision > 0 ? `-R${po.revision}` : "-R0"),
+          poDate: po.date,
+          poStatus: po.receiveStatus !== "NA" ? po.receiveStatus : po.status,
+          purchaser: po.purchaser?.name || "",
+          supplier: po.supplier?.vendorName || "",
+          woNo: po.workOrderNo || "",
+          prNo: po.purchaseRequisition?.prNo || "",
+          currency: po.currency?.code || "",
+          exchRate: Number(po.exchangeRate || 1),
+          beforeTax: Number(po.amountBeforeTax || 0),
+          taxType: po.taxType?.taxType || "",
+          taxRate: Number(po.taxRate || 0),
+          taxAmt: Number(po.taxAmount || 0),
+          aftTax: Number(po.amountAfterTax || 0),
+          
+          inProcessDescription: item.description || "",
+          mainProcess: item.masterMainProcess?.mainProcess || item.woRoutingProcess?.masterRoutingProcess?.mainProcess?.mainProcess || "",
+          routingProcess: item.masterRoutingProcess?.processName || item.woRoutingProcess?.masterRoutingProcess?.processName || "",
+          description: item.description || "",
+          hardness: item.hardness || "",
+          thickness: item.thickness || "",
+          
+          uom: item.poUom?.uomName || "",
+          qty: qty,
+          unitPrice: Number(item.unitPrice || 0),
+          amt: Number(item.amount || 0),
+          
+          qtyAcknowledged: totalAcknowledged,
+          qtyReturned: totalReturned,
+          qtyNotAcknowledged: notAcknowledged,
+          qtyNotReturned: notReturned,
+          
+          deliverDate: item.deliveryDate
+        });
+      }
+    }
+
+    return NextResponse.json(reportData);
+  } catch (error: any) {
+    console.error("Subcon Purchasing Report Error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

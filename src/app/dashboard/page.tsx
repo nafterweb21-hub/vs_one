@@ -14,9 +14,32 @@ import {
   AlertCircle,
   Clock
 } from "lucide-react";
+import { getDashboardMetrics } from "./dashboard.actions";
+
+const formatCurrency = (value: number) => {
+  if (value >= 1000000) {
+    return `SGD ${(value / 1000000).toFixed(2)}M`;
+  }
+  if (value >= 1000) {
+    return `SGD ${(value / 1000).toFixed(2)}K`;
+  }
+  return `SGD ${value.toFixed(2)}`;
+};
 
 export default function DashboardPage() {
   const [activeCompany, setActiveCompany] = useState("Vision One Pte Ltd");
+  const [metrics, setMetrics] = useState({
+    activeWorkOrders: { count: 0, pendingQc: 0, onHold: 0 },
+    openSalesOrders: { count: 0, totalValue: 0 },
+    posAwaitingDelivery: { count: 0, overdue: 0 },
+    openNcrs: { count: 0, pendingClosure: 0 },
+    recentWorkOrders: [] as any[],
+    processLoad: [] as { label: string, value: number }[],
+    pendingPoApprovals: { urgentCount: 0, list: [] as any[] },
+    recentNcrsList: [] as any[],
+    woStatusDistribution: { total: 0, distribution: [] as any[] },
+    companyProfiles: [] as any[]
+  });
 
   useEffect(() => {
     const stored = localStorage.getItem("fitprise_company");
@@ -32,6 +55,11 @@ export default function DashboardPage() {
     };
 
     window.addEventListener("companyChanged", handleCompanyChange);
+    
+    getDashboardMetrics().then(data => {
+      setMetrics(data);
+    });
+
     return () => window.removeEventListener("companyChanged", handleCompanyChange);
   }, []);
 
@@ -89,30 +117,30 @@ export default function DashboardPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { 
-              label: "Purchase Requisitions", 
-              value: "4", 
-              sub: "2 awaiting validation", 
-              icon: <ShoppingCart className="w-5 h-5" />,
+              label: "Active Work Orders", 
+              value: metrics.activeWorkOrders.count.toString(), 
+              sub: `${metrics.activeWorkOrders.pendingQc} Pending QC · ${metrics.activeWorkOrders.onHold} On Hold`, 
+              icon: <ClipboardList className="w-5 h-5" />,
               color: "indigo"
             },
             { 
-              label: "Purchase Orders (PO)", 
-              value: "2", 
-              sub: "Requires Tier 1/2 signoff", 
-              icon: <FileText className="w-5 h-5" />,
+              label: "Open Sales Orders", 
+              value: metrics.openSalesOrders.count.toString(), 
+              sub: `${formatCurrency(metrics.openSalesOrders.totalValue)} Total Value`, 
+              icon: <ShoppingCart className="w-5 h-5" />,
               color: "amber"
             },
             { 
-              label: "Active Work Orders", 
-              value: "12", 
-              sub: "Production Scan-ins active", 
-              icon: <ClipboardList className="w-5 h-5" />,
+              label: "POs Awaiting Delivery", 
+              value: metrics.posAwaitingDelivery.count.toString(), 
+              sub: `${metrics.posAwaitingDelivery.overdue} Overdue`, 
+              icon: <FileText className="w-5 h-5" />,
               color: "sky"
             },
             { 
-              label: "Non-Conformance (NCR)", 
-              value: "1", 
-              sub: "Requires QC check", 
+              label: "Open NCRs", 
+              value: metrics.openNcrs.count.toString(), 
+              sub: `${metrics.openNcrs.pendingClosure} Pending Closure`, 
               icon: <AlertCircle className="w-5 h-5" />,
               color: "rose"
             },
@@ -150,6 +178,319 @@ export default function DashboardPage() {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* NEW DASHBOARD SECTION */}
+      <div className="grid gap-8 lg:grid-cols-2">
+        {/* Recent Work Orders Panel */}
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm flex flex-col">
+          <div className="flex items-center justify-between p-6 border-b border-slate-100">
+            <h4 className="text-lg font-bold text-slate-900">Recent Work Orders</h4>
+            <button className="flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-100">
+              View All <ArrowRight className="h-3 w-3" />
+            </button>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-slate-600">
+              <thead className="bg-white text-xs uppercase text-slate-400 font-bold border-b border-slate-100">
+                <tr>
+                  <th className="px-6 py-4">WO NO</th>
+                  <th className="px-6 py-4">CUSTOMER</th>
+                  <th className="px-6 py-4">DELIVERY</th>
+                  <th className="px-6 py-4">STATUS</th>
+                  <th className="px-6 py-4">QC</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {metrics.recentWorkOrders?.length > 0 ? (
+                  metrics.recentWorkOrders.map((wo: any, index: number) => {
+                    const statusStyles = {
+                      "WIP": { badge: "border-blue-200 bg-blue-50 text-blue-500", dot: "bg-blue-500" },
+                      "Proceed": { badge: "border-amber-200 bg-amber-50 text-amber-500", dot: "bg-amber-500" },
+                      "Pending QC": { badge: "border-orange-200 bg-orange-50 text-orange-500", dot: "bg-orange-500" },
+                      "Completed": { badge: "border-emerald-200 bg-emerald-50 text-emerald-500", dot: "bg-emerald-500" }
+                    }[wo.status] || { badge: "border-slate-200 bg-slate-50 text-slate-400", dot: "bg-slate-400" };
+                    
+                    const qcStyles = {
+                      "Approved": { badge: "border-emerald-200 bg-emerald-50 text-emerald-500", dot: "bg-emerald-500" },
+                      "Rejected": { badge: "border-red-200 bg-red-50 text-red-500", dot: "bg-red-500" }
+                    }[wo.qcAcceptance] || { badge: "border-slate-200 bg-slate-50 text-slate-400", dot: "bg-slate-400" };
+
+                    return (
+                      <tr key={index} className={index % 2 === 0 ? "bg-slate-50/50" : ""}>
+                        <td className="px-6 py-4 font-bold text-slate-900">{wo.workOrderNo}</td>
+                        <td className="px-6 py-4">{wo.customerName}</td>
+                        <td className="px-6 py-4 text-slate-500">
+                          {wo.deliveryDate 
+                            ? new Date(wo.deliveryDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) 
+                            : "N/A"}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${statusStyles.badge}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${statusStyles.dot}`}></span> {wo.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${qcStyles.badge}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${qcStyles.dot}`}></span> {wo.qcAcceptance}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-slate-500 font-medium">No recent work orders found.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Process Load Panel */}
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm p-6 flex flex-col">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-6 mb-6">
+            <h4 className="text-lg font-bold text-slate-900">Process Load — This Week</h4>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-500">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span> Live
+            </span>
+          </div>
+          
+          <div className="space-y-6 flex-grow flex flex-col justify-center">
+            {(metrics.processLoad.length > 0 ? metrics.processLoad : [
+              { label: "Welding", value: 0 },
+              { label: "Machining", value: 0 },
+              { label: "Spray Paint", value: 0 },
+              { label: "Sizing", value: 0 },
+              { label: "Assembly", value: 0 },
+              { label: "QC", value: 0 },
+            ]).map((process, idx) => {
+              const colorMap: Record<string, string> = {
+                "Welding": "bg-blue-500",
+                "Machining": "bg-amber-500",
+                "Spray Paint": "bg-emerald-500",
+                "Sizing": "bg-orange-500",
+                "Assembly": "bg-slate-400",
+                "QC": "bg-red-500",
+              };
+              const defaultColors = ["bg-blue-500", "bg-amber-500", "bg-emerald-500", "bg-orange-500", "bg-slate-400", "bg-red-500"];
+              const processColor = colorMap[process.label] || defaultColors[idx % defaultColors.length];
+
+              return (
+              <div key={process.label} className="flex items-center gap-4">
+                <div className="w-24 text-right text-sm font-semibold text-slate-600">
+                  {process.label}
+                </div>
+                <div className="flex-1 h-2.5 rounded-full overflow-hidden bg-slate-100 flex items-center">
+                   <div className="w-full relative h-full">
+                       <div 
+                       className={`absolute top-0 left-0 h-full rounded-full ${processColor}`} 
+                       style={{ width: `${process.value}%` }}
+                       ></div>
+                   </div>
+                </div>
+                <div className="w-10 text-right text-sm font-bold text-slate-700">
+                  {process.value}%
+                </div>
+              </div>
+            )})}
+          </div>
+        </div>
+      </div>
+
+      {/* OPERATIONS CARDS */}
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* PO Approvals Pending Panel */}
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm flex flex-col p-6">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <h4 className="text-lg font-bold text-slate-900">PO Approvals Pending</h4>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-bold text-rose-500">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-500"></span> {metrics.pendingPoApprovals?.urgentCount || 0} urgent
+            </span>
+          </div>
+          
+          <div className="space-y-4">
+            {metrics.pendingPoApprovals?.list?.length > 0 ? (
+              metrics.pendingPoApprovals.list.map((po, i) => {
+                const isFirstTier = po.tier === "1st Tier";
+                const tierBadgeBg = isFirstTier ? "bg-amber-50 text-amber-500" : "bg-blue-50 text-blue-500";
+                const tierDotBg = isFirstTier ? "bg-amber-500" : "bg-blue-500";
+                return (
+                  <div key={i} className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h5 className="font-bold text-slate-900">{po.poNo}</h5>
+                        <p className="text-sm text-slate-500">{po.supplierName}</p>
+                      </div>
+                      <span className={`inline-flex items-center gap-1.5 rounded-full ${tierBadgeBg} px-2.5 py-1 text-xs font-bold`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${tierDotBg}`}></span> {po.tier}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 mb-4 text-sm font-medium">
+                      <span className="text-slate-500">SGD <span className="text-slate-900 font-bold">{po.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></span>
+                      <span className="text-slate-300">|</span>
+                      <span className="text-slate-500">WO <span className="text-slate-900 font-bold">{po.workOrderNo}</span></span>
+                    </div>
+                    <div className="flex gap-3">
+                      <a 
+                        href={`/dashboard/purchasing/purchase-order-approval/${po.id}`}
+                        className="flex-1 rounded-xl border border-emerald-200 bg-emerald-50 py-2 text-sm font-semibold text-emerald-600 transition-colors hover:bg-emerald-100 flex items-center justify-center gap-1"
+                      >
+                        ✓ Approve
+                      </a>
+                      <a 
+                        href={`/dashboard/purchasing/purchase-order-approval/${po.id}`}
+                        className="flex-1 rounded-xl border border-rose-200 bg-rose-50 py-2 text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-100 flex items-center justify-center gap-1"
+                      >
+                        ✗ Reject
+                      </a>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-8 text-sm font-medium text-slate-500">
+                No pending PO approvals.
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Open NCRs Panel */}
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm flex flex-col p-6">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <h4 className="text-lg font-bold text-slate-900">Open NCRs</h4>
+            <a href="/dashboard/quality/ncr" className="flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-100">
+              View All <ArrowRight className="h-3 w-3" />
+            </a>
+          </div>
+          
+          <div className="flex-grow flex flex-col justify-center space-y-4">
+            {metrics.recentNcrsList?.length > 0 ? (
+              metrics.recentNcrsList.map((ncr, i, arr) => {
+                const statusColor = {
+                  "Draft": "amber",
+                  "Pending Closure": "rose",
+                  "Closed": "emerald",
+                  "Completed": "emerald"
+                }[ncr.status] || "slate";
+                
+                return (
+                  <div key={i} className={`flex items-center justify-between py-2 ${i !== arr.length - 1 ? 'border-b border-slate-100' : ''}`}>
+                    <div className="flex items-start gap-4 flex-1">
+                      <div className="w-[125px] flex-shrink-0 text-sm font-bold text-rose-500 pt-0.5">
+                        {ncr.ncrNo}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-bold text-slate-900 leading-snug">
+                          {ncr.title} <br /> {ncr.workOrderNo}
+                        </div>
+                        <div className="text-xs text-slate-400 mt-1 leading-snug">
+                          Raised by {ncr.raisedBy} · <br /> {ncr.timeText}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-shrink-0 ml-4">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full bg-${statusColor}-50 px-3 py-1 text-xs font-bold text-${statusColor}-500`}>
+                        <span className={`h-1.5 w-1.5 rounded-full bg-${statusColor}-500`}></span> {ncr.status}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-8 text-sm font-medium text-slate-500">
+                No open NCRs found.
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* WO Status Distribution Panel */}
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm flex flex-col p-6">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+            <h4 className="text-lg font-bold text-slate-900">WO Status Distribution</h4>
+          </div>
+          
+          <div className="flex-grow flex items-center justify-center gap-8">
+            <div className="relative w-32 h-32 flex-shrink-0">
+              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#f1f5f9" strokeWidth="12" />
+                {(() => {
+                  const distribution = metrics.woStatusDistribution?.distribution || [];
+                  const total = metrics.woStatusDistribution?.total || 1;
+                  
+                  let currentOffset = 0;
+                  const circleCircumference = 2 * Math.PI * 40; // ~251.2
+                  
+                  return distribution.map((item, index) => {
+                    if (item.value === 0) return null;
+                    
+                    const percentage = item.value / total;
+                    const strokeDasharray = `${percentage * circleCircumference} ${circleCircumference}`;
+                    const strokeDashoffset = -currentOffset;
+                    
+                    currentOffset += percentage * circleCircumference;
+                    
+                    const colorMap: Record<string, string> = {
+                      "WIP": "#3b82f6", // blue-500
+                      "Proceed": "#f59e0b", // amber-500
+                      "Completed": "#10b981", // emerald-500
+                      "Pending QC": "#f43f5e", // rose-500
+                      "Others": "#94a3b8" // slate-400
+                    };
+                    
+                    return (
+                      <circle 
+                        key={item.label}
+                        cx="50" 
+                        cy="50" 
+                        r="40" 
+                        fill="none" 
+                        stroke={colorMap[item.label] || "#94a3b8"} 
+                        strokeWidth="12" 
+                        strokeDasharray={strokeDasharray} 
+                        strokeDashoffset={strokeDashoffset} 
+                      />
+                    );
+                  });
+                })()}
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-2xl font-bold text-slate-900">{metrics.woStatusDistribution?.total || 0}</span>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-3 flex-1">
+              {(metrics.woStatusDistribution?.distribution || [
+                { label: "WIP", value: 0 },
+                { label: "Proceed", value: 0 },
+                { label: "Completed", value: 0 },
+                { label: "Pending QC", value: 0 },
+                { label: "Others", value: 0 },
+              ]).map((stat) => {
+                const colorMap: Record<string, string> = {
+                  "WIP": "bg-blue-500",
+                  "Proceed": "bg-amber-500",
+                  "Completed": "bg-emerald-500",
+                  "Pending QC": "bg-rose-500",
+                  "Others": "bg-slate-400"
+                };
+                return (
+                  <div key={stat.label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-md ${colorMap[stat.label] || "bg-slate-400"}`}></div>
+                      <span className="text-sm font-semibold text-slate-600">{stat.label}</span>
+                    </div>
+                    <span className="text-sm font-bold text-slate-900">{stat.value}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -194,7 +535,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <h5 className="text-sm font-bold text-slate-900">Employee Profile</h5>
-                <p className="mt-1 text-xs text-slate-500 line-clamp-1">Manage employee codes, FINs &amp; designations</p>
+                <p className="mt-1 text-xs text-slate-500 line-clamp-1">Manage employee codes, FINs & designations</p>
               </div>
             </div>
 
@@ -207,7 +548,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <h5 className="text-sm font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">Company Profile</h5>
-                <p className="mt-1 text-xs text-slate-500 line-clamp-1">AS9100 requirement logs &amp; legal identifiers</p>
+                <p className="mt-1 text-xs text-slate-500 line-clamp-1">AS9100 requirement logs & legal identifiers</p>
               </div>
             </a>
           </div>
@@ -225,41 +566,47 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-slate-100/50">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-2 w-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]"></div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Company Name</p>
-              </div>
-              <p className="text-sm font-bold text-slate-900">{activeCompany}</p>
-            </div>
+          {(() => {
+            const currentCompany = metrics.companyProfiles?.find(c => c.companyName === activeCompany);
+            
+            return (
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-slate-100/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="h-2 w-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]"></div>
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Company Name</p>
+                  </div>
+                  <p className="text-sm font-bold text-slate-900">{activeCompany}</p>
+                </div>
 
-            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-slate-100/50">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">PO linkage to Work Orders</p>
-              </div>
-              <p className="text-sm font-semibold text-emerald-600 bg-emerald-50 inline-flex px-2 py-1 rounded-md">
-                {activeCompany === "Vision One Pte Ltd" 
-                  ? "✓ Allowed (Standard)" 
-                  : "✗ Forbidden (Standalone)"
-                }
-              </p>
-            </div>
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-slate-100/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">PO linkage to Work Orders</p>
+                  </div>
+                  <p className="text-sm font-semibold text-emerald-600 bg-emerald-50 inline-flex px-2 py-1 rounded-md">
+                    {currentCompany?.allowPoForWo 
+                      ? "✓ Allowed (Standard)" 
+                      : "✗ Forbidden (Standalone)"
+                    }
+                  </p>
+                </div>
 
-            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-slate-100/50">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-2 w-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]"></div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">AS9100 Certification Note</p>
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-slate-100/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="h-2 w-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]"></div>
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">AS9100 Certification Note</p>
+                  </div>
+                  <p className="text-sm font-medium text-slate-700">
+                    {currentCompany?.as9100RequirementNote
+                      ? "Toggled on for PR, PO, Subcon forms."
+                      : "Not standard for this company profile."
+                    }
+                  </p>
+                </div>
               </div>
-              <p className="text-sm font-medium text-slate-700">
-                {activeCompany === "Vision One Pte Ltd"
-                  ? "Toggled on for PR, PO, Subcon forms."
-                  : "Not standard for this company profile."
-                }
-              </p>
-            </div>
-          </div>
+            );
+          })()}
         </div>
       </div>
     </div>
