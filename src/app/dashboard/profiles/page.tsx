@@ -492,7 +492,8 @@ const MASTER_CATEGORIES = [
       {
         id: "employee",
         name: "Employee Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/employee",
         desc: "Tracks staff members, designation, emails and NRICs for COCs.",
         rules: [
           "Employee name is immutable once saved.",
@@ -509,7 +510,8 @@ const MASTER_CATEGORIES = [
       {
         id: "tax",
         name: "Tax Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/tax",
         desc: "Defines operational tax percentages such as GST rates.",
         rules: [
           "Tax Type is immutable once created (e.g. GST @ 7%).",
@@ -523,7 +525,8 @@ const MASTER_CATEGORIES = [
       {
         id: "currency",
         name: "Currency Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/currency",
         desc: "Configures foreign currency conversion rates against SGD.",
         rules: [
           "All transactions snap the latest rate at creation. Transaction date is irrelevant.",
@@ -540,7 +543,8 @@ const MASTER_CATEGORIES = [
       {
         id: "payment",
         name: "Payment Term Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/payment-term",
         desc: "Defines credit limits and terms such as COD or Net 30.",
         rules: [
           "Saves standard payment text (e.g. COD, Net 30).",
@@ -559,7 +563,8 @@ const MASTER_CATEGORIES = [
       {
         id: "customer",
         name: "Customer Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/customer",
         desc: "Manages buyers, multiple contact persons, and delivery addresses.",
         rules: [
           "Customer must be created in this profile before use in Sales Orders.",
@@ -576,7 +581,8 @@ const MASTER_CATEGORIES = [
       {
         id: "supplier",
         name: "Supplier Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/supplier",
         desc: "Maintains vendor records for procurement and subcon orders.",
         rules: [
           "Supplier must exist before use in purchase orders.",
@@ -597,7 +603,8 @@ const MASTER_CATEGORIES = [
       {
         id: "material",
         name: "Material Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/material",
         desc: "Stores internal item catalog, sizes, shapes, and category links.",
         rules: [
           "Must exist before use in purchase orders (unless free-text override is used).",
@@ -614,7 +621,8 @@ const MASTER_CATEGORIES = [
       {
         id: "finished-good",
         name: "Finished Good Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/finished-good",
         desc: "Tracks manufactured items sold to customers in Sales Orders.",
         rules: [
           "Must exist before use in Sales Order item rows.",
@@ -658,7 +666,8 @@ const MASTER_CATEGORIES = [
       {
         id: "uom",
         name: "UOM Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/uom",
         desc: "Defines units of measurement like Pieces, Boxes, or Packs.",
         rules: [
           "UOM is immutable once created.",
@@ -677,7 +686,8 @@ const MASTER_CATEGORIES = [
       {
         id: "machine",
         name: "Machine Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/machine",
         desc: "Maintains welding and machining equipment with categorizations.",
         rules: [
           "Allows inline creation directly from operation modules if value not found.",
@@ -726,7 +736,8 @@ const MASTER_CATEGORIES = [
       {
         id: "failure-mode",
         name: "Failure Mode Profile",
-        active: false,
+        active: true,
+        href: "/dashboard/profiles/failure-mode",
         desc: "Catalogs failure reasons for Non-Conformance reporting (NCR).",
         rules: [
           "Allows inline creation directly from NCR module.",
