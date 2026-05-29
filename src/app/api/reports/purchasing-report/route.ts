@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
     
     if (supplier) {
       whereClause.supplier = {
-        vendorName: { contains: supplier, mode: "insensitive" }
+        supplierName: { contains: supplier, mode: "insensitive" }
       };
     }
     
@@ -118,7 +118,7 @@ export async function GET(req: NextRequest) {
           poDate: po.date,
           poStatus: po.receiveStatus !== "NA" ? po.receiveStatus : po.status, // use receive status if applicable
           purchaser: po.purchaser?.name || "",
-          supplier: po.supplier?.vendorName || "",
+          supplier: po.supplier?.supplierName || "",
           woNo: po.workOrderNo || "",
           prNo: po.purchaseRequisition?.prNo || "",
           currency: po.currency?.code || "",
