@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
     if (mainProcess) {
       itemsWhere.OR = [
         { masterMainProcess: { process: { contains: mainProcess, mode: "insensitive" } } },
-        { woRoutingProcess: { routingProcess: { mainProcess: { process: { contains: mainProcess, mode: "insensitive" } } } } }
+        { woRoutingProcess: { mainProcess: { process: { contains: mainProcess, mode: "insensitive" } } } }
       ];
       filterByItems = true;
     }
@@ -87,11 +87,8 @@ export async function GET(req: NextRequest) {
             masterRoutingProcess: true,
             woRoutingProcess: {
               include: {
-                routingProcess: {
-                  include: {
-                    mainProcess: true
-                  }
-                }
+                mainProcess: true,
+                routingProcess: true
               }
             },
             subconRequestForms: {
@@ -115,7 +112,7 @@ export async function GET(req: NextRequest) {
         
         if (itemDescription && !item.description?.toLowerCase().includes(itemDescription.toLowerCase())) keep = false;
         
-        const mp1 = item.masterMainProcess?.process || item.woRoutingProcess?.routingProcess?.mainProcess?.process || "";
+        const mp1 = item.masterMainProcess?.process || item.woRoutingProcess?.mainProcess?.process || "";
         const rp1 = item.masterRoutingProcess?.routingProcess || item.woRoutingProcess?.routingProcess?.routingProcess || "";
 
         if (mainProcess && !mp1.toLowerCase().includes(mainProcess.toLowerCase())) keep = false;
@@ -157,7 +154,7 @@ export async function GET(req: NextRequest) {
           aftTax: Number(po.amountAfterTax || 0),
           
           inProcessDescription: item.description || "",
-          mainProcess: item.masterMainProcess?.process || item.woRoutingProcess?.routingProcess?.mainProcess?.process || "",
+          mainProcess: item.masterMainProcess?.process || item.woRoutingProcess?.mainProcess?.process || "",
           routingProcess: item.masterRoutingProcess?.routingProcess || item.woRoutingProcess?.routingProcess?.routingProcess || "",
           description: item.description || "",
           hardness: item.hardness || "",

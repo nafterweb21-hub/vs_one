@@ -29,7 +29,6 @@ export default async function PrintSubconRequestFormPage(
             include: {
               company: true,
               supplier: true,
-              currency: true,
             }
           },
           poUom: true,

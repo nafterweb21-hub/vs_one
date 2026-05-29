@@ -110,6 +110,7 @@ model Currency {
   purchaseOrders PurchaseOrder[]
   quotations     Quotation[]
   salesOrders    SalesOrder[]
+  invoices       Invoice[]
 }
 
 model Employee {
@@ -146,6 +147,7 @@ model Employee {
   srfOutsourcedBy                               SubconRequestForm[]             @relation("SrfOutsourcedBy")
   user                                          User?                           @relation("EmployeeUser")
   qcWorkOrders                                  WorkOrder[]                     @relation("WorkOrderQc")
+  preparedInvoices                              Invoice[]                       @relation("InvoicePreparedBy")
 }
 
 model TaxProfile {
@@ -160,6 +162,7 @@ model TaxProfile {
   purchaseOrders PurchaseOrder[]
   quotations     Quotation[]
   salesOrders    SalesOrder[]
+  invoices       Invoice[]
 }
 
 model CustomerProfile {
@@ -178,6 +181,7 @@ model CustomerProfile {
   quotations     Quotation[]
   salesOrders    SalesOrder[]
   workOrders     WorkOrder[]
+  invoices       Invoice[]
 }
 
 model CustomerContactPerson {
@@ -196,6 +200,7 @@ model CustomerContactPerson {
   customer          CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
   quotations        Quotation[]
   salesOrders       SalesOrder[]
+  invoices          Invoice[]
 }
 
 model CustomerAddress {
@@ -209,6 +214,7 @@ model CustomerAddress {
   customer        CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
   billToOrders    SalesOrder[]    @relation("BillTo")
   deliverToOrders SalesOrder[]    @relation("DeliverTo")
+  invoices        Invoice[]
 }
 
 model MaterialCategory {
@@ -343,6 +349,7 @@ model FinishedGoodProfile {
   updatedAt       DateTime         @updatedAt
   quotationItems  QuotationItem[]
   salesOrderItems SalesOrderItem[]
+  invoiceItems    InvoiceItem[]
 }
 
 model UomProfile {
@@ -360,6 +367,7 @@ model UomProfile {
   quotationItems           QuotationItem[]
   salesOrderItems          SalesOrderItem[]
   workOrders               WorkOrder[]
+  invoiceItems             InvoiceItem[]
 }
 
 model ElcometerProfile {
@@ -403,6 +411,7 @@ model PaymentTermProfile {
   updatedAt   DateTime     @updatedAt
   quotations  Quotation[]
   salesOrders SalesOrder[]
+  invoices    Invoice[]
 }
 
 model SalesOrder {
@@ -541,6 +550,7 @@ model WorkOrder {
   labelUom             UomProfile?               @relation(fields: [labelUomId], references: [id])
   qcBy                 Employee?                 @relation("WorkOrderQc", fields: [qcById], references: [id])
   inProcesses          WorkOrderInProcess[]
+  invoiceItems         InvoiceItem[]
 }
 
 model WorkOrderInProcess {
@@ -742,6 +752,7 @@ model CompanyProfile {
   purchaseOrders        PurchaseOrder[]
   purchaseRequisitions  PurchaseRequisition[]
   subconReturnTrackings SubconReturnTracking[]
+  invoices              Invoice[]
 }
 
 model Quotation {
@@ -772,6 +783,7 @@ model Quotation {
   uploadUrl          String?
   status             String                 @default("Draft")
   salesOrderId       String?                @unique
+  invoiceId          String?                @unique
   createdAt          DateTime               @default(now())
   updatedAt          DateTime               @updatedAt
   contactPerson      CustomerContactPerson? @relation(fields: [contactPersonId], references: [id])
@@ -779,6 +791,7 @@ model Quotation {
   customer           CustomerProfile        @relation(fields: [customerId], references: [id])
   paymentTerm        PaymentTermProfile?    @relation(fields: [paymentTermId], references: [id])
   salesOrder         SalesOrder?            @relation(fields: [salesOrderId], references: [id])
+  invoice            Invoice?               @relation(fields: [invoiceId], references: [id])
   salesperson        Employee               @relation(fields: [salespersonId], references: [id])
   taxType            TaxProfile?            @relation(fields: [taxTypeId], references: [id])
   items              QuotationItem[]
@@ -1138,6 +1151,7 @@ model DeliveryOrder {
   customer     CustomerProfile           @relation(fields: [customerId], references: [id])
   salesOrder   SalesOrder                @relation(fields: [salesOrderId], references: [id])
   items        DeliveryOrderItem[]
+  invoiceLinks InvoiceDeliveryOrder[]
 }
 
 model DeliveryOrderItem {
@@ -1198,6 +1212,84 @@ model CertificateOfConformity {
   workOrder                   WorkOrder              @relation(fields: [workOrderNo], references: [workOrderNo])
 
   @@unique([deliveryOrderId, type, workOrderNo, welderId, painterId, partNumber, weldingMachineId, weldingProcess])
+}
+
+model Invoice {
+  id              String   @id @default(cuid())
+  invoiceNo       String   @unique // Format: INVYYXXXXX-RN
+  revision        Int      @default(0)
+  invoiceDate     DateTime
+  companyId       String
+  invoiceType     String // Customer Invoice / Credit Note / Debit Note
+  customerId      String
+  contactPersonId String
+  tel             String?
+  fax             String?
+  email           String?
+  billToId        String?
+  paymentTermId   String
+  dueDate         DateTime
+  currencyId      String
+  exchangeRate    Decimal
+  amountBeforeTax Decimal
+  taxTypeId       String
+  taxRate         Decimal
+  taxAmount       Decimal
+  amountAfterTax  Decimal
+  amountPaid      Decimal  @default(0) // System calculated from Receipt records
+  balanceDue      Decimal
+  bankDetails     String?
+  remark          String?
+  preparedById    String
+  uploadUrl       String?
+  status          String   @default("Draft") // Draft, Submitted, Old Version, Void
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  company       CompanyProfile        @relation(fields: [companyId], references: [id])
+  customer      CustomerProfile       @relation(fields: [customerId], references: [id])
+  contactPerson CustomerContactPerson @relation(fields: [contactPersonId], references: [id])
+  billTo        CustomerAddress?      @relation(fields: [billToId], references: [id])
+  paymentTerm   PaymentTermProfile    @relation(fields: [paymentTermId], references: [id])
+  currency      Currency              @relation(fields: [currencyId], references: [id])
+  taxType       TaxProfile            @relation(fields: [taxTypeId], references: [id])
+  preparedBy    Employee              @relation("InvoicePreparedBy", fields: [preparedById], references: [id])
+
+  items          InvoiceItem[]
+  deliveryOrders InvoiceDeliveryOrder[]
+  quotation      Quotation?
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  lineNo      Int
+  workOrderNo String?
+  partId      String? // From Sales Order based on WO No
+  description String?
+  quantity    Decimal
+  uomId       String?
+  unitPrice   Decimal
+  amount      Decimal
+  remark      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  invoice   Invoice              @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  workOrder WorkOrder?           @relation(fields: [workOrderNo], references: [workOrderNo])
+  part      FinishedGoodProfile? @relation(fields: [partId], references: [id])
+  uom       UomProfile?          @relation(fields: [uomId], references: [id])
+}
+
+model InvoiceDeliveryOrder {
+  invoiceId       String
+  deliveryOrderId String
+  createdAt       DateTime @default(now())
+
+  invoice       Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  deliveryOrder DeliveryOrder @relation(fields: [deliveryOrderId], references: [id], onDelete: Restrict)
+
+  @@id([invoiceId, deliveryOrderId])
 }
 
 enum UserRole {

@@ -208,9 +208,11 @@ export async function updateQuotation(id: string, input: QuotationInput) {
   });
 }
 
+export type QuotationAction = "issue" | "confirm" | "void" | "revise" | "convertToSo" | "convertToInvoice";
+
 export async function transitionQuotation(
   id: string,
-  action: "issue" | "confirm" | "void" | "revise" | "convertToSo",
+  action: QuotationAction,
 ) {
   const q = await prisma.quotation.findUnique({
     where: { id },
@@ -351,6 +353,92 @@ export async function transitionQuotation(
         });
 
         return so;
+      });
+    }
+    case "convertToInvoice": {
+      if (q.status !== "Confirmed")
+        throw new Error("Only Confirmed quotations can be converted to Invoice");
+      if (q.invoiceId) throw new Error("Already converted to Invoice");
+
+      return prisma.$transaction(async (tx) => {
+        const currentYear = new Date().getFullYear().toString().slice(-2);
+        const prefix = `INV${currentYear}`;
+        
+        const latestInvoice = await tx.invoice.findFirst({
+          where: { invoiceNo: { startsWith: prefix } },
+          orderBy: { createdAt: "desc" },
+        });
+
+        let runningNumber = 1;
+        if (latestInvoice) {
+          const match = latestInvoice.invoiceNo.match(/INV\d{2}(\d{5})-R\d+/);
+          if (match && match[1]) {
+            runningNumber = parseInt(match[1], 10) + 1;
+          }
+        }
+        
+        const invoiceNo = `${prefix}${String(runningNumber).padStart(5, "0")}-R0`;
+
+        const company = await tx.companyProfile.findFirst({ where: { status: "Active" } });
+        if (!company) throw new Error("No active company found");
+
+        const paymentTermId = q.paymentTermId ?? (await firstPaymentTermId(tx));
+        const paymentTerm = await tx.paymentTermProfile.findUnique({ where: { id: paymentTermId } });
+
+        const invoiceDate = new Date();
+        const dueDate = new Date(invoiceDate);
+        if (paymentTerm) {
+          dueDate.setDate(dueDate.getDate() + paymentTerm.days);
+        }
+
+        const contactPersonId = q.contactPersonId || (await tx.customerContactPerson.findFirst({ where: { customerId: q.customerId } }))?.id;
+        if (!contactPersonId) throw new Error("Customer has no contact person");
+
+        const taxTypeId = q.taxTypeId || (await tx.taxProfile.findFirst({ where: { status: "Active" } }))?.id;
+        if (!taxTypeId) throw new Error("No tax profile found");
+
+        const invoice = await tx.invoice.create({
+          data: {
+            invoiceNo,
+            revision: 0,
+            invoiceDate,
+            companyId: company.id,
+            invoiceType: "Customer Invoice",
+            customerId: q.customerId,
+            contactPersonId,
+            paymentTermId,
+            dueDate,
+            currencyId: q.currencyId,
+            exchangeRate: q.exchangeRate,
+            amountBeforeTax: q.subTotal,
+            taxTypeId,
+            taxRate: q.taxRate || 0,
+            taxAmount: q.taxAmount || 0,
+            amountAfterTax: q.totalAmount,
+            balanceDue: q.totalAmount,
+            remark: q.remark,
+            preparedById: q.salespersonId,
+            status: "Draft",
+            items: {
+              create: q.items.map((it, idx) => ({
+                lineNo: idx + 1,
+                partId: it.partId,
+                description: null,
+                quantity: it.quantity,
+                uomId: it.uomId,
+                unitPrice: it.unitPrice,
+                amount: it.amount,
+              })),
+            },
+          },
+        });
+
+        await tx.quotation.update({
+          where: { id },
+          data: { invoiceId: invoice.id, status: "Converted" },
+        });
+
+        return invoice;
       });
     }
   }

@@ -206,17 +206,19 @@ export default function DashboardPage() {
               <tbody className="divide-y divide-slate-100">
                 {metrics.recentWorkOrders?.length > 0 ? (
                   metrics.recentWorkOrders.map((wo: any, index: number) => {
-                    const statusStyles = {
+                    const statusStyles: Record<string, { badge: string; dot: string }> = {
                       "WIP": { badge: "border-blue-200 bg-blue-50 text-blue-500", dot: "bg-blue-500" },
                       "Proceed": { badge: "border-amber-200 bg-amber-50 text-amber-500", dot: "bg-amber-500" },
                       "Pending QC": { badge: "border-orange-200 bg-orange-50 text-orange-500", dot: "bg-orange-500" },
                       "Completed": { badge: "border-emerald-200 bg-emerald-50 text-emerald-500", dot: "bg-emerald-500" }
-                    }[wo.status] || { badge: "border-slate-200 bg-slate-50 text-slate-400", dot: "bg-slate-400" };
+                    };
+                    const currentStatusStyle = statusStyles[wo.status as string] || { badge: "border-slate-200 bg-slate-50 text-slate-400", dot: "bg-slate-400" };
                     
-                    const qcStyles = {
+                    const qcStyles: Record<string, { badge: string; dot: string }> = {
                       "Approved": { badge: "border-emerald-200 bg-emerald-50 text-emerald-500", dot: "bg-emerald-500" },
                       "Rejected": { badge: "border-red-200 bg-red-50 text-red-500", dot: "bg-red-500" }
-                    }[wo.qcAcceptance] || { badge: "border-slate-200 bg-slate-50 text-slate-400", dot: "bg-slate-400" };
+                    };
+                    const currentQcStyle = qcStyles[wo.qcAcceptance as string] || { badge: "border-slate-200 bg-slate-50 text-slate-400", dot: "bg-slate-400" };
 
                     return (
                       <tr key={index} className={index % 2 === 0 ? "bg-slate-50/50" : ""}>
@@ -228,13 +230,13 @@ export default function DashboardPage() {
                             : "N/A"}
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${statusStyles.badge}`}>
-                            <span className={`h-1.5 w-1.5 rounded-full ${statusStyles.dot}`}></span> {wo.status}
+                          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${currentStatusStyle.badge}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${currentStatusStyle.dot}`}></span> {wo.status}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${qcStyles.badge}`}>
-                            <span className={`h-1.5 w-1.5 rounded-full ${qcStyles.dot}`}></span> {wo.qcAcceptance}
+                          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${currentQcStyle.badge}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${currentQcStyle.dot}`}></span> {wo.qcAcceptance}
                           </span>
                         </td>
                       </tr>
@@ -371,12 +373,13 @@ export default function DashboardPage() {
           <div className="flex-grow flex flex-col justify-center space-y-4">
             {metrics.recentNcrsList?.length > 0 ? (
               metrics.recentNcrsList.map((ncr, i, arr) => {
-                const statusColor = {
+                const statusColors: Record<string, string> = {
                   "Draft": "amber",
                   "Pending Closure": "rose",
                   "Closed": "emerald",
                   "Completed": "emerald"
-                }[ncr.status] || "slate";
+                };
+                const statusColor = statusColors[ncr.status as string] || "slate";
                 
                 return (
                   <div key={i} className={`flex items-center justify-between py-2 ${i !== arr.length - 1 ? 'border-b border-slate-100' : ''}`}>

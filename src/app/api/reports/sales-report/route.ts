@@ -126,7 +126,7 @@ export async function GET(req: NextRequest) {
       // Usually reports show matching items only, but SO groups them.
       // We will filter items here if partNo/description was provided to be strict.
       const filteredItems = so.items.filter(item => {
-        if (partNo && !item.part?.partNo.toLowerCase().includes(partNo.toLowerCase())) return false;
+        if (partNo && !item.part?.partNo?.toLowerCase().includes(partNo.toLowerCase())) return false;
         if (partDescription && !item.part?.description?.toLowerCase().includes(partDescription.toLowerCase())) return false;
         if (workOrderNo && !item.batches.some(b => b.workOrderNo?.toLowerCase().includes(workOrderNo.toLowerCase()))) return false;
         return true;
