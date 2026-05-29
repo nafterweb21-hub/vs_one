@@ -6,29 +6,43 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { canAccess, type Role } from "@/lib/access";
 import {
-  Coins,
   LayoutDashboard,
   LogOut,
   Menu,
   X,
-  Users,
-  Percent,
-  UserCircle,
-  UserCog,
-  Ruler,
-  Gauge,
-  Cpu,
-  Truck,
-  Package,
-  PackageCheck,
-  PackageX,
+  LayoutGrid,
+  Key,
+  User,
+  Bell,
+  Lock,
+  Mail,
+  Diamond,
+  CircleDot,
+  Circle,
+  Hexagon,
+  File,
+  SquareSplitHorizontal,
+  Briefcase,
+  List,
+  Book,
+  CheckSquare,
+  PackageOpen,
+  CornerUpLeft,
+  Clipboard,
+  RefreshCw,
+  AlertTriangle,
+  Receipt,
+  BarChart2,
+  Building2,
+  Handshake,
+  Factory,
+  Coins,
+  Calendar,
+  Scale,
   Box,
-  Flame,
+  BarChart,
+  TrendingUp,
   ShoppingCart,
-  FileText,
-  CreditCard,
-  Paintbrush,
-  ClipboardList,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -103,381 +117,291 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             className={linkClass("/dashboard")}
           >
             <LayoutDashboard size={18} />
-            <span>Dashboard Home</span>
+            <span>Dashboard</span>
           </Link>
 
-          {allow("/dashboard/sales/sales-order") && (
-            <div className="pt-4">
-              <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                Sales
-              </p>
-              <Link
-                href="/dashboard/sales/quotation"
-                onClick={() => setIsOpen(false)}
-                className={linkClass("/dashboard/sales/quotation")}
-              >
-                <FileText size={16} />
-                <span>Costing & Quotation</span>
-              </Link>
-              <Link
-                href="/dashboard/sales/sales-order"
-                onClick={() => setIsOpen(false)}
-                className={linkClass("/dashboard/sales/sales-order")}
-              >
-                <ShoppingCart size={16} />
-                <span>Sales Orders</span>
-              </Link>
-              {allow("/dashboard/sales/delivery-order") && (
-                <Link
-                  href="/dashboard/sales/delivery-order"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/sales/delivery-order")}
-                >
-                  <Truck size={16} />
-                  <span>Delivery Orders</span>
-                </Link>
-              )}
-            </div>
-          )}
-
-          {allow("/dashboard/production/work-order") && (
-            <div className="pt-4">
-              <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                Production
-              </p>
-              <Link
-                href="/dashboard/production/work-order"
-                onClick={() => setIsOpen(false)}
-                className={linkClass("/dashboard/production/work-order")}
-              >
-                <ClipboardList size={16} />
-                <span>Work Orders</span>
-              </Link>
-            </div>
-          )}
-
-          {(allow("/dashboard/purchasing/purchase-requisition") || 
-             allow("/dashboard/purchasing/purchase-order") ||
-             allow("/dashboard/purchasing/purchase-order-subcon") ||
-             allow("/dashboard/purchasing/subcon-request-form") ||
-             allow("/dashboard/purchasing/subcon-return-tracking") ||
-             allow("/dashboard/purchasing/purchase-order-approval") ||
-             allow("/dashboard/purchasing/goods-receive") ||
-             allow("/dashboard/purchasing/goods-return")) && (
-            <div className="pt-4">
-              <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                Purchasing
-              </p>
-              {allow("/dashboard/purchasing/purchase-requisition") && (
-                <Link
-                  href="/dashboard/purchasing/purchase-requisition"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/purchasing/purchase-requisition")}
-                >
-                  <ShoppingCart size={16} />
-                  <span>Purchase Requisitions</span>
-                </Link>
-              )}
-              {allow("/dashboard/purchasing/purchase-order") && (
-                <Link
-                  href="/dashboard/purchasing/purchase-order"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/purchasing/purchase-order")}
-                >
-                  <FileText size={16} />
-                  <span>Purchase Orders</span>
-                </Link>
-              )}
-              {allow("/dashboard/purchasing/purchase-order-subcon") && (
-                <Link
-                  href="/dashboard/purchasing/purchase-order-subcon"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/purchasing/purchase-order-subcon")}
-                >
-                  <ClipboardList size={16} />
-                  <span>PO - Subcon</span>
-                </Link>
-              )}
-              {allow("/dashboard/purchasing/subcon-request-form") && (
-                <Link
-                  href="/dashboard/purchasing/subcon-request-form"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/purchasing/subcon-request-form")}
-                >
-                  <ClipboardList size={16} />
-                  <span>Subcon Request Form</span>
-                </Link>
-              )}
-              {allow("/dashboard/purchasing/subcon-return-tracking") && (
-                <Link
-                  href="/dashboard/purchasing/subcon-return-tracking"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/purchasing/subcon-return-tracking")}
-                >
-                  <ClipboardList size={16} />
-                  <span>Subcon Return Tracking</span>
-                </Link>
-              )}
-              {allow("/dashboard/purchasing/purchase-order-approval") && (
-                <Link
-                  href="/dashboard/purchasing/purchase-order-approval"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/purchasing/purchase-order-approval")}
-                >
-                  <ClipboardList size={16} />
-                  <span>Purchase Order Approval</span>
-                </Link>
-              )}
-              {allow("/dashboard/purchasing/goods-receive") && (
-                <Link
-                  href="/dashboard/purchasing/goods-receive"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/purchasing/goods-receive")}
-                >
-                  <PackageCheck size={16} />
-                  <span>Goods Receive</span>
-                </Link>
-              )}
-              {allow("/dashboard/purchasing/goods-return") && (
-                <Link
-                  href="/dashboard/purchasing/goods-return"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/purchasing/goods-return")}
-                >
-                  <PackageX size={16} />
-                  <span>Goods Return</span>
-                </Link>
-              )}
-            </div>
-          )}
-
-          {allow("/dashboard/qc/ncr") && (
-            <div className="pt-4">
-              <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                Quality Control
-              </p>
-              <Link
-                href="/dashboard/qc/ncr"
-                onClick={() => setIsOpen(false)}
-                className={linkClass("/dashboard/qc/ncr")}
-              >
-                <ClipboardList size={16} />
-                <span>Non-Conformance Report (NCR)</span>
-              </Link>
-              {allow("/dashboard/qc/coc") && (
-                <Link
-                  href="/dashboard/qc/coc"
-                  onClick={() => setIsOpen(false)}
-                  className={linkClass("/dashboard/qc/coc")}
-                >
-                  <ClipboardList size={16} />
-                  <span>Certificate Of Conformity</span>
-                </Link>
-              )}
-            </div>
-          )}
-
-          {allow("/dashboard/profiles/currency") && (
+          {/* ADMINISTRATOR */}
           <div className="pt-4">
             <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-              General Master
+              ADMINISTRATOR
             </p>
-            <Link
-              href="/dashboard/profiles/currency"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/profiles/currency")}
-            >
-              <Coins size={16} />
-              <span>Currency Master</span>
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#module-management")}>
+              <LayoutGrid size={16} className="text-slate-500" />
+              <span>Module Management</span>
             </Link>
-            <Link
-              href="/dashboard/profiles/company"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/profiles/company")}
-            >
-              <Users size={16} />
-              <span>Company Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/profiles/uom"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/profiles/uom")}
-            >
-              <Ruler size={16} />
-              <span>UOM Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/profiles/elcometer"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/profiles/elcometer")}
-            >
-              <Gauge size={16} />
-              <span>Elcometer Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/profiles/machine"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/profiles/machine")}
-            >
-              <Cpu size={16} />
-              <span>Machine Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/employee"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/employee")}
-            >
-              <Users size={16} />
-              <span>Employee Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/department"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/department")}
-            >
-              <Users size={16} />
-              <span>Department Master</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/material"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/material")}
-            >
-              <Box size={16} />
-              <span>Material Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/profiles/material-categories"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/profiles/material-categories")}
-            >
-              <Box size={16} />
-              <span>Material Category Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/material-type"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/material-type")}
-            >
-              <Box size={16} />
-              <span>Material Type Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/welding-type"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/welding-type")}
-            >
-              <Flame size={16} />
-              <span>Welding Type Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/joint"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/joint")}
-            >
-              <ClipboardList size={16} />
-              <span>Joint Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/failure-mode"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/failure-mode")}
-            >
-              <ClipboardList size={16} />
-              <span>Failure Mode Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/painting-method"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/painting-method")}
-            >
-              <Paintbrush size={16} />
-              <span>Painting Method Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/main-process"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/main-process")}
-            >
-              <ClipboardList size={16} />
-              <span>Main Process Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/master-profile/process-profile"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/master-profile/process-profile")}
-            >
-              <ClipboardList size={16} />
-              <span>Process Profile</span>
-            </Link>
-          </div>
-          )}
-
-          {allow("/dashboard/admin/master-profile/tax") && (
-          <div className="pt-4">
-            <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-              Admin Master
-            </p>
-            <Link
-              href="/dashboard/admin/master-profile/tax"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/admin/master-profile/tax")}
-            >
-              <Percent size={16} />
-              <span>Tax Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/admin/master-profile/customer"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/admin/master-profile/customer")}
-            >
-              <UserCircle size={16} />
-              <span>Customer Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/admin/master-profile/supplier"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/admin/master-profile/supplier")}
-            >
-              <Truck size={16} />
-              <span>Supplier Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/admin/master-profile/finished-good"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/admin/master-profile/finished-good")}
-            >
-              <Package size={16} />
-              <span>Finished Good Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/profiles/payment-term"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/profiles/payment-term")}
-            >
-              <CreditCard size={16} />
-              <span>Payment Term Profile</span>
-            </Link>
-            <Link
-              href="/dashboard/profiles/approval-levels"
-              onClick={() => setIsOpen(false)}
-              className={linkClass("/dashboard/profiles/approval-levels")}
-            >
-              <ClipboardList size={16} />
-              <span>Approval Level Profile</span>
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#roles")}>
+              <Key size={16} className="text-yellow-500" />
+              <span>Roles</span>
             </Link>
             {isAdmin && allow("/dashboard/admin/users") && (
-              <Link
-                href="/dashboard/admin/users"
-                onClick={() => setIsOpen(false)}
-                className={linkClass("/dashboard/admin/users")}
-              >
-                <UserCog size={16} />
-                <span>User Management</span>
+              <Link href="/dashboard/admin/users" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/admin/users")}>
+                <User size={16} className="text-slate-500" fill="currentColor" />
+                <span>Users</span>
+              </Link>
+            )}
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#user-alert")}>
+              <Bell size={16} className="text-yellow-600" />
+              <span>User Alert</span>
+            </Link>
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#user-locked-record")}>
+              <Lock size={16} className="text-yellow-600" fill="currentColor" />
+              <span>User Locked Record</span>
+            </Link>
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#email-notification")}>
+              <Mail size={16} className="text-slate-500" />
+              <span>Email Notification</span>
+            </Link>
+          </div>
+
+          {/* OPERATION */}
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              OPERATION
+            </p>
+            {allow("/dashboard/sales/sales-order") && (
+              <Link href="/dashboard/sales/sales-order" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/sales/sales-order")}>
+                <Diamond size={16} className="text-slate-600" />
+                <span className="flex-1">Sales Order</span>
+                <span className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
+              </Link>
+            )}
+            {allow("/dashboard/production/work-order") && (
+              <Link href="/dashboard/production/work-order" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/production/work-order")}>
+                <CircleDot size={16} className="text-slate-600" />
+                <span className="flex-1">Work Order</span>
+                <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">7</span>
+              </Link>
+            )}
+            {allow("/dashboard/qc/approval") && (
+              <Link href="/dashboard/qc/approval" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/qc/approval")}>
+                <Circle size={16} className="text-slate-600" />
+                <span className="flex-1">QC Approval</span>
+                <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">2</span>
+              </Link>
+            )}
+            {allow("/dashboard/sales/delivery-order") && (
+              <Link href="/dashboard/sales/delivery-order" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/sales/delivery-order")}>
+                <Hexagon size={16} className="text-slate-600" fill="currentColor" />
+                <span>Delivery Order</span>
+              </Link>
+            )}
+            {allow("/dashboard/qc/coc") && (
+              <Link href="/dashboard/qc/coc" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/qc/coc")}>
+                <File size={16} className="text-slate-400" fill="currentColor" />
+                <span>Certificate Of Conformity</span>
+              </Link>
+            )}
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#process-parameter")}>
+              <SquareSplitHorizontal size={16} className="text-slate-600" fill="currentColor" />
+              <span>Process Parameter Confirmation</span>
+            </Link>
+            {allow("/dashboard/sales/quotation") && (
+              <Link href="/dashboard/sales/quotation" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/sales/quotation")}>
+                <Briefcase size={16} className="text-yellow-600" fill="currentColor" />
+                <span>Vision One Costing & Quotation</span>
               </Link>
             )}
           </div>
-          )}
+
+          {/* PROCUREMENT */}
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              PROCUREMENT
+            </p>
+            {allow("/dashboard/purchasing/purchase-requisition") && (
+              <Link href="/dashboard/purchasing/purchase-requisition" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/purchase-requisition")}>
+                <List size={16} className="text-slate-500" />
+                <span>Purchase Requisition</span>
+              </Link>
+            )}
+            {allow("/dashboard/purchasing/purchase-order") && (
+              <Link href="/dashboard/purchasing/purchase-order" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/purchase-order")}>
+                <Book size={16} className="text-slate-600" fill="currentColor" />
+                <span>Purchase Order</span>
+              </Link>
+            )}
+            {allow("/dashboard/purchasing/purchase-order-approval") && (
+              <Link href="/dashboard/purchasing/purchase-order-approval" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/purchase-order-approval")}>
+                <CheckSquare size={16} className="text-green-500" fill="currentColor" />
+                <span className="flex-1">Purchase Order Approval</span>
+                <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">4</span>
+              </Link>
+            )}
+            {allow("/dashboard/purchasing/goods-receive") && (
+              <Link href="/dashboard/purchasing/goods-receive" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/goods-receive")}>
+                <PackageOpen size={16} className="text-amber-700" fill="currentColor" />
+                <span>Goods Receive</span>
+              </Link>
+            )}
+            {allow("/dashboard/purchasing/goods-return") && (
+              <Link href="/dashboard/purchasing/goods-return" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/goods-return")}>
+                <CornerUpLeft size={16} className="text-slate-600" />
+                <span>Goods Return</span>
+              </Link>
+            )}
+          </div>
+
+          {/* SUBCON */}
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              SUBCON
+            </p>
+            {allow("/dashboard/purchasing/purchase-order-subcon") && (
+              <Link href="/dashboard/purchasing/purchase-order-subcon" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/purchase-order-subcon")}>
+                <Hexagon size={16} className="text-slate-400" />
+                <span>Purchase Order Subcon</span>
+              </Link>
+            )}
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#po-subcon-approval")}>
+              <CheckSquare size={16} className="text-green-500" fill="currentColor" />
+              <span>PO Subcon Approval</span>
+            </Link>
+            {allow("/dashboard/purchasing/subcon-request-form") && (
+              <Link href="/dashboard/purchasing/subcon-request-form" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/subcon-request-form")}>
+                <Clipboard size={16} className="text-slate-500" fill="currentColor" />
+                <span>Subcon Request Form</span>
+              </Link>
+            )}
+            {allow("/dashboard/purchasing/subcon-return-tracking") && (
+              <Link href="/dashboard/purchasing/subcon-return-tracking" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/subcon-return-tracking")}>
+                <RefreshCw size={16} className="text-slate-500" />
+                <span>Subcon Return Tracking</span>
+              </Link>
+            )}
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#subcon-reject-tracking")}>
+              <AlertTriangle size={16} className="text-slate-500" />
+              <span>Subcon Reject Tracking</span>
+            </Link>
+          </div>
+
+          {/* FINANCE */}
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              FINANCE
+            </p>
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#quotations")}>
+              <Clipboard size={16} className="text-slate-500" fill="currentColor" />
+              <span className="flex-1">Quotations</span>
+              <span className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">2</span>
+            </Link>
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#invoicing")}>
+              <Receipt size={16} className="text-slate-400" />
+              <span className="flex-1">Invoicing</span>
+              <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
+            </Link>
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#cost-monitoring")}>
+              <BarChart2 size={16} className="text-blue-500" fill="currentColor" />
+              <span>Cost Monitoring</span>
+            </Link>
+            {allow("/dashboard/qc/ncr") && (
+              <Link href="/dashboard/qc/ncr" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/qc/ncr")}>
+                <AlertTriangle size={16} className="text-slate-500" />
+                <span>NCR</span>
+              </Link>
+            )}
+          </div>
+
+          {/* PROFILE */}
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              PROFILE
+            </p>
+            {allow("/dashboard/profiles/company") && (
+              <Link href="/dashboard/profiles/company" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/profiles/company")}>
+                <Building2 size={16} className="text-slate-500" fill="currentColor" />
+                <span>Company Profile</span>
+              </Link>
+            )}
+            {allow("/dashboard/master-profile/employee") && (
+              <Link href="/dashboard/master-profile/employee" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/master-profile/employee")}>
+                <User size={16} className="text-slate-500" fill="currentColor" />
+                <span>Employee Profile</span>
+              </Link>
+            )}
+            {allow("/dashboard/profiles/approval-levels") && (
+              <Link href="/dashboard/profiles/approval-levels" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/profiles/approval-levels")}>
+                <Key size={16} className="text-yellow-500" fill="currentColor" />
+                <span>Approval Level Profile</span>
+              </Link>
+            )}
+            {allow("/dashboard/admin/master-profile/customer") && (
+              <Link href="/dashboard/admin/master-profile/customer" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/admin/master-profile/customer")}>
+                <Handshake size={16} className="text-yellow-600" fill="currentColor" />
+                <span>Customer Profile</span>
+              </Link>
+            )}
+            {allow("/dashboard/admin/master-profile/supplier") && (
+              <Link href="/dashboard/admin/master-profile/supplier" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/admin/master-profile/supplier")}>
+                <Factory size={16} className="text-amber-800" fill="currentColor" />
+                <span>Supplier Profile</span>
+              </Link>
+            )}
+            {allow("/dashboard/profiles/currency") && (
+              <Link href="/dashboard/profiles/currency" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/profiles/currency")}>
+                <Coins size={16} className="text-slate-600" />
+                <span>Currency Profile</span>
+              </Link>
+            )}
+            {allow("/dashboard/admin/master-profile/tax") && (
+              <Link href="/dashboard/admin/master-profile/tax" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/admin/master-profile/tax")}>
+                <Receipt size={16} className="text-slate-400" />
+                <span>Tax Profile</span>
+              </Link>
+            )}
+            {allow("/dashboard/profiles/payment-term") && (
+              <Link href="/dashboard/profiles/payment-term" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/profiles/payment-term")}>
+                <Calendar size={16} className="text-red-800" fill="currentColor" />
+                <span>Payment Terms</span>
+              </Link>
+            )}
+            {allow("/dashboard/profiles/uom") && (
+              <Link href="/dashboard/profiles/uom" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/profiles/uom")}>
+                <Scale size={16} className="text-slate-500" />
+                <span>UOM Profile</span>
+              </Link>
+            )}
+            {allow("/dashboard/profiles/material-categories") && (
+              <Link href="/dashboard/profiles/material-categories" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/profiles/material-categories")}>
+                <Box size={16} className="text-amber-800" fill="currentColor" />
+                <span>Material Category Profile</span>
+              </Link>
+            )}
+          </div>
+
+          {/* REPORT */}
+          <div className="pt-4">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              REPORT
+            </p>
+            {allow("/dashboard/sales/sales-report") && (
+              <Link href="/dashboard/sales/sales-report" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/sales/sales-report")}>
+                <BarChart size={16} className="text-blue-500" fill="currentColor" />
+                <span>Sales Report</span>
+              </Link>
+            )}
+            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#work-order-costing-report")}>
+              <TrendingUp size={16} className="text-red-500" />
+              <span>Work Order Costing Report</span>
+            </Link>
+            {allow("/dashboard/qc/ncr-report") && (
+              <Link href="/dashboard/qc/ncr-report" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/qc/ncr-report")}>
+                <AlertTriangle size={16} className="text-slate-500" />
+                <span>Non Conformance Report</span>
+              </Link>
+            )}
+            {allow("/dashboard/purchasing/purchasing-report") && (
+              <Link href="/dashboard/purchasing/purchasing-report" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/purchasing-report")}>
+                <ShoppingCart size={16} className="text-slate-500" />
+                <span>Purchasing Report</span>
+              </Link>
+            )}
+            {allow("/dashboard/purchasing/subcon-purchasing-report") && (
+              <Link href="/dashboard/purchasing/subcon-purchasing-report" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/purchasing/subcon-purchasing-report")}>
+                <Factory size={16} className="text-red-800" fill="currentColor" />
+                <span>Subcon Purchasing Report</span>
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Footer: user + sign out */}
