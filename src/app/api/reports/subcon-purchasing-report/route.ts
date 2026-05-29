@@ -52,16 +52,16 @@ export async function GET(req: NextRequest) {
     }
     if (mainProcess) {
       itemsWhere.OR = [
-        { masterMainProcess: { mainProcess: { contains: mainProcess, mode: "insensitive" } } },
-        { woRoutingProcess: { masterRoutingProcess: { mainProcess: { mainProcess: { contains: mainProcess, mode: "insensitive" } } } } }
+        { masterMainProcess: { process: { contains: mainProcess, mode: "insensitive" } } },
+        { woRoutingProcess: { mainProcess: { process: { contains: mainProcess, mode: "insensitive" } } } }
       ];
       filterByItems = true;
     }
     if (routingProcess) {
       itemsWhere.OR = [
         ...(itemsWhere.OR || []),
-        { masterRoutingProcess: { processName: { contains: routingProcess, mode: "insensitive" } } },
-        { woRoutingProcess: { masterRoutingProcess: { processName: { contains: routingProcess, mode: "insensitive" } } } }
+        { masterRoutingProcess: { routingProcess: { contains: routingProcess, mode: "insensitive" } } },
+        { woRoutingProcess: { routingProcess: { routingProcess: { contains: routingProcess, mode: "insensitive" } } } }
       ];
       filterByItems = true;
     }
@@ -87,11 +87,8 @@ export async function GET(req: NextRequest) {
             masterRoutingProcess: true,
             woRoutingProcess: {
               include: {
-                masterRoutingProcess: {
-                  include: {
-                    mainProcess: true
-                  }
-                }
+                mainProcess: true,
+                routingProcess: true
               }
             },
             subconRequestForms: {
@@ -115,8 +112,8 @@ export async function GET(req: NextRequest) {
         
         if (itemDescription && !item.description?.toLowerCase().includes(itemDescription.toLowerCase())) keep = false;
         
-        const mp1 = item.masterMainProcess?.mainProcess || item.woRoutingProcess?.masterRoutingProcess?.mainProcess?.mainProcess || "";
-        const rp1 = item.masterRoutingProcess?.processName || item.woRoutingProcess?.masterRoutingProcess?.processName || "";
+        const mp1 = item.masterMainProcess?.process || item.woRoutingProcess?.mainProcess?.process || "";
+        const rp1 = item.masterRoutingProcess?.routingProcess || item.woRoutingProcess?.routingProcess?.routingProcess || "";
 
         if (mainProcess && !mp1.toLowerCase().includes(mainProcess.toLowerCase())) keep = false;
         if (routingProcess && !rp1.toLowerCase().includes(routingProcess.toLowerCase())) keep = false;
@@ -145,7 +142,7 @@ export async function GET(req: NextRequest) {
           poDate: po.date,
           poStatus: po.receiveStatus !== "NA" ? po.receiveStatus : po.status,
           purchaser: po.purchaser?.name || "",
-          supplier: po.supplier?.vendorName || "",
+          supplier: po.supplier?.supplierName || "",
           woNo: po.workOrderNo || "",
           prNo: po.purchaseRequisition?.prNo || "",
           currency: po.currency?.code || "",
@@ -157,8 +154,8 @@ export async function GET(req: NextRequest) {
           aftTax: Number(po.amountAfterTax || 0),
           
           inProcessDescription: item.description || "",
-          mainProcess: item.masterMainProcess?.mainProcess || item.woRoutingProcess?.masterRoutingProcess?.mainProcess?.mainProcess || "",
-          routingProcess: item.masterRoutingProcess?.processName || item.woRoutingProcess?.masterRoutingProcess?.processName || "",
+          mainProcess: item.masterMainProcess?.process || item.woRoutingProcess?.mainProcess?.process || "",
+          routingProcess: item.masterRoutingProcess?.routingProcess || item.woRoutingProcess?.routingProcess?.routingProcess || "",
           description: item.description || "",
           hardness: item.hardness || "",
           thickness: item.thickness || "",

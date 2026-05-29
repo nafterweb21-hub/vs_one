@@ -226,7 +226,7 @@ export default async function PrintCocPage(
                 <tr>
                   <td className="label">PAINTING METHOD</td>
                   <td className="colon">:</td>
-                  <td className="value">{coc.paintingMethod?.name || "—"}</td>
+                  <td className="value">{coc.paintingMethod?.method || "—"}</td>
                 </tr>
                 <tr>
                   <td className="label">PAINTING SPECIFICATION</td>

@@ -5,7 +5,7 @@ export async function POST(request: Request, ctx: { params: Promise<{ id: string
   try {
     const { id } = await ctx.params;
     const { action } = await request.json();
-    if (!["issue", "confirm", "void", "revise", "convertToSo"].includes(action)) {
+    if (!["issue", "confirm", "void", "revise", "convertToSo", "convertToInvoice"].includes(action)) {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
     const result = await transitionQuotation(id, action);

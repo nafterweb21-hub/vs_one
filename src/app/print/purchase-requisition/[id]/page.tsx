@@ -144,7 +144,7 @@ export default async function PrintPurchaseRequisitionPage(
                 <td style={{ textAlign: 'center' }}>{it.shape}</td>
                 <td style={{ textAlign: 'center' }}>{it.size}</td>
                 <td style={{ textAlign: 'center' }}>{fmtDate(it.deliveryDate)}</td>
-                <td style={{ textAlign: 'right' }}>{formatNumber(it.quantity, it.quantity % 1 === 0 ? 0 : 2)}</td>
+                <td style={{ textAlign: 'right' }}>{formatNumber(it.quantity, Number(it.quantity) % 1 === 0 ? 0 : 2)}</td>
                 <td style={{ textAlign: 'center' }}>{it.uom?.uomName}</td>
               </tr>
             ))}
