@@ -279,16 +279,19 @@ export default function Sidebar({ userEmail, userRole, isAdmin }: SidebarProps) 
             <p className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
               FINANCE
             </p>
-            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#quotations")}>
-              <Clipboard size={16} className="text-slate-500" fill="currentColor" />
-              <span className="flex-1">Quotations</span>
-              <span className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">2</span>
-            </Link>
-            <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#invoicing")}>
-              <Receipt size={16} className="text-slate-400" />
-              <span className="flex-1">Invoicing</span>
-              <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
-            </Link>
+            {allow("/dashboard/sales/quotation") && (
+              <Link href="/dashboard/sales/quotation" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/sales/quotation")}>
+                <Clipboard size={16} className="text-slate-500" fill="currentColor" />
+                <span className="flex-1">Quotations</span>
+                <span className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">2</span>
+              </Link>
+            )}
+            {allow("/dashboard/sales/invoice") && (
+              <Link href="/dashboard/sales/invoice" onClick={() => setIsOpen(false)} className={linkClass("/dashboard/sales/invoice")}>
+                <Receipt size={16} className="text-slate-400" />
+                <span className="flex-1">Invoicing</span>
+              </Link>
+            )}
             <Link href="#" onClick={() => setIsOpen(false)} className={linkClass("#cost-monitoring")}>
               <BarChart2 size={16} className="text-blue-500" fill="currentColor" />
               <span>Cost Monitoring</span>

@@ -109,7 +109,7 @@ export default function QuotationListPage() {
 
   async function callAction(
     id: string,
-    action: "issue" | "confirm" | "void" | "revise" | "convertToSo",
+    action: "issue" | "confirm" | "void" | "revise" | "convertToSo" | "convertToInvoice",
   ) {
     const res = await fetch(`/api/sales/quotation/${id}/transition`, {
       method: "POST",
@@ -155,6 +155,13 @@ export default function QuotationListPage() {
       return alert("Only Confirmed quotations can be converted to SO");
     const res = await callAction(selected.id, "convertToSo");
     if (res?.id) router.push(`/dashboard/sales/sales-order/${res.id}`);
+  }
+  async function onConvertToInvoice() {
+    if (!selected) return;
+    if (selected.status !== "Confirmed")
+      return alert("Only Confirmed quotations can be converted to Invoice");
+    const res = await callAction(selected.id, "convertToInvoice");
+    if (res?.id) router.push(`/dashboard/sales/invoice/form?id=${res.id}`);
   }
   function onPrint() {
     if (!selected) return;
@@ -267,6 +274,7 @@ export default function QuotationListPage() {
         <ToolbarBtn icon={<GitBranch size={14} />} label="Revise" onClick={onRevise} disabled={!selected} />
         <ToolbarBtn icon={<History size={14} />} label="History" onClick={onHistory} disabled={!selected} />
         <ToolbarBtn icon={<ArrowRightCircle size={14} />} label="Convert to SO" onClick={onConvertToSo} disabled={!selected} primary />
+        <ToolbarBtn icon={<ArrowRightCircle size={14} />} label="Convert to Invoice" onClick={onConvertToInvoice} disabled={!selected} primary />
         <ToolbarBtn icon={<Copy size={14} />} label="Copy" onClick={onCopy} disabled={!selected} />
         <ToolbarBtn icon={<Printer size={14} />} label="Print Quotation" onClick={onPrint} disabled={!selected} />
       </div>
