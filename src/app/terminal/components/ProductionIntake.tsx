@@ -13,10 +13,10 @@ type ProductionIntakeProps = {
   onClose: () => void;
   support: Support;
   onSuccess: () => void;
-  loggedInEmployeeId?: string | null;
+  loggedInEmployee?: any | null;
 };
 
-export default function ProductionIntake({ isOpen, onClose, support, onSuccess, loggedInEmployeeId }: ProductionIntakeProps) {
+export default function ProductionIntake({ isOpen, onClose, support, onSuccess, loggedInEmployee }: ProductionIntakeProps) {
   const [woNo, setWoNo] = useState("");
   const [wo, setWo] = useState<any>(null);
   const [error, setError] = useState("");
@@ -31,11 +31,15 @@ export default function ProductionIntake({ isOpen, onClose, support, onSuccess, 
     return () => clearInterval(timer);
   }, [isOpen]);
 
+  const validEmployeeId = useMemo(() => {
+    return support.employees.find(e => e.id === loggedInEmployee?.id)?.id || "";
+  }, [support.employees, loggedInEmployee]);
+
   const [inForm, setInForm] = useState({
     inProcessId: "",
     mainProcessId: "",
     routingProcessProfileId: "",
-    employeeId: loggedInEmployeeId || (support.employees[0]?.id ?? ""),
+    employeeId: validEmployeeId,
   });
 
   const inProcessOptions = wo?.inProcesses ?? [];
@@ -101,7 +105,7 @@ export default function ProductionIntake({ isOpen, onClose, support, onSuccess, 
       // Reset form
       setWo(null);
       setWoNo("");
-      setInForm({ inProcessId: "", mainProcessId: "", routingProcessProfileId: "", employeeId: loggedInEmployeeId || (support.employees[0]?.id ?? "") });
+      setInForm({ inProcessId: "", mainProcessId: "", routingProcessProfileId: "", employeeId: validEmployeeId });
       onSuccess();
     });
   }
@@ -145,11 +149,11 @@ export default function ProductionIntake({ isOpen, onClose, support, onSuccess, 
             </div>
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <div className="text-sm font-bold text-slate-900">{selectedEmployee ? selectedEmployee.name : "Unknown"}</div>
-                <div className="text-[10px] font-bold text-slate-500 uppercase">{selectedEmployee ? selectedEmployee.code : "N/A"}</div>
+                <div className="text-sm font-bold text-slate-900">{loggedInEmployee ? loggedInEmployee.name : "Unknown"}</div>
+                <div className="text-[10px] font-bold text-slate-500 uppercase">{loggedInEmployee ? loggedInEmployee.code : "N/A"}</div>
               </div>
               <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg border border-emerald-200 uppercase">
-                {selectedEmployee ? selectedEmployee.name.charAt(0) : "?"}
+                {loggedInEmployee && loggedInEmployee.name ? loggedInEmployee.name.charAt(0) : "?"}
               </div>
             </div>
           </div>
@@ -348,15 +352,12 @@ export default function ProductionIntake({ isOpen, onClose, support, onSuccess, 
                             <div 
                               key={w.workOrderNo}
                               className="px-4 py-3 hover:bg-cyan-50 cursor-pointer text-sm font-medium text-slate-700 transition-colors border-b border-slate-50 last:border-0"
-                              onClick={() => {
+                              onMouseDown={(e) => {
+                                // Use onMouseDown instead of onClick to prevent onBlur from hiding the dropdown first
+                                e.preventDefault();
                                 setWoNo(w.workOrderNo);
                                 setShowDropdown(false);
-                                // The lookup happens automatically if they press Enter, or they can click Search on left. 
-                                // Actually, let's auto-lookup when selected from the dropdown:
-                                setTimeout(() => {
-                                  // Wait for state to settle then submit (we simulate by relying on the user to click search or we can trigger it)
-                                  // Let's just update the input for now, the user can press Search or we can auto lookup if we modify lookup() to take woNo as param
-                                }, 0);
+                                lookup(w.workOrderNo);
                               }}
                             >
                               {w.workOrderNo}

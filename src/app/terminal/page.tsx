@@ -47,9 +47,13 @@ export default async function TerminalPage() {
   }
 
   if (loggedInEmployee && loggedInEmployee.code !== "UNLINKED_USER") {
-    // Fetch active sessions and recent completes ONLY if we actually have an employee
+    // Fetch active sessions and recent completes ONLY for the linked employee
     initialSessions = await getTerminalActiveSessions(loggedInEmployee.id);
     initialRecentCompletes = await getTerminalRecentCompletes(10, loggedInEmployee.id);
+  } else {
+    // For unlinked users, act as a shared terminal and fetch all sessions
+    initialSessions = await getTerminalActiveSessions();
+    initialRecentCompletes = await getTerminalRecentCompletes(10);
   }
 
   return (

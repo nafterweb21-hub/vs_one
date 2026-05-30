@@ -34,10 +34,7 @@ export async function getTerminalSupportData() {
     await Promise.all([
       prisma.employee.findMany({
         where: { 
-          status: "ACTIVE",
-          user: {
-            role: "PRODUCTION"
-          }
+          status: "ACTIVE"
         },
         select: { id: true, name: true, code: true },
         orderBy: { name: "asc" },
